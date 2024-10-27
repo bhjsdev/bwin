@@ -1,0 +1,45 @@
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  background-color: hsl(0, 0%, 90%);
+}
+
+._menu {
+  margin: 0;
+  padding: 0;
+  width: 180px;
+  height: 100vh;
+  list-style: none;
+  overflow-y: auto;
+
+  li {
+    margin: 5px;
+    background-color: white;
+  }
+
+  a {
+    padding: 8px 16px;
+    font-size: 18px;
+    display: block;
+    color: black;
+    text-decoration: none;
+
+    &:hover {
+      background-color: lightgreen;
+    }
+
+    &.active {
+      background-color: green;
+      color: white;
+    }
+  }
+}
+
+main {
+  flex-grow: 1;
+  background-color: white;
+  padding: 0 20px;
+  overflow-y: auto;
+  max-height: 100vh;
+}

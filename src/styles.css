@@ -1,0 +1,32 @@
+bw-window {
+  position: relative;
+  display: block;
+}
+
+bw-pane {
+  position: absolute;
+  overflow: auto;
+}
+
+bw-muntin {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.2);
+
+  &[horizontal] {
+    cursor: row-resize;
+  }
+
+  &[vertical] {
+    cursor: col-resize;
+  }
+}
+
+.body--bw-resize-row {
+  user-select: none;
+  cursor: row-resize;
+}
+
+.body--bw-resize-col {
+  user-select: none;
+  cursor: col-resize;
+}
