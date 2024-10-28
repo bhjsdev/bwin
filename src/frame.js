@@ -1,26 +1,15 @@
+import { genColor } from './utils.js';
+
+const DEBUG = true;
+
 const DEFAULTS = {
   resizable: true,
   fitContainer: false,
+  minPaneSize: 20,
+  maxPaneSize: Infinity,
 };
 
-export function debug(parentEl) {
-  const debugEl = document.createElement('pre');
-  debugEl.style.fontSize = '9px';
-
-  const debugHtml = `
-top: ${parentEl.style.top}
-left: ${parentEl.style.left}
-width: ${parentEl.style.width}
-height: ${parentEl.style.height}
-id: ${parentEl.getAttribute('sash-id')}
-position: ${parentEl.getAttribute('position')}
-`;
-
-  debugEl.innerHTML = debugHtml.trim();
-  return debugEl;
-}
-
-export class Layout {
+export class Frame {
   muntinSize = 5;
   isResizeStarted = false;
   lastX = 0;
@@ -32,10 +21,17 @@ export class Layout {
   constructor(
     containerEl,
     rootSash,
-    { resizable = DEFAULTS.resizable, fitContainer = DEFAULTS.fitContainer } = DEFAULTS
+    {
+      resizable = DEFAULTS.resizable,
+      fitContainer = DEFAULTS.fitContainer,
+      minPaneSize = DEFAULTS.minPaneSize,
+      maxPaneSize = DEFAULTS.maxPaneSize,
+    } = DEFAULTS
   ) {
     this.containerEl = containerEl;
     this.rootSash = rootSash;
+    this.minPaneSize = minPaneSize;
+    this.maxPaneSize = maxPaneSize;
 
     resizable && this.enableResize();
     fitContainer && this.enableFitContainer();
@@ -98,24 +94,44 @@ export class Layout {
 
       if (isVerticalMuntin && leftChild && rightChild) {
         const distX = event.pageX - this.lastX;
-        leftChild.width += distX;
-        rightChild.width -= distX;
-        rightChild.left += distX;
 
-        this.update();
+        const newLeftChildWidth = leftChild.width + distX;
+        const newRightChildWidth = rightChild.width - distX;
+
+        if (
+          (newLeftChildWidth > this.minPaneSize || newLeftChildWidth === this.minPaneSize) &&
+          (newRightChildWidth > this.minPaneSize || newRightChildWidth === this.minPaneSize) &&
+          (newLeftChildWidth < this.maxPaneSize || newLeftChildWidth === this.maxPaneSize) &&
+          (newRightChildWidth < this.maxPaneSize || newRightChildWidth === this.maxPaneSize)
+        ) {
+          leftChild.width = newLeftChildWidth;
+          rightChild.width = newRightChildWidth;
+          rightChild.left = rightChild.left + distX;
+
+          this.update();
+          this.lastX = event.pageX;
+        }
       }
       else if (isHorizontalMuntin && topChild && bottomChild) {
         const distY = event.pageY - this.lastY;
 
-        topChild.height += distY;
-        bottomChild.height -= distY;
-        bottomChild.top += distY;
+        const newTopChildHeight = topChild.height + distY;
+        const newBottomChildHeight = bottomChild.height - distY;
 
-        this.update();
+        if (
+          (newTopChildHeight > this.minPaneSize || newTopChildHeight === this.minPaneSize) &&
+          (newBottomChildHeight > this.minPaneSize || newBottomChildHeight === this.minPaneSize) &&
+          (newTopChildHeight < this.maxPaneSize || newTopChildHeight === this.maxPaneSize) &&
+          (newBottomChildHeight < this.maxPaneSize || newBottomChildHeight === this.maxPaneSize)
+        ) {
+          topChild.height += distY;
+          bottomChild.height -= distY;
+          bottomChild.top += distY;
+
+          this.update();
+          this.lastY = event.pageY;
+        }
       }
-
-      this.lastX = event.pageX;
-      this.lastY = event.pageY;
     });
 
     document.body.addEventListener('mouseup', () => {
@@ -178,6 +194,11 @@ export class Layout {
     paneEl.setAttribute('sash-id', sash.id);
     paneEl.setAttribute('position', sash.position.description);
 
+    if (DEBUG) {
+      paneEl.style.backgroundColor = genColor();
+      paneEl.appendChild(debug(paneEl));
+    }
+
     return paneEl;
   }
 
@@ -187,6 +208,12 @@ export class Layout {
     paneEl.style.left = `${sash.left}px`;
     paneEl.style.width = `${sash.width}px`;
     paneEl.style.height = `${sash.height}px`;
+
+    if (DEBUG) {
+      const paneEl = sash.element;
+      paneEl.innerHTML = '';
+      paneEl.appendChild(debug(paneEl));
+    }
   }
 
   updateWindow(sash) {
@@ -233,4 +260,21 @@ export class Layout {
       }
     });
   }
+}
+
+export function debug(parentEl) {
+  const debugEl = document.createElement('pre');
+  debugEl.style.fontSize = '9px';
+
+  const debugHtml = `
+top: ${parentEl.style.top}
+left: ${parentEl.style.left}
+width: ${parentEl.style.width}
+height: ${parentEl.style.height}
+id: ${parentEl.getAttribute('sash-id')}
+position: ${parentEl.getAttribute('position')}
+`;
+
+  debugEl.innerHTML = debugHtml.trim();
+  return debugEl;
 }

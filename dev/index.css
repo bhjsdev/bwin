@@ -14,13 +14,13 @@ body {
   overflow-y: auto;
 
   li {
-    margin: 5px;
+    margin: 2px;
     background-color: white;
   }
 
   a {
-    padding: 8px 16px;
-    font-size: 18px;
+    padding: 4px 8px;
+    font-size: 16px;
     display: block;
     color: black;
     text-decoration: none;

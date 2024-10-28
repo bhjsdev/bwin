@@ -1,6 +1,6 @@
 import { Sash, Position, BinaryWindow } from '../src';
 
-const sashTree1 = new Sash({
+const rootSash = new Sash({
   width: 200,
   height: 200,
   position: Position.Root,
@@ -54,9 +54,7 @@ const pane4 = new Sash({
 });
 
 sash2.children.push(pane3, pane4);
-sashTree1.children.push(sash1, sash2);
+rootSash.children.push(sash1, sash2);
 
-const layout = new BinaryWindow(document.querySelector('#layout-only'), sashTree1);
+const layout = new BinaryWindow(document.querySelector('#container'), rootSash);
 layout.create();
-
-window.sashTree1 = sashTree1;
