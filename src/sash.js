@@ -1,12 +1,12 @@
 import { genId } from './utils';
 
 export const Position = {
-  Top: Symbol('top'),
-  Right: Symbol('right'),
-  Bottom: Symbol('bottom'),
-  Left: Symbol('left'),
-  Root: Symbol('root'),
-  Unknown: Symbol('unknown'),
+  Top: 'top',
+  Right: 'right',
+  Bottom: 'bottom',
+  Left: 'left',
+  Root: 'root',
+  Unknown: 'unknown',
 };
 
 const DEFAULTS = {
@@ -15,6 +15,7 @@ const DEFAULTS = {
   width: 33,
   height: 33,
   position: Position.Unknown,
+  element: null,
 };
 
 export class Sash {
@@ -24,6 +25,7 @@ export class Sash {
     width = DEFAULTS.width,
     height = DEFAULTS.height,
     position = DEFAULTS.position,
+    element = DEFAULTS.element,
     id,
   } = DEFAULTS) {
     // Relative position to its parent
@@ -33,6 +35,7 @@ export class Sash {
     this._height = height;
 
     this.position = position;
+    this.element = element;
     this.id = id ?? genId();
     this.children = [];
   }
@@ -111,6 +114,25 @@ export class Sash {
     }
 
     return null;
+  }
+
+  // Get all ids of self and children
+  getAllIds() {
+    const ids = [this.id];
+
+    for (const child of this.children) {
+      ids.push(...child.getAllIds());
+    }
+
+    return ids;
+  }
+
+  addChild(sash) {
+    if (this.children.length >= 2) {
+      throw new Error('Cannot add more than two children');
+    }
+
+    this.children.push(sash);
   }
 
   get top() {

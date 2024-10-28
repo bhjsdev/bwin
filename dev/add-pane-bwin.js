@@ -1,4 +1,4 @@
-import { Sash, Position, Frame } from '../src';
+import { Sash, Position, BinaryWindow } from '../src';
 
 const rootSash = new Sash({
   width: 200,
@@ -56,5 +56,11 @@ const pane4 = new Sash({
 sash2.children.push(pane3, pane4);
 rootSash.children.push(sash1, sash2);
 
-const frame = new Frame(document.querySelector('#container'), rootSash);
-frame.create();
+const bwin = new BinaryWindow(document.querySelector('#container'), rootSash, { debug: false });
+bwin.create();
+
+document.querySelector('#add-pane').addEventListener('click', () => {
+  const parentId = document.querySelector('#sash-id').value.trim();
+  const position = document.querySelector('input[name="sash-position"]:checked').value;
+  bwin.addPane(parentId, position);
+});

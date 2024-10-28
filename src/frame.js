@@ -1,6 +1,5 @@
-import { genColor } from './utils.js';
-
-const DEBUG = true;
+import { genColor, genId, moveChildNodes } from './utils.js';
+import { Sash, Position } from './sash.js';
 
 const DEFAULTS = {
   resizable: true,
@@ -26,6 +25,7 @@ export class Frame {
       fitContainer = DEFAULTS.fitContainer,
       minPaneSize = DEFAULTS.minPaneSize,
       maxPaneSize = DEFAULTS.maxPaneSize,
+      debug = true,
     } = DEFAULTS
   ) {
     this.containerEl = containerEl;
@@ -35,20 +35,22 @@ export class Frame {
 
     resizable && this.enableResize();
     fitContainer && this.enableFitContainer();
+
+    this.debug = debug;
   }
 
   applyResizeStyles() {
     if (this.activeMuntin.element.hasAttribute('vertical')) {
-      document.body.classList.add('body--bw-resize-col');
+      document.body.classList.add('body--bw-resize-x');
     }
     else if (this.activeMuntin.element.hasAttribute('horizontal')) {
-      document.body.classList.add('body--bw-resize-row');
+      document.body.classList.add('body--bw-resize-y');
     }
   }
 
   revertResizeStyles() {
-    document.body.classList.remove('body--bw-resize-row');
-    document.body.classList.remove('body--bw-resize-col');
+    document.body.classList.remove('body--bw-resize-x');
+    document.body.classList.remove('body--bw-resize-y');
   }
 
   enableFitContainer() {
@@ -185,16 +187,22 @@ export class Frame {
     }
   }
 
-  createPane(sash) {
+  createPane(sash, fromPaneEl) {
     const paneEl = document.createElement('bw-pane');
     paneEl.style.top = `${sash.top}px`;
     paneEl.style.left = `${sash.left}px`;
     paneEl.style.width = `${sash.width}px`;
     paneEl.style.height = `${sash.height}px`;
-    paneEl.setAttribute('sash-id', sash.id);
-    paneEl.setAttribute('position', sash.position.description);
 
-    if (DEBUG) {
+    paneEl.setAttribute('sash-id', sash.id);
+    paneEl.setAttribute('position', sash.position);
+
+    // Create the pane with the content of fromPaneEl
+    if (fromPaneEl) {
+      moveChildNodes(paneEl, fromPaneEl);
+    }
+
+    if (this.debug) {
       paneEl.style.backgroundColor = genColor();
       paneEl.appendChild(debug(paneEl));
     }
@@ -209,11 +217,50 @@ export class Frame {
     paneEl.style.width = `${sash.width}px`;
     paneEl.style.height = `${sash.height}px`;
 
-    if (DEBUG) {
+    if (this.debug) {
       const paneEl = sash.element;
       paneEl.innerHTML = '';
       paneEl.appendChild(debug(paneEl));
     }
+  }
+
+  addLeftPane(parentSash) {
+    const newLeftSash = new Sash({
+      top: parentSash.top,
+      left: parentSash.left,
+      width: parentSash.width / 2,
+      height: parentSash.height,
+      position: Position.Left,
+    });
+
+    const newRightSash = new Sash({
+      top: parentSash.top,
+      left: parentSash.left + newLeftSash.width,
+      width: parentSash.width / 2,
+      height: parentSash.height,
+      position: Position.Right,
+      // Store parent sash's element and use its content for a new pane
+      element: parentSash.element,
+    });
+
+    parentSash.addChild(newLeftSash);
+    parentSash.addChild(newRightSash);
+  }
+
+  addPane(parentId, position) {
+    const parentSash = this.rootSash.getById(parentId);
+
+    if (!parentSash) throw new Error('Parent pane not found');
+    if (!position) throw new Error('Position is required');
+
+    if (position === Position.Left) {
+      this.addLeftPane(parentSash);
+    }
+
+    // Generate new ID for parent sash to create a new muntin
+    parentSash.id = genId();
+
+    this.update();
   }
 
   updateWindow(sash) {
@@ -251,12 +298,39 @@ export class Frame {
     this.windowEl.style.width = `${this.rootSash.width}px`;
     this.windowEl.style.height = `${this.rootSash.height}px`;
 
+    const allSashIdsFromRoot = this.rootSash.getAllIds();
+
+    let allSashIdsInWindow = [];
+    this.windowEl.querySelectorAll('[sash-id]').forEach((el) => {
+      const sashId = el.getAttribute('sash-id');
+      allSashIdsInWindow.push(sashId);
+
+      if (!allSashIdsFromRoot.includes(sashId)) {
+        el.remove();
+      }
+    });
+
     this.rootSash.walk((sash) => {
       if (sash.children.length > 0) {
-        this.updateMuntin(sash);
+        if (!allSashIdsInWindow.includes(sash.id)) {
+          const muntinEl = this.createMuntin(sash);
+          this.windowEl.appendChild(muntinEl);
+          sash.element = muntinEl;
+        }
+        else {
+          this.updateMuntin(sash);
+        }
       }
       else {
-        this.updatePane(sash);
+        if (!allSashIdsInWindow.includes(sash.id)) {
+          const paneEl = sash.element ? this.createPane(sash, sash.element) : this.createPane(sash);
+
+          sash.element = paneEl;
+          this.windowEl.appendChild(sash.element);
+        }
+        else {
+          this.updatePane(sash);
+        }
       }
     });
   }
@@ -267,11 +341,11 @@ export function debug(parentEl) {
   debugEl.style.fontSize = '9px';
 
   const debugHtml = `
+id: ${parentEl.getAttribute('sash-id')}
 top: ${parentEl.style.top}
 left: ${parentEl.style.left}
 width: ${parentEl.style.width}
 height: ${parentEl.style.height}
-id: ${parentEl.getAttribute('sash-id')}
 position: ${parentEl.getAttribute('position')}
 `;
 

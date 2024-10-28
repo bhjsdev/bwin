@@ -1,35 +1,38 @@
 bw-window {
   position: relative;
   display: block;
+  box-sizing: border-box;
 }
 
 bw-pane {
   position: absolute;
   overflow: auto;
+  box-sizing: border-box;
 }
 
 bw-muntin {
+  box-sizing: border-box;
   position: absolute;
 
   &:hover {
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: hsl(0, 0%, 0%, 0.2);
   }
 
   &[horizontal] {
-    cursor: row-resize;
+    cursor: ns-resize;
   }
 
   &[vertical] {
-    cursor: col-resize;
+    cursor: ew-resize;
   }
 }
 
-.body--bw-resize-row {
+.body--bw-resize-x {
   user-select: none;
-  cursor: row-resize;
+  cursor: ew-resize;
 }
 
-.body--bw-resize-col {
+.body--bw-resize-y {
   user-select: none;
-  cursor: col-resize;
+  cursor: ns-resize;
 }

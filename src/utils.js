@@ -25,7 +25,7 @@ export function genId(alphabetLength = 2, digitLength = 3) {
     throw new Error('Parameters must be non-negative numbers');
   }
 
-  const alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   const digits = '0123456789';
 
   let result = '';
@@ -42,4 +42,10 @@ export function genId(alphabetLength = 2, digitLength = 3) {
   }
 
   return result;
+}
+
+export function moveChildNodes(toNode, fromNode) {
+  while (fromNode.firstChild) {
+    toNode.appendChild(fromNode.firstChild);
+  }
 }

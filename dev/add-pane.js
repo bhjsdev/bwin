@@ -58,3 +58,9 @@ rootSash.children.push(sash1, sash2);
 
 const frame = new Frame(document.querySelector('#container'), rootSash);
 frame.create();
+
+document.querySelector('#add-pane').addEventListener('click', () => {
+  const parentId = document.querySelector('#sash-id').value.trim();
+  const position = document.querySelector('#sash-position').value.trim();
+  frame.addPane(parentId, position);
+});

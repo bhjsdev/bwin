@@ -1,6 +1,14 @@
 import './index.css';
 
-const files = ['basic', 'resize-x', 'resize-y', 'fit-container', 'min-max-pane-size'].sort();
+const files = [
+  'basic',
+  'resize-x',
+  'resize-y',
+  'fit-container',
+  'min-max-pane-size',
+  'add-pane',
+  'add-pane-bwin',
+].sort();
 
 const navEl = document.createElement('nav');
 
