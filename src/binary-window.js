@@ -8,13 +8,8 @@ export class BinaryWindow extends Frame {
     const paneEl = super.createPane(sash, fromPaneEl);
 
     if (!fromPaneEl) {
-      const headerEl = this.createPaneHeader();
-      paneEl.appendChild(headerEl);
-
-      const contentEl = this.createPaneContent();
-      paneEl.appendChild(contentEl);
-
-      contentEl.innerHTML = `ID: ${paneEl.getAttribute('sash-id')}`;
+      const glassEl = this.createGlass(`ID: ${paneEl.getAttribute('sash-id')}`);
+      paneEl.append(glassEl);
     }
 
     paneEl.style.border = '1px solid black';
@@ -22,11 +17,13 @@ export class BinaryWindow extends Frame {
     return paneEl;
   }
 
-  createPaneHeader() {
-    return document.createElement('pane-header');
-  }
+  createGlass(content) {
+    const glassEl = document.createElement('bw-glass');
+    const headerEl = document.createElement('bw-glass-header');
+    const contentEl = document.createElement('bw-glass-content');
 
-  createPaneContent() {
-    return document.createElement('pane-content');
+    contentEl.innerHTML = content || 'Glass content';
+    glassEl.append(headerEl, contentEl);
+    return glassEl;
   }
 }

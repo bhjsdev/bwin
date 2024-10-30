@@ -1,5 +1,6 @@
 import { genColor, genId, moveChildNodes } from './utils.js';
-import { Sash, Position } from './sash.js';
+import { Position } from './sash.js';
+import { debug, addLeftPane, addRightPane, addTopPane, addBottomPane } from './frame.helpers.js';
 
 const DEFAULTS = {
   resizable: true,
@@ -59,6 +60,7 @@ export class Frame {
         if (entry.target === this.containerEl) {
           this.rootSash.width = entry.contentRect.width;
           this.rootSash.height = entry.contentRect.height;
+
           this.update();
         }
       }
@@ -204,7 +206,7 @@ export class Frame {
 
     if (this.debug) {
       paneEl.style.backgroundColor = genColor();
-      paneEl.appendChild(debug(paneEl));
+      paneEl.append(debug(paneEl));
     }
 
     return paneEl;
@@ -220,31 +222,8 @@ export class Frame {
     if (this.debug) {
       const paneEl = sash.element;
       paneEl.innerHTML = '';
-      paneEl.appendChild(debug(paneEl));
+      paneEl.append(debug(paneEl));
     }
-  }
-
-  addLeftPane(parentSash) {
-    const newLeftSash = new Sash({
-      top: parentSash.top,
-      left: parentSash.left,
-      width: parentSash.width / 2,
-      height: parentSash.height,
-      position: Position.Left,
-    });
-
-    const newRightSash = new Sash({
-      top: parentSash.top,
-      left: parentSash.left + newLeftSash.width,
-      width: parentSash.width / 2,
-      height: parentSash.height,
-      position: Position.Right,
-      // Store parent sash's element and use its content for a new pane
-      element: parentSash.element,
-    });
-
-    parentSash.addChild(newLeftSash);
-    parentSash.addChild(newRightSash);
   }
 
   addPane(parentId, position) {
@@ -254,7 +233,16 @@ export class Frame {
     if (!position) throw new Error('Position is required');
 
     if (position === Position.Left) {
-      this.addLeftPane(parentSash);
+      addLeftPane(parentSash);
+    }
+    else if (position === Position.Right) {
+      addRightPane(parentSash);
+    }
+    else if (position === Position.Top) {
+      addTopPane(parentSash);
+    }
+    else if (position === Position.Bottom) {
+      addBottomPane(parentSash);
     }
 
     // Generate new ID for parent sash to create a new muntin
@@ -278,19 +266,20 @@ export class Frame {
     this.rootSash.walk((sash) => {
       let elem = null;
 
+      // Prepend the new pane, so muntins are always on top
       if (sash.children.length > 0) {
         elem = this.createMuntin(sash);
+        windowEl.append(elem);
       }
       else {
         elem = this.createPane(sash);
+        windowEl.prepend(elem);
       }
-
-      windowEl.appendChild(elem);
 
       sash.element = elem;
     });
 
-    this.containerEl.appendChild(windowEl);
+    this.containerEl.append(windowEl);
     this.windowEl = windowEl;
   }
 
@@ -314,7 +303,7 @@ export class Frame {
       if (sash.children.length > 0) {
         if (!allSashIdsInWindow.includes(sash.id)) {
           const muntinEl = this.createMuntin(sash);
-          this.windowEl.appendChild(muntinEl);
+          this.windowEl.append(muntinEl);
           sash.element = muntinEl;
         }
         else {
@@ -326,7 +315,7 @@ export class Frame {
           const paneEl = sash.element ? this.createPane(sash, sash.element) : this.createPane(sash);
 
           sash.element = paneEl;
-          this.windowEl.appendChild(sash.element);
+          this.windowEl.prepend(sash.element);
         }
         else {
           this.updatePane(sash);
@@ -334,21 +323,4 @@ export class Frame {
       }
     });
   }
-}
-
-export function debug(parentEl) {
-  const debugEl = document.createElement('pre');
-  debugEl.style.fontSize = '9px';
-
-  const debugHtml = `
-id: ${parentEl.getAttribute('sash-id')}
-top: ${parentEl.style.top}
-left: ${parentEl.style.left}
-width: ${parentEl.style.width}
-height: ${parentEl.style.height}
-position: ${parentEl.getAttribute('position')}
-`;
-
-  debugEl.innerHTML = debugHtml.trim();
-  return debugEl;
 }

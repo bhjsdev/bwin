@@ -46,6 +46,6 @@ export function genId(alphabetLength = 2, digitLength = 3) {
 
 export function moveChildNodes(toNode, fromNode) {
   while (fromNode.firstChild) {
-    toNode.appendChild(fromNode.firstChild);
+    toNode.append(fromNode.firstChild);
   }
 }

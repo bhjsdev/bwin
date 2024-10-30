@@ -11,18 +11,25 @@
       /* outline: 1px solid red; */
     }
 
+    #outer-container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
     #container {
-      height: 80vh;
+      flex-grow: 1;
       background-color: #f8f8f8;
-      border: 1px solid red;
     }
   </style>
   <body>
     <main>
-      <h2>Fit container</h2>
-      <div>Before</div>
-      <div id="container"></div>
-      <div>After</div>
+      <div id="outer-container">
+        <h2>Fit container</h2>
+        <div>Before</div>
+        <div id="container"></div>
+        <div>After</div>
+      </div>
     </main>
   </body>
 </html>

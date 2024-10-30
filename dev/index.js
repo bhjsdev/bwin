@@ -6,7 +6,7 @@ const files = [
   'resize-y',
   'fit-container',
   'min-max-pane-size',
-  'add-pane',
+  'add-pane-frame',
   'add-pane-bwin',
 ].sort();
 

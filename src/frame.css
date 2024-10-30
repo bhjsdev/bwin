@@ -1,5 +1,5 @@
 bw-window {
-  position: relative;
+  position: absolute;
   display: block;
   box-sizing: border-box;
 }
