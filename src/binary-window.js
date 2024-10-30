@@ -8,7 +8,7 @@ export class BinaryWindow extends Frame {
     const paneEl = super.createPane(sash, fromPaneEl);
 
     if (!fromPaneEl) {
-      const glassEl = this.createGlass(`ID: ${paneEl.getAttribute('sash-id')}`);
+      const glassEl = this.createGlass(`${paneEl.getAttribute('sash-id')}`);
       paneEl.append(glassEl);
     }
 

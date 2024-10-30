@@ -4,18 +4,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script type="module" src="/index.js"></script>
-    <script type="module" src="/add-pane-bwin.js"></script>
+    <script type="module" src="/add-remove-panes-bwin.js"></script>
   </head>
   <body>
     <main>
       <h2>Add pane - BinaryWindow</h2>
       <input id="sash-id" type="text" placeholder="Sash ID" />
+      <button id="add-pane">Add pane</button>
+      <button id="remove-pane">Remove pane</button>
       <br />
       <label><input type="radio" name="sash-position" value="left" checked />left</label>
       <label><input type="radio" name="sash-position" value="right" />right</label>
       <label><input type="radio" name="sash-position" value="top" />top</label>
       <label><input type="radio" name="sash-position" value="bottom" />bottom</label>
-      <button id="add-pane">Add pane</button>
       <section id="container"></section>
     </main>
   </body>

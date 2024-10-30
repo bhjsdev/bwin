@@ -1,6 +1,5 @@
 import { genColor, genId, moveChildNodes } from './utils.js';
-import { Position } from './sash.js';
-import { debug, addLeftPane, addRightPane, addTopPane, addBottomPane } from './frame.helpers.js';
+import { debug, addPaneByPosition } from './frame.helpers.js';
 
 const DEFAULTS = {
   resizable: true,
@@ -226,26 +225,27 @@ export class Frame {
     }
   }
 
-  addPane(parentId, position) {
-    const parentSash = this.rootSash.getById(parentId);
+  addPane(parentSashId, position) {
+    const parentSash = this.rootSash.getById(parentSashId);
 
-    if (!parentSash) throw new Error('Parent pane not found');
-    if (!position) throw new Error('Position is required');
+    if (!parentSash) throw new Error('[bwin] Parent pane not found');
+    if (!position) throw new Error('[bwin] Position is required');
 
-    if (position === Position.Left) {
-      addLeftPane(parentSash);
-    }
-    else if (position === Position.Right) {
-      addRightPane(parentSash);
-    }
-    else if (position === Position.Top) {
-      addTopPane(parentSash);
-    }
-    else if (position === Position.Bottom) {
-      addBottomPane(parentSash);
-    }
-
+    addPaneByPosition(parentSash, position);
     // Generate new ID for parent sash to create a new muntin
+    parentSash.id = genId();
+
+    this.update();
+  }
+
+  removePane(sashId) {
+    const parentSash = this.rootSash.getDescendantParentById(sashId);
+    const siblingSash = parentSash.getChildSiblingById(sashId);
+
+    parentSash.element = siblingSash.element;
+    // Remove all children, so it becomes a pane
+    parentSash.children = [];
+    // The muntin of old ID will be removed in `this.update`
     parentSash.id = genId();
 
     this.update();

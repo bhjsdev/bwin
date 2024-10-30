@@ -19,7 +19,7 @@ export function genDigits(length = 5) {
   return num.toString().padStart(length, '0');
 }
 
-// Like a flight number e.g. AA-123
+// Like a flight number e.g. AB-123
 export function genId(alphabetLength = 2, digitLength = 3) {
   if (alphabetLength < 0 || digitLength < 0) {
     throw new Error('Parameters must be non-negative numbers');

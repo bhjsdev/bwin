@@ -100,7 +100,7 @@ export class Sash {
     return [topChild, rightChild, bottomChild, leftChild];
   }
 
-  // Get self or child by id
+  // Get self or descendant by id
   getById(id) {
     if (this.id === id) {
       return this;
@@ -116,7 +116,7 @@ export class Sash {
     return null;
   }
 
-  // Get all ids of self and children
+  // Get all ids of self and descendants
   getAllIds() {
     const ids = [this.id];
 
@@ -129,10 +129,29 @@ export class Sash {
 
   addChild(sash) {
     if (this.children.length >= 2) {
-      throw new Error('Cannot add more than two children');
+      throw new Error('[bwin] Maximum 2 children allowed');
     }
 
     this.children.push(sash);
+  }
+
+  getDescendantParentById(descendantId) {
+    for (const child of this.children) {
+      if (child.id === descendantId) {
+        return this;
+      }
+
+      const found = child.getDescendantParentById(descendantId);
+      if (found) {
+        return found;
+      }
+    }
+
+    return null;
+  }
+
+  getChildSiblingById(childId) {
+    return this.children.find((child) => child.id !== childId);
   }
 
   get top() {

@@ -7,7 +7,7 @@ const files = [
   'fit-container',
   'min-max-pane-size',
   'add-pane-frame',
-  'add-pane-bwin',
+  'add-remove-panes-bwin',
 ].sort();
 
 const navEl = document.createElement('nav');

@@ -89,6 +89,21 @@ export function addBottomPane(parentSash) {
   parentSash.addChild(newBottomSash);
 }
 
+export function addPaneByPosition(parentSash, position) {
+  if (position === Position.Left) {
+    addLeftPane(parentSash);
+  }
+  else if (position === Position.Right) {
+    addRightPane(parentSash);
+  }
+  else if (position === Position.Top) {
+    addTopPane(parentSash);
+  }
+  else if (position === Position.Bottom) {
+    addBottomPane(parentSash);
+  }
+}
+
 export function debug(parentEl) {
   const debugEl = document.createElement('pre');
   debugEl.style.fontSize = '9px';

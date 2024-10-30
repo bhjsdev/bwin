@@ -64,3 +64,8 @@ document.querySelector('#add-pane').addEventListener('click', () => {
   const position = document.querySelector('input[name="sash-position"]:checked').value;
   bwin.addPane(parentId, position);
 });
+
+document.querySelector('#remove-pane').addEventListener('click', () => {
+  const sashId = document.querySelector('#sash-id').value.trim();
+  bwin.removePane(sashId);
+});
