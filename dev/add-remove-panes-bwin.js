@@ -1,6 +1,6 @@
-import { Sash, Position, BinaryWindow } from '../src';
+import { Sash, Position, BinaryWindow, SashConfig } from '../src';
 
-const rootSash = new Sash({
+const rootSash = new SashConfig({
   width: 200,
   height: 200,
   position: Position.Root,
@@ -56,7 +56,10 @@ const pane4 = new Sash({
 sash2.children.push(pane3, pane4);
 rootSash.children.push(sash1, sash2);
 
-const bwin = new BinaryWindow(document.querySelector('#container'), rootSash, { debug: false });
+rootSash.debug = false;
+
+const bwin = new BinaryWindow(document.querySelector('#container'), rootSash);
+bwin.debug = false;
 bwin.create();
 
 document.querySelector('#add-pane').addEventListener('click', () => {

@@ -1,11 +1,10 @@
-import { Sash, Position, Frame } from '../src';
+import { Sash, Position, Frame, SashConfig } from '../src';
 
-const rootSash = new Sash({
+const rootSash = new SashConfig({
   top: 0,
   left: 0,
   width: 400,
   height: 300,
-  position: Position.Root,
 });
 
 const sash_1 = new Sash({
@@ -43,5 +42,7 @@ const sash_2 = new Sash({
 
 rootSash.children.push(sash_1, sash_2);
 
-const frame = new Frame(document.querySelector('#container'), rootSash, { minPaneSize: 50 });
+rootSash.minPaneSize = 100;
+
+const frame = new Frame(document.querySelector('#container'), rootSash);
 frame.create();

@@ -1,6 +1,6 @@
-import { Sash, Position, BinaryWindow } from '../src';
+import { Sash, Position, Frame, SashConfig } from '../src';
 
-const rootSash = new Sash({ width: 200, height: 400, position: Position.Root });
+const rootSash = new SashConfig({ width: 200, height: 400 });
 
 const sash_1 = new Sash({
   left: 0,
@@ -79,7 +79,7 @@ sash_1.children.push(sash_1_1, sash_1_2);
 sash_1_2.children.push(sash_1_2_1, sash_1_2_2);
 sash_2.children.push(sash_2_1, sash_2_2);
 
-const layout = new BinaryWindow(document.querySelector('#resize-y'), rootSash);
+const layout = new Frame(document.querySelector('#resize-y'), rootSash);
 layout.create();
 
 document.querySelector('#up').addEventListener('click', () => {

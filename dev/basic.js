@@ -1,6 +1,6 @@
-import { Sash, Position, Frame } from '../src';
+import { Sash, Position, Frame, SashConfig } from '../src';
 
-const rootSash = new Sash({
+const rootSash = new SashConfig({
   width: 200,
   height: 200,
   position: Position.Root,

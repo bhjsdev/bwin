@@ -1,11 +1,9 @@
-import { Sash, Position, BinaryWindow } from '../src';
+import { Sash, Position, BinaryWindow, SashConfig } from '../src';
 
-const rootSash = new Sash({
-  top: 0,
-  left: 0,
+const rootSash = new SashConfig({
   width: 400,
   height: 300,
-  position: Position.Root,
+  fitContainer: true,
 });
 
 const sash_1 = new Sash({
@@ -43,7 +41,7 @@ const sash_2 = new Sash({
 
 rootSash.children.push(sash_1, sash_2);
 
-const layout = new BinaryWindow(document.querySelector('#container'), rootSash, {
-  fitContainer: true,
-});
+rootSash.fitContainer = true;
+
+const layout = new BinaryWindow(document.querySelector('#container'), rootSash);
 layout.create();

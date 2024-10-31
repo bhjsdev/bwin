@@ -6,16 +6,13 @@ export const Position = {
   Bottom: 'bottom',
   Left: 'left',
   Root: 'root',
-  Unknown: 'unknown',
 };
 
-const DEFAULTS = {
+export const DEFAULTS = {
   top: 0,
   left: 0,
   width: 33,
   height: 33,
-  position: Position.Unknown,
-  element: null,
 };
 
 export class Sash {
@@ -24,8 +21,8 @@ export class Sash {
     left = DEFAULTS.left,
     width = DEFAULTS.width,
     height = DEFAULTS.height,
-    position = DEFAULTS.position,
-    element = DEFAULTS.element,
+    domElement = null,
+    position,
     id,
   } = DEFAULTS) {
     // Relative position to its parent
@@ -34,9 +31,14 @@ export class Sash {
     this._width = width;
     this._height = height;
 
+    if (!position) {
+      throw new Error('[bwin] Sash position is required');
+    }
+
     this.position = position;
-    this.element = element;
+    this.domElement = domElement;
     this.id = id ?? genId();
+    this.dom;
     this.children = [];
   }
 

@@ -1,49 +1,31 @@
 import { genColor, genId, moveChildNodes } from './utils.js';
 import { debug, addPaneByPosition } from './frame.helpers.js';
 
-const DEFAULTS = {
-  resizable: true,
-  fitContainer: false,
-  minPaneSize: 20,
-  maxPaneSize: Infinity,
-};
-
 export class Frame {
   muntinSize = 5;
   isResizeStarted = false;
   lastX = 0;
   lastY = 0;
-  bodyUserSelect = '';
   activeMuntin = null;
   windowEl = null;
 
-  constructor(
-    containerEl,
-    rootSash,
-    {
-      resizable = DEFAULTS.resizable,
-      fitContainer = DEFAULTS.fitContainer,
-      minPaneSize = DEFAULTS.minPaneSize,
-      maxPaneSize = DEFAULTS.maxPaneSize,
-      debug = true,
-    } = DEFAULTS
-  ) {
+  constructor(containerEl, rootSash) {
     this.containerEl = containerEl;
     this.rootSash = rootSash;
-    this.minPaneSize = minPaneSize;
-    this.maxPaneSize = maxPaneSize;
+    this.minPaneSize = rootSash.minPaneSize;
+    this.maxPaneSize = rootSash.maxPaneSize;
 
-    resizable && this.enableResize();
-    fitContainer && this.enableFitContainer();
+    rootSash.resizable && this.enableResize();
+    rootSash.fitContainer && this.enableFitContainer();
 
-    this.debug = debug;
+    this.debug = true;
   }
 
   applyResizeStyles() {
-    if (this.activeMuntin.element.hasAttribute('vertical')) {
+    if (this.activeMuntin.domElement.hasAttribute('vertical')) {
       document.body.classList.add('body--bw-resize-x');
     }
-    else if (this.activeMuntin.element.hasAttribute('horizontal')) {
+    else if (this.activeMuntin.domElement.hasAttribute('horizontal')) {
       document.body.classList.add('body--bw-resize-y');
     }
   }
@@ -172,7 +154,7 @@ export class Frame {
   }
 
   updateMuntin(sash) {
-    const muntinEl = sash.element;
+    const muntinEl = sash.domElement;
     const sashLeftChild = sash.getLeftChild();
     const sashTopChild = sash.getTopChild();
 
@@ -212,14 +194,14 @@ export class Frame {
   }
 
   updatePane(sash) {
-    const paneEl = sash.element;
+    const paneEl = sash.domElement;
     paneEl.style.top = `${sash.top}px`;
     paneEl.style.left = `${sash.left}px`;
     paneEl.style.width = `${sash.width}px`;
     paneEl.style.height = `${sash.height}px`;
 
     if (this.debug) {
-      const paneEl = sash.element;
+      const paneEl = sash.domElement;
       paneEl.innerHTML = '';
       paneEl.append(debug(paneEl));
     }
@@ -242,7 +224,7 @@ export class Frame {
     const parentSash = this.rootSash.getDescendantParentById(sashId);
     const siblingSash = parentSash.getChildSiblingById(sashId);
 
-    parentSash.element = siblingSash.element;
+    parentSash.domElement = siblingSash.domElement;
     // Remove all children, so it becomes a pane
     parentSash.children = [];
     // The muntin of old ID will be removed in `this.update`
@@ -252,7 +234,7 @@ export class Frame {
   }
 
   updateWindow(sash) {
-    const windowEl = sash.element;
+    const windowEl = sash.domElement;
     windowEl.style.width = `${sash.width}px`;
     windowEl.style.height = `${sash.height}px`;
   }
@@ -276,7 +258,7 @@ export class Frame {
         windowEl.prepend(elem);
       }
 
-      sash.element = elem;
+      sash.domElement = elem;
     });
 
     this.containerEl.append(windowEl);
@@ -304,7 +286,7 @@ export class Frame {
         if (!allSashIdsInWindow.includes(sash.id)) {
           const muntinEl = this.createMuntin(sash);
           this.windowEl.append(muntinEl);
-          sash.element = muntinEl;
+          sash.domElement = muntinEl;
         }
         else {
           this.updateMuntin(sash);
@@ -312,10 +294,12 @@ export class Frame {
       }
       else {
         if (!allSashIdsInWindow.includes(sash.id)) {
-          const paneEl = sash.element ? this.createPane(sash, sash.element) : this.createPane(sash);
+          const paneEl = sash.domElement
+            ? this.createPane(sash, sash.domElement)
+            : this.createPane(sash);
 
-          sash.element = paneEl;
-          this.windowEl.prepend(sash.element);
+          sash.domElement = paneEl;
+          this.windowEl.prepend(sash.domElement);
         }
         else {
           this.updatePane(sash);
