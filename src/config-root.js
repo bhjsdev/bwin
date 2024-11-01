@@ -1,8 +1,8 @@
 import { ConfigNode } from './config-node';
-import { Position, Sash } from './sash';
+import { Position } from './sash';
 
 const DEFAULTS = {
-  width: 555,
+  width: 333,
   height: 333,
 };
 
@@ -15,24 +15,25 @@ export const FEAT_DEFAULTS = {
 
 export class ConfigRoot extends ConfigNode {
   constructor(
-    { width, height, position = Position.Root, id, domElement = null } = {
+    {
+      width = DEFAULTS.width,
+      height = DEFAULTS.height,
+      resizable = FEAT_DEFAULTS.resizable,
+      fitContainer = FEAT_DEFAULTS.fitContainer,
+      minPaneSize = FEAT_DEFAULTS.minPaneSize,
+      maxPaneSize = FEAT_DEFAULTS.maxPaneSize,
+      children,
+      id,
+    } = {
       ...DEFAULTS,
       ...FEAT_DEFAULTS,
     }
   ) {
-    super({ size: '100%', position, domElement, id });
+    super({ id, size: '100%', position: Position.Root, parentRect: { width, height }, children });
 
-    this.width = width;
-    this.height = height;
-  }
-
-  makeSash() {
-    return new Sash({
-      width: this.width,
-      height: this.height,
-      position: this.position,
-      domElement: this.domElement,
-      id: this.id,
-    });
+    this.resizable = resizable;
+    this.fitContainer = fitContainer;
+    this.minPaneSize = minPaneSize;
+    this.maxPaneSize = maxPaneSize;
   }
 }

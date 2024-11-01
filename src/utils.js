@@ -1,4 +1,9 @@
-// Generate a random color in rgba format. e.g. rgba(255, 0, 0, 0.5)
+/**
+ * Generate a random color string in the format of "rgba(r, g, b, a)"
+ *
+ * @param {number} maxOpacity - The maximum opacity value (0 to 1)
+ * @returns {string}
+ */
 export function genColor(maxOpacity = 0.5) {
   const r = Math.floor(Math.random() * 256);
   const g = Math.floor(Math.random() * 256);
@@ -8,7 +13,12 @@ export function genColor(maxOpacity = 0.5) {
   return `rgba(${r}, ${g}, ${b}, ${opacity})`;
 }
 
-// Generate a string of random digits. e.g. 12345
+/**
+ * Generate a random string of digits
+ *
+ * @param {number} length - The length of the string
+ * @returns {string}
+ */
 export function genDigits(length = 5) {
   if (length <= 0 || !Number.isInteger(length)) {
     throw new Error('Parameter must be a positive integer');
@@ -19,7 +29,13 @@ export function genDigits(length = 5) {
   return num.toString().padStart(length, '0');
 }
 
-// Like a flight number e.g. AB-123
+/**
+ * Generate a random ID in the format of "AB-123"
+ *
+ * @param {number} alphabetLength - The length of the alphabet part
+ * @param {number} digitLength - The length of the digit part
+ * @returns {string}
+ */
 export function genId(alphabetLength = 2, digitLength = 3) {
   if (alphabetLength < 0 || digitLength < 0) {
     throw new Error('Parameters must be non-negative numbers');
@@ -44,8 +60,48 @@ export function genId(alphabetLength = 2, digitLength = 3) {
   return result;
 }
 
+/**
+ * Move all child nodes from one DOM element to another
+ *
+ * @param {HTMLElement} toNode - The destination node
+ * @param {HTMLElement} fromNode - The source node
+ */
 export function moveChildNodes(toNode, fromNode) {
   while (fromNode.firstChild) {
     toNode.append(fromNode.firstChild);
   }
+}
+
+/**
+ * Parse a size string into a number, e.g. "100px" -> 100, "50%" -> 0.5
+ *
+ * @param {string | number} size - The size string to parse
+ * @returns {number}
+ */
+export function parseSize(size) {
+  if (typeof size === 'number' && !isNaN(size)) {
+    return size;
+  }
+
+  if (typeof size === 'string') {
+    const trimmed = size.trim();
+
+    if (trimmed.endsWith('%')) {
+      const withoutPercent = trimmed.slice(0, -1);
+      if (!withoutPercent) return NaN;
+      const number = Number(withoutPercent);
+      return !isNaN(number) ? number / 100 : NaN;
+    }
+
+    if (trimmed.endsWith('px')) {
+      const withoutPx = trimmed.slice(0, -2);
+      if (!withoutPx) return NaN;
+      const number = Number(withoutPx);
+      return !isNaN(number) ? number : NaN;
+    }
+
+    return Number(trimmed);
+  }
+
+  return NaN;
 }

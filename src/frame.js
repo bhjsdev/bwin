@@ -1,5 +1,7 @@
 import { genColor, genId, moveChildNodes } from './utils.js';
 import { debug, addPaneByPosition } from './frame.helpers.js';
+import { SashConfig } from './sash-config.js';
+import { ConfigRoot } from './config-root.js';
 
 export class Frame {
   muntinSize = 5;
@@ -9,14 +11,25 @@ export class Frame {
   activeMuntin = null;
   windowEl = null;
 
-  constructor(containerEl, rootSash) {
+  constructor(containerEl, settings) {
     this.containerEl = containerEl;
-    this.rootSash = rootSash;
-    this.minPaneSize = rootSash.minPaneSize;
-    this.maxPaneSize = rootSash.maxPaneSize;
 
-    rootSash.resizable && this.enableResize();
-    rootSash.fitContainer && this.enableFitContainer();
+    let config = null;
+
+    if (settings instanceof SashConfig) {
+      config = settings;
+      this.rootSash = settings;
+    }
+    else {
+      config = new ConfigRoot(settings);
+      this.rootSash = config.buildSashTree();
+    }
+
+    this.minPaneSize = config.minPaneSize;
+    this.maxPaneSize = config.maxPaneSize;
+
+    config.resizable && this.enableResize();
+    config.fitContainer && this.enableFitContainer();
 
     this.debug = true;
   }

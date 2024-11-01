@@ -8,6 +8,7 @@ const files = [
   'min-max-pane-size',
   'add-pane-frame',
   'add-remove-panes-bwin',
+  'config',
 ].sort();
 
 const navEl = document.createElement('nav');
