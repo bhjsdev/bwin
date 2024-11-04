@@ -2,7 +2,7 @@
   "trailingComma": "es5",
   "tabWidth": 2,
   "singleQuote": true,
-  "quoteProps": "preserve",
+  "quoteProps": "consistent",
   "plugins": ["prettier-plugin-brace-style"],
   "braceStyle": "stroustrup",
   "printWidth": 100

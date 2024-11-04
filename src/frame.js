@@ -35,10 +35,10 @@ export class Frame {
   }
 
   applyResizeStyles() {
-    if (this.activeMuntin.domElement.hasAttribute('vertical')) {
+    if (this.activeMuntin.domNode.hasAttribute('vertical')) {
       document.body.classList.add('body--bw-resize-x');
     }
-    else if (this.activeMuntin.domElement.hasAttribute('horizontal')) {
+    else if (this.activeMuntin.domNode.hasAttribute('horizontal')) {
       document.body.classList.add('body--bw-resize-y');
     }
   }
@@ -167,7 +167,7 @@ export class Frame {
   }
 
   updateMuntin(sash) {
-    const muntinEl = sash.domElement;
+    const muntinEl = sash.domNode;
     const sashLeftChild = sash.getLeftChild();
     const sashTopChild = sash.getTopChild();
 
@@ -207,14 +207,14 @@ export class Frame {
   }
 
   updatePane(sash) {
-    const paneEl = sash.domElement;
+    const paneEl = sash.domNode;
     paneEl.style.top = `${sash.top}px`;
     paneEl.style.left = `${sash.left}px`;
     paneEl.style.width = `${sash.width}px`;
     paneEl.style.height = `${sash.height}px`;
 
     if (this.debug) {
-      const paneEl = sash.domElement;
+      const paneEl = sash.domNode;
       paneEl.innerHTML = '';
       paneEl.append(debug(paneEl));
     }
@@ -237,7 +237,7 @@ export class Frame {
     const parentSash = this.rootSash.getDescendantParentById(sashId);
     const siblingSash = parentSash.getChildSiblingById(sashId);
 
-    parentSash.domElement = siblingSash.domElement;
+    parentSash.domNode = siblingSash.domNode;
     // Remove all children, so it becomes a pane
     parentSash.children = [];
     // The muntin of old ID will be removed in `this.update`
@@ -247,7 +247,7 @@ export class Frame {
   }
 
   updateWindow(sash) {
-    const windowEl = sash.domElement;
+    const windowEl = sash.domNode;
     windowEl.style.width = `${sash.width}px`;
     windowEl.style.height = `${sash.height}px`;
   }
@@ -271,7 +271,7 @@ export class Frame {
         windowEl.prepend(elem);
       }
 
-      sash.domElement = elem;
+      sash.domNode = elem;
     });
 
     this.containerEl.append(windowEl);
@@ -299,7 +299,7 @@ export class Frame {
         if (!allSashIdsInWindow.includes(sash.id)) {
           const muntinEl = this.createMuntin(sash);
           this.windowEl.append(muntinEl);
-          sash.domElement = muntinEl;
+          sash.domNode = muntinEl;
         }
         else {
           this.updateMuntin(sash);
@@ -307,12 +307,10 @@ export class Frame {
       }
       else {
         if (!allSashIdsInWindow.includes(sash.id)) {
-          const paneEl = sash.domElement
-            ? this.createPane(sash, sash.domElement)
-            : this.createPane(sash);
+          const paneEl = sash.domNode ? this.createPane(sash, sash.domNode) : this.createPane(sash);
 
-          sash.domElement = paneEl;
-          this.windowEl.prepend(sash.domElement);
+          sash.domNode = paneEl;
+          this.windowEl.prepend(sash.domNode);
         }
         else {
           this.updatePane(sash);

@@ -1,10 +1,10 @@
-import { parseSize } from './utils';
-import { Position, Sash } from './sash';
+import { parseSize, isPlainObject } from './utils';
+import { Sash } from './sash';
+import { Position, getOppositePosition } from './position';
 
-const DEFAULTS = {
+const PRIMARY_DEFAULTS = {
   size: '50%',
   position: Position.Left,
-  domElement: null,
 };
 
 export class ConfigNode {
@@ -13,47 +13,91 @@ export class ConfigNode {
   width;
   height;
 
-  constructor({
-    size = DEFAULTS.size,
-    position = DEFAULTS.position,
-    domElement = DEFAULTS.domElement,
-    parentRect,
-    siblingNode,
-    id,
-    children,
-  } = DEFAULTS) {
-    this.size = this.getSize(size);
-    this.position = this.getPosition(position);
-    this.domElement = domElement;
-    this.siblingNode = siblingNode;
-    this.parentRect = parentRect;
-    this.id = id;
-    this.children = children;
+  constructor(config) {
+    this.domNode = config.domNode;
+    this.parentRect = config.parentRect;
+    this.id = config.id;
+    this.children = config.children;
+    this.siblingConfigNode = config.siblingConfigNode;
+
+    this.position = this.getPosition(config.position);
+    this.size = this.getSize(config.size);
 
     this.setBounds();
   }
 
-  // TODO: return position based on siblingNode
   getPosition(position) {
-    if (!this.siblingNode) {
+    if (!this.siblingConfigNode) {
       return position;
+    }
+
+    const oppositePositionOfSibling = getOppositePosition(this.siblingConfigNode.position);
+
+    if (!position) {
+      return oppositePositionOfSibling;
+    }
+
+    // Validation of explicit setting of both positions
+    if (position !== oppositePositionOfSibling) {
+      throw new Error('[bwin] Sibling position and current position are not opposite');
     }
 
     return position;
   }
 
-  // TODO: return size based on siblingNode
   getSize(size) {
-    if (!this.siblingNode) {
-      return size;
+    if (!this.siblingConfigNode) {
+      return parseSize(size);
     }
 
-    return size;
+    if (!size) {
+      if (this.siblingConfigNode.size < 1) {
+        return 1 - this.siblingConfigNode.size;
+      }
+      else {
+        if (
+          this.siblingConfigNode.position === Position.Left ||
+          this.siblingConfigNode.position === Position.Right
+        ) {
+          return this.parentRect.width - this.siblingConfigNode.width;
+        }
+        else if (
+          this.siblingConfigNode.position === Position.Top ||
+          this.siblingConfigNode.position === Position.Bottom
+        ) {
+          return this.parentRect.height - this.siblingConfigNode.height;
+        }
+      }
+    }
+
+    const parsedSize = parseSize(size);
+
+    // Validation of explicit setting of both sizes
+    if (parsedSize < 1) {
+      if (parsedSize + this.siblingConfigNode.size !== 1) {
+        throw new Error('[bwin] Sum of sibling sizes is not equal to 1');
+      }
+    }
+    else {
+      if (
+        (this.position === Position.Left || this.position === Position.Right) &&
+        parsedSize + this.siblingConfigNode.size !== this.parentRect.width
+      ) {
+        throw new Error('[bwin] Sum of sibling sizes is not equal to parent width');
+      }
+
+      if (
+        (this.position === Position.Top || this.position === Position.Bottom) &&
+        parsedSize + this.siblingConfigNode.size !== this.parentRect.height
+      ) {
+        throw new Error('[bwin] Sum of sibling sizes is not equal to parent height');
+      }
+    }
+
+    return parsedSize;
   }
 
   setBounds() {
-    const parsedSize = parseSize(this.size);
-
     if (this.position === Position.Root) {
       this.left = 0;
       this.top = 0;
@@ -61,28 +105,28 @@ export class ConfigNode {
       this.height = this.parentRect.height;
     }
     else if (this.position === Position.Left) {
-      const absoluteSize = parsedSize < 1 ? this.parentRect.width * parsedSize : parsedSize;
+      const parsedSize = this.size < 1 ? this.parentRect.width * this.size : this.size;
       this.left = this.parentRect.left;
       this.top = this.parentRect.top;
-      this.width = absoluteSize;
+      this.width = parsedSize;
       this.height = this.parentRect.height;
     }
     else if (this.position === Position.Right) {
-      const absoluteSize = parsedSize < 1 ? this.parentRect.width * parsedSize : parsedSize;
+      const absoluteSize = this.size < 1 ? this.parentRect.width * this.size : this.size;
       this.left = this.parentRect.left + this.parentRect.width - absoluteSize;
       this.top = this.parentRect.top;
       this.width = absoluteSize;
       this.height = this.parentRect.height;
     }
     else if (this.position === Position.Top) {
-      const absoluteSize = parsedSize < 1 ? this.parentRect.height * parsedSize : parsedSize;
+      const absoluteSize = this.size < 1 ? this.parentRect.height * this.size : this.size;
       this.left = this.parentRect.left;
       this.top = this.parentRect.top;
       this.width = this.parentRect.width;
       this.height = absoluteSize;
     }
     else if (this.position === Position.Bottom) {
-      const absoluteSize = parsedSize < 1 ? this.parentRect.height * parsedSize : parsedSize;
+      const absoluteSize = this.size < 1 ? this.parentRect.height * this.size : this.size;
       this.left = this.parentRect.left;
       this.top = this.parentRect.top + this.parentRect.height - absoluteSize;
       this.width = this.parentRect.width;
@@ -101,6 +145,99 @@ export class ConfigNode {
     });
   }
 
+  createPrimaryConfigNode(config) {
+    let configNode;
+
+    if (isPlainObject(config)) {
+      configNode = new ConfigNode({
+        parentRect: this,
+        size: config.size ?? PRIMARY_DEFAULTS.size,
+        position: config.position ?? PRIMARY_DEFAULTS.position,
+        children: config.children,
+      });
+    }
+    else if (Array.isArray(config)) {
+      configNode = new ConfigNode({
+        parentRect: this,
+        size: PRIMARY_DEFAULTS.size,
+        position: PRIMARY_DEFAULTS.position,
+        children: config,
+      });
+    }
+    else if (typeof config === 'string' || typeof config === 'number') {
+      const size = parseSize(config);
+
+      if (isNaN(size))
+        throw new Error(
+          '[bwin] Invalid size value. The size must be a number or a string with a percentage value'
+        );
+
+      configNode = new ConfigNode({
+        parentRect: this,
+        size,
+        position: PRIMARY_DEFAULTS.position,
+        children: null,
+      });
+    }
+    else {
+      throw new Error(
+        '[bwin] Invalid primary child type. Valid types are object, array, string, and number'
+      );
+    }
+
+    return configNode;
+  }
+
+  createSecondaryConfigNode(config, primaryConfigNode) {
+    let configNode;
+
+    if (isPlainObject(config)) {
+      configNode = new ConfigNode({
+        parentRect: this,
+        size: config.size,
+        position: config.position,
+        children: config.children,
+        siblingConfigNode: primaryConfigNode,
+      });
+    }
+    else if (Array.isArray(config)) {
+      configNode = new ConfigNode({
+        parentRect: this,
+        size: null,
+        position: null,
+        children: config,
+        siblingConfigNode: primaryConfigNode,
+      });
+    }
+    else if (typeof config === 'string' || typeof config === 'number') {
+      const size = parseSize(config);
+
+      if (isNaN(size))
+        throw new Error(
+          '[bwin] Invalid size value. The size must be a number or a string with a percentage value'
+        );
+
+      configNode = new ConfigNode({
+        parentRect: this,
+        size,
+        position: null,
+        children: null,
+        siblingConfigNode: primaryConfigNode,
+      });
+    }
+    else if (config === null || config === undefined) {
+      configNode = new ConfigNode({
+        parentRect: this,
+        size: null,
+        position: null,
+        children: null,
+        siblingConfigNode: primaryConfigNode,
+      });
+    }
+
+    return configNode;
+  }
+
   buildSashTree() {
     const sash = this.createSash();
 
@@ -108,27 +245,19 @@ export class ConfigNode {
       return sash;
     }
 
-    const primaryChild = this.children?.at(0);
-    // TODO: make default secondary child
-    const secondaryChild = this.children?.at(1);
+    const primaryChild = this.children[0];
+    // Secondary child is optional
+    const secondaryChild = this.children.at(1);
 
-    const primaryChildNode = new ConfigNode({
-      parentRect: this,
-      size: primaryChild.size,
-      position: primaryChild.position,
-      children: primaryChild.children,
-    });
+    const primaryChildConfigNode = this.createPrimaryConfigNode(primaryChild);
+    const secondaryChildConfigNode = this.createSecondaryConfigNode(
+      secondaryChild,
+      primaryChildConfigNode
+    );
 
-    const secondaryChildNode = new ConfigNode({
-      parentRect: this,
-      size: secondaryChild.size,
-      position: secondaryChild.position,
-      children: secondaryChild.children,
-    });
-
-    if (primaryChildNode && secondaryChildNode) {
-      sash.children.push(primaryChildNode.buildSashTree());
-      sash.children.push(secondaryChildNode.buildSashTree());
+    if (primaryChildConfigNode && secondaryChildConfigNode) {
+      sash.children.push(primaryChildConfigNode.buildSashTree());
+      sash.children.push(secondaryChildConfigNode.buildSashTree());
     }
 
     return sash;

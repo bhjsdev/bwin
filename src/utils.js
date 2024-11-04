@@ -105,3 +105,18 @@ export function parseSize(size) {
 
   return NaN;
 }
+
+/**
+ * Check if a value is a plain object, not array, null, etc
+ *
+ * @param {any} value - The value to check
+ * @returns {boolean}
+ */
+export function isPlainObject(value) {
+  return (
+    value !== null &&
+    typeof value === 'object' &&
+    !Array.isArray(value) &&
+    Object.getPrototypeOf(value) === Object.prototype
+  );
+}

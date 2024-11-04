@@ -1,4 +1,5 @@
-import { Sash, Position } from './sash.js';
+import { Sash } from './sash.js';
+import { Position } from './position.js';
 
 export function addLeftPane(parentSash) {
   const newLeftSash = new Sash({
@@ -16,7 +17,7 @@ export function addLeftPane(parentSash) {
     height: parentSash.height,
     position: Position.Right,
     // Store parent sash's element and use its content for a new pane
-    domElement: parentSash.domElement,
+    domNode: parentSash.domNode,
   });
 
   parentSash.addChild(newLeftSash);
@@ -30,7 +31,7 @@ export function addRightPane(parentSash) {
     width: parentSash.width / 2,
     height: parentSash.height,
     position: Position.Left,
-    domElement: parentSash.domElement,
+    domNode: parentSash.domNode,
   });
 
   const newRightSash = new Sash({
@@ -60,7 +61,7 @@ export function addTopPane(parentSash) {
     width: parentSash.width,
     height: parentSash.height / 2,
     position: Position.Bottom,
-    domElement: parentSash.domElement,
+    domNode: parentSash.domNode,
   });
 
   parentSash.addChild(newTopSash);
@@ -74,7 +75,7 @@ export function addBottomPane(parentSash) {
     width: parentSash.width,
     height: parentSash.height / 2,
     position: Position.Top,
-    domElement: parentSash.domElement,
+    domNode: parentSash.domNode,
   });
 
   const newBottomSash = new Sash({

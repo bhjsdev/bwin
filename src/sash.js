@@ -1,12 +1,5 @@
 import { genId } from './utils';
-
-export const Position = {
-  Top: 'top',
-  Right: 'right',
-  Bottom: 'bottom',
-  Left: 'left',
-  Root: 'root',
-};
+import { Position } from './position';
 
 export const DEFAULTS = {
   top: 0,
@@ -21,7 +14,7 @@ export class Sash {
     left = DEFAULTS.left,
     width = DEFAULTS.width,
     height = DEFAULTS.height,
-    domElement = null,
+    domNode = null,
     position,
     id,
   } = DEFAULTS) {
@@ -36,7 +29,7 @@ export class Sash {
     }
 
     this.position = position;
-    this.domElement = domElement;
+    this.domNode = domNode;
     this.id = id ?? genId();
     this.dom;
     this.children = [];

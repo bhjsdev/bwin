@@ -1,5 +1,5 @@
 import { ConfigNode } from './config-node';
-import { Position } from './sash';
+import { Position } from './position';
 
 const DEFAULTS = {
   width: 333,

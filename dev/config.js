@@ -1,4 +1,4 @@
-import { ConfigRoot, Frame } from '../src';
+import { Frame } from '../src';
 
 const settings = {
   width: 333,
@@ -16,7 +16,5 @@ const settings = {
   ],
 };
 
-const config = new ConfigRoot(settings);
-
-const frame = new Frame(document.querySelector('#container'), config);
+const frame = new Frame(document.querySelector('#container'), settings);
 frame.create();

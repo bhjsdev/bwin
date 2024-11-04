@@ -9,6 +9,10 @@ const files = [
   'add-pane-frame',
   'add-remove-panes-bwin',
   'config',
+  'config-2',
+  'config-array',
+  'config-string',
+  'config-simplest',
 ].sort();
 
 const navEl = document.createElement('nav');
