@@ -29,7 +29,13 @@ export class ConfigRoot extends ConfigNode {
       ...FEAT_DEFAULTS,
     }
   ) {
-    super({ id, size: '100%', position: Position.Root, parentRect: { width, height }, children });
+    super({
+      id,
+      size: '100%',
+      position: Position.Root,
+      parentRect: { width, height },
+      children,
+    });
 
     this.resizable = resizable;
     this.fitContainer = fitContainer;

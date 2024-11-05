@@ -145,97 +145,48 @@ export class ConfigNode {
     });
   }
 
-  createPrimaryConfigNode(config) {
-    let configNode;
-
+  normConfig(config) {
     if (isPlainObject(config)) {
-      configNode = new ConfigNode({
-        parentRect: this,
-        size: config.size ?? PRIMARY_DEFAULTS.size,
-        position: config.position ?? PRIMARY_DEFAULTS.position,
-        children: config.children,
-      });
+      return config;
     }
     else if (Array.isArray(config)) {
-      configNode = new ConfigNode({
-        parentRect: this,
-        size: PRIMARY_DEFAULTS.size,
-        position: PRIMARY_DEFAULTS.position,
+      return {
         children: config,
-      });
+      };
     }
     else if (typeof config === 'string' || typeof config === 'number') {
       const size = parseSize(config);
+      if (isNaN(size)) throw new Error(`[bwin] Invalid size value: ${size}`);
 
-      if (isNaN(size))
-        throw new Error(
-          '[bwin] Invalid size value. The size must be a number or a string with a percentage value'
-        );
-
-      configNode = new ConfigNode({
-        parentRect: this,
-        size,
-        position: PRIMARY_DEFAULTS.position,
-        children: null,
-      });
+      return {
+        size: config,
+      };
+    }
+    else if (config === null || config === undefined) {
+      return {};
     }
     else {
-      throw new Error(
-        '[bwin] Invalid primary child type. Valid types are object, array, string, and number'
-      );
+      throw new Error(`[bwin] Invalid config value: ${config}`);
     }
+  }
 
-    return configNode;
+  createPrimaryConfigNode(config) {
+    return new ConfigNode({
+      parentRect: this,
+      size: config.size ?? PRIMARY_DEFAULTS.size,
+      position: config.position ?? PRIMARY_DEFAULTS.position,
+      children: config.children,
+    });
   }
 
   createSecondaryConfigNode(config, primaryConfigNode) {
-    let configNode;
-
-    if (isPlainObject(config)) {
-      configNode = new ConfigNode({
-        parentRect: this,
-        size: config.size,
-        position: config.position,
-        children: config.children,
-        siblingConfigNode: primaryConfigNode,
-      });
-    }
-    else if (Array.isArray(config)) {
-      configNode = new ConfigNode({
-        parentRect: this,
-        size: null,
-        position: null,
-        children: config,
-        siblingConfigNode: primaryConfigNode,
-      });
-    }
-    else if (typeof config === 'string' || typeof config === 'number') {
-      const size = parseSize(config);
-
-      if (isNaN(size))
-        throw new Error(
-          '[bwin] Invalid size value. The size must be a number or a string with a percentage value'
-        );
-
-      configNode = new ConfigNode({
-        parentRect: this,
-        size,
-        position: null,
-        children: null,
-        siblingConfigNode: primaryConfigNode,
-      });
-    }
-    else if (config === null || config === undefined) {
-      configNode = new ConfigNode({
-        parentRect: this,
-        size: null,
-        position: null,
-        children: null,
-        siblingConfigNode: primaryConfigNode,
-      });
-    }
-
-    return configNode;
+    return new ConfigNode({
+      parentRect: this,
+      size: config.size,
+      position: config.position,
+      children: config.children,
+      siblingConfigNode: primaryConfigNode,
+    });
   }
 
   buildSashTree() {
@@ -245,15 +196,31 @@ export class ConfigNode {
       return sash;
     }
 
-    const primaryChild = this.children[0];
-    // Secondary child is optional
-    const secondaryChild = this.children.at(1);
+    const firstChildConfig = this.normConfig(this.children[0]);
+    const secondChildConfig = this.normConfig(this.children.at(1));
 
-    const primaryChildConfigNode = this.createPrimaryConfigNode(primaryChild);
-    const secondaryChildConfigNode = this.createSecondaryConfigNode(
-      secondaryChild,
-      primaryChildConfigNode
-    );
+    let primaryChildConfigNode;
+    let secondaryChildConfigNode;
+
+    // Use second child as primary if first child is like e.g. [[0.3, 0.7], 0.6]
+    if (!firstChildConfig.size && !firstChildConfig.position && secondChildConfig) {
+      if (!secondChildConfig.position) {
+        secondChildConfig.position = Position.Right;
+      }
+
+      primaryChildConfigNode = this.createPrimaryConfigNode(secondChildConfig);
+      secondaryChildConfigNode = this.createSecondaryConfigNode(
+        firstChildConfig,
+        primaryChildConfigNode
+      );
+    }
+    else {
+      primaryChildConfigNode = this.createPrimaryConfigNode(firstChildConfig);
+      secondaryChildConfigNode = this.createSecondaryConfigNode(
+        secondChildConfig,
+        primaryChildConfigNode
+      );
+    }
 
     if (primaryChildConfigNode && secondaryChildConfigNode) {
       sash.children.push(primaryChildConfigNode.buildSashTree());

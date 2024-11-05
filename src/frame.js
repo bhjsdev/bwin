@@ -97,10 +97,14 @@ export class Frame {
         const newRightChildWidth = rightChild.width - distX;
 
         if (
-          (newLeftChildWidth > this.minPaneSize || newLeftChildWidth === this.minPaneSize) &&
-          (newRightChildWidth > this.minPaneSize || newRightChildWidth === this.minPaneSize) &&
-          (newLeftChildWidth < this.maxPaneSize || newLeftChildWidth === this.maxPaneSize) &&
-          (newRightChildWidth < this.maxPaneSize || newRightChildWidth === this.maxPaneSize)
+          (newLeftChildWidth > this.minPaneSize ||
+            newLeftChildWidth === this.minPaneSize) &&
+          (newRightChildWidth > this.minPaneSize ||
+            newRightChildWidth === this.minPaneSize) &&
+          (newLeftChildWidth < this.maxPaneSize ||
+            newLeftChildWidth === this.maxPaneSize) &&
+          (newRightChildWidth < this.maxPaneSize ||
+            newRightChildWidth === this.maxPaneSize)
         ) {
           leftChild.width = newLeftChildWidth;
           rightChild.width = newRightChildWidth;
@@ -117,10 +121,14 @@ export class Frame {
         const newBottomChildHeight = bottomChild.height - distY;
 
         if (
-          (newTopChildHeight > this.minPaneSize || newTopChildHeight === this.minPaneSize) &&
-          (newBottomChildHeight > this.minPaneSize || newBottomChildHeight === this.minPaneSize) &&
-          (newTopChildHeight < this.maxPaneSize || newTopChildHeight === this.maxPaneSize) &&
-          (newBottomChildHeight < this.maxPaneSize || newBottomChildHeight === this.maxPaneSize)
+          (newTopChildHeight > this.minPaneSize ||
+            newTopChildHeight === this.minPaneSize) &&
+          (newBottomChildHeight > this.minPaneSize ||
+            newBottomChildHeight === this.minPaneSize) &&
+          (newTopChildHeight < this.maxPaneSize ||
+            newTopChildHeight === this.maxPaneSize) &&
+          (newBottomChildHeight < this.maxPaneSize ||
+            newBottomChildHeight === this.maxPaneSize)
         ) {
           topChild.height += distY;
           bottomChild.height -= distY;
@@ -307,7 +315,9 @@ export class Frame {
       }
       else {
         if (!allSashIdsInWindow.includes(sash.id)) {
-          const paneEl = sash.domNode ? this.createPane(sash, sash.domNode) : this.createPane(sash);
+          const paneEl = sash.domNode
+            ? this.createPane(sash, sash.domNode)
+            : this.createPane(sash);
 
           sash.domNode = paneEl;
           this.windowEl.prepend(sash.domNode);
