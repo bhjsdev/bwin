@@ -156,7 +156,9 @@ export class ConfigNode {
     }
     else if (typeof config === 'string' || typeof config === 'number') {
       const size = parseSize(config);
-      if (isNaN(size)) throw new Error(`[bwin] Invalid size value: ${size}`);
+      if (isNaN(size)) {
+        throw new Error(`[bwin] Invalid size value: ${size}`);
+      }
 
       return {
         size: config,

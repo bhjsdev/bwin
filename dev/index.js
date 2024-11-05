@@ -13,6 +13,7 @@ const files = [
   'config-array',
   'config-string',
   'config-simplest',
+  'droppable',
 ].sort();
 
 const navEl = document.createElement('nav');
