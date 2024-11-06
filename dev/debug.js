@@ -15,5 +15,5 @@ const paneEl = [...document.querySelectorAll('bw-pane')].at(-1);
 document.body.addEventListener('mousemove', (event) => {
   const pos = { clientX: event.clientX, clientY: event.clientY };
   const cursorPosition = getCursorPosition(paneEl, pos);
-  // console.log('🐞 -> cursorPosition:', cursorPosition);
+  console.log('🐞 -> cursorPosition:', cursorPosition);
 });

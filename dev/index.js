@@ -14,6 +14,7 @@ const files = [
   'config-string',
   'config-simplest',
   'droppable',
+  'resizable',
 ].sort();
 
 const navEl = document.createElement('nav');

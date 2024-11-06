@@ -1,4 +1,4 @@
-import { Sash, Position, BinaryWindow, SashConfig } from '../src';
+import { Sash, Position, Frame, SashConfig } from '../src';
 
 const rootSash = new SashConfig({
   width: 400,
@@ -40,8 +40,23 @@ const sash_2 = new Sash({
 });
 
 rootSash.children.push(sash_1, sash_2);
-
 rootSash.fitContainer = true;
 
-const layout = new BinaryWindow(document.querySelector('#container'), rootSash);
+const layout = new Frame(document.querySelector('#container'), rootSash);
 layout.create();
+
+const settings = {
+  width: 200,
+  height: 100,
+  fitContainer: true,
+  children: [0.4, [0.3]],
+};
+
+const frame = new Frame(document.querySelector('#container2'), settings);
+frame.create();
+
+let fit = true;
+document.querySelector('#toggle-fit-container').addEventListener('click', () => {
+  fit = !fit;
+  frame.fitContainer = fit;
+});

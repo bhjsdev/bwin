@@ -3,6 +3,7 @@ export const Position = {
   Right: 'right',
   Bottom: 'bottom',
   Left: 'left',
+  Center: 'center',
   Root: 'root',
   Unknown: 'unknown',
   Outside: 'outside',
@@ -49,34 +50,61 @@ export function getCursorPosition(element, { clientX, clientY }) {
   if (deltaX < 0 || deltaX > width || deltaY < 0 || deltaY > height) {
     return Position.Outside;
   }
+  const centerRadio = 0.3;
 
   const mainDiagonalY = getMainDiagonalY({ width, height, x: deltaX });
   const minorDiagonalY = getMinorDiagonalY({ width, height, x: deltaX });
   const mainDiagonalX = getMainDiagonalX({ width, height, y: deltaY });
   const minorDiagonalX = getMinorDiagonalX({ width, height, y: deltaY });
 
-  if (deltaX < width / 2 && deltaY > mainDiagonalY && deltaY < minorDiagonalY) {
+  if (
+    deltaX < width * (0.5 - centerRadio / 2) &&
+    deltaY > mainDiagonalY &&
+    deltaY < minorDiagonalY
+  ) {
     return Position.Left;
   }
-  else if (deltaX > width / 2 && deltaY < mainDiagonalY && deltaY > minorDiagonalY) {
+  else if (
+    deltaX > width * (0.5 + centerRadio / 2) &&
+    deltaY < mainDiagonalY &&
+    deltaY > minorDiagonalY
+  ) {
     return Position.Right;
   }
-  else if (deltaY < height / 2 && deltaX > mainDiagonalX && deltaX < minorDiagonalX) {
+  else if (
+    deltaY < height * (0.5 - centerRadio / 2) &&
+    deltaX > mainDiagonalX &&
+    deltaX < minorDiagonalX
+  ) {
     return Position.Top;
   }
-  else if (deltaY > height / 2 && deltaX < mainDiagonalX && deltaX > minorDiagonalX) {
+  else if (
+    deltaY > height * (0.5 + centerRadio / 2) &&
+    deltaX < mainDiagonalX &&
+    deltaX > minorDiagonalX
+  ) {
     return Position.Bottom;
   }
+  else if (
+    deltaX > width * (0.5 - centerRadio / 2) &&
+    deltaX < width * (0.5 + centerRadio / 2) &&
+    deltaY > height * (0.5 - centerRadio / 2) &&
+    deltaY < height * (0.5 + centerRadio / 2)
+  ) {
+    return Position.Center;
+  }
 
-  // When cursor is on the borders or diagonals
+  // When cursor is on boundaries
+  // e.g. borders of center, borders of container, diagonals, etc
   return Position.Unknown;
 }
 
-export function isTopRightBottomOrLeft(position) {
+export function isTopRightBottomLeftOrCenter(position) {
   return (
     position === Position.Top ||
     position === Position.Right ||
     position === Position.Bottom ||
-    position === Position.Left
+    position === Position.Left ||
+    position === Position.Center
   );
 }

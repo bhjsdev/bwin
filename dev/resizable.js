@@ -18,3 +18,11 @@ const settings = {
 
 const frame = new Frame(document.querySelector('#container'), settings);
 frame.create();
+
+let enabled = true;
+
+document.querySelector('#toggle-resizable').addEventListener('click', (event) => {
+  enabled = !enabled;
+  event.target.textContent = enabled ? 'Disable Resizable' : 'Enable Resizable';
+  frame.resizable = enabled;
+});

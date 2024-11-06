@@ -3,11 +3,15 @@ export const frameFeatures = {
   isResizeStarted: false,
   lastX: 0,
   lastY: 0,
+  minPaneSize: 0,
+  maxPaneSize: Infinity,
+  fitContainer: false,
+  resizable: true,
 
   enableFitContainer() {
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
-        if (entry.target === this.containerEl) {
+        if (entry.target === this.containerEl && this.fitContainer) {
           this.rootSash.width = entry.contentRect.width;
           this.rootSash.height = entry.contentRect.height;
 
@@ -35,6 +39,7 @@ export const frameFeatures = {
 
   enableResize() {
     document.body.addEventListener('mousedown', (event) => {
+      if (!this.resizable) return;
       if (event.target.tagName !== 'BW-MUNTIN') return;
 
       const sashId = event.target.getAttribute('sash-id');
@@ -50,6 +55,7 @@ export const frameFeatures = {
     });
 
     document.body.addEventListener('mousemove', (event) => {
+      if (!this.resizable) return;
       if (!this.isResizeStarted || !this.activeMuntin) return;
 
       const leftChild = this.activeMuntin.getLeftChild();
@@ -103,9 +109,10 @@ export const frameFeatures = {
     });
 
     document.body.addEventListener('mouseup', () => {
+      if (!this.resizable) return;
+
       this.isResizeStarted = false;
       this.activeMuntin = null;
-
       this.revertResizeStyles();
     });
   },

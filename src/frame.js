@@ -5,13 +5,15 @@ import { ConfigRoot } from './config-root.js';
 import { frameFeatures } from './frame.features.js';
 
 /**
- * @todo: disable resizing when user set 1resizable` to false at runtime
+ * @todo: Consider if we need to immediately update the frame size when `fitContainer` is set true or false
  */
 export class Frame {
   muntinSize = 5;
   windowEl = null;
 
   constructor(containerEl, settings) {
+    Object.assign(this, frameFeatures);
+
     this.containerEl = containerEl;
 
     let config = null;
@@ -25,13 +27,13 @@ export class Frame {
       this.rootSash = config.buildSashTree();
     }
 
-    Object.assign(this, frameFeatures);
-
     this.minPaneSize = config.minPaneSize;
     this.maxPaneSize = config.maxPaneSize;
+    this.fitContainer = config.fitContainer;
+    this.resizable = config.resizable;
 
-    config.resizable && this.enableResize();
-    config.fitContainer && this.enableFitContainer();
+    this.resizable && this.enableResize();
+    this.fitContainer && this.enableFitContainer();
 
     this.debug = true;
   }
