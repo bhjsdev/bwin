@@ -1,8 +1,7 @@
 import { Frame } from '../src';
 
 const settings = {
-  fitContainer: true,
-  children: [0.4],
+  children: [100],
 };
 
 const frame = new Frame(document.querySelector('#container'), settings);

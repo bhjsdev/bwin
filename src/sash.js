@@ -8,6 +8,9 @@ export const DEFAULTS = {
   height: 33,
 };
 
+/**
+ * @todo: Add a min size to stop sash from resizing when parent is resized
+ */
 export class Sash {
   constructor({
     top = DEFAULTS.top,
@@ -202,7 +205,7 @@ export class Sash {
     const [topChild, rightChild, bottomChild, leftChild] = this.getChildren();
 
     if (leftChild && rightChild) {
-      const leftDist = (dist * leftChild.width) / (leftChild.width + rightChild.width);
+      const leftDist = dist * (leftChild.width / (leftChild.width + rightChild.width));
       const rightDist = dist - leftDist;
 
       leftChild.width += leftDist;
@@ -227,7 +230,7 @@ export class Sash {
     const [topChild, rightChild, bottomChild, leftChild] = this.getChildren();
 
     if (topChild && bottomChild) {
-      const topDist = (dist * topChild.height) / (topChild.height + bottomChild.height);
+      const topDist = dist * (topChild.height / (topChild.height + bottomChild.height));
       const bottomDist = dist - topDist;
 
       topChild.height += topDist;

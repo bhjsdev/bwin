@@ -7,8 +7,8 @@ const DEFAULTS = {
 };
 
 export const FEAT_DEFAULTS = {
-  resizable: true,
   droppable: true,
+  resizable: true,
   fitContainer: false,
   minPaneSize: 20,
   maxPaneSize: Infinity,
@@ -17,15 +17,15 @@ export const FEAT_DEFAULTS = {
 export class ConfigRoot extends ConfigNode {
   constructor(
     {
+      id,
+      children,
       width = DEFAULTS.width,
       height = DEFAULTS.height,
-      resizable = FEAT_DEFAULTS.resizable,
-      fitContainer = FEAT_DEFAULTS.fitContainer,
       droppable = FEAT_DEFAULTS.droppable,
+      fitContainer = FEAT_DEFAULTS.fitContainer,
       minPaneSize = FEAT_DEFAULTS.minPaneSize,
       maxPaneSize = FEAT_DEFAULTS.maxPaneSize,
-      children,
-      id,
+      resizable = FEAT_DEFAULTS.resizable,
     } = {
       ...DEFAULTS,
       ...FEAT_DEFAULTS,
@@ -33,16 +33,16 @@ export class ConfigRoot extends ConfigNode {
   ) {
     super({
       id,
-      size: '100%',
+      children,
+      size: NaN,
       position: Position.Root,
       parentRect: { width, height },
-      children,
     });
 
-    this.resizable = resizable;
-    this.fitContainer = fitContainer;
     this.droppable = droppable;
+    this.fitContainer = fitContainer;
     this.minPaneSize = minPaneSize;
     this.maxPaneSize = maxPaneSize;
+    this.resizable = resizable;
   }
 }

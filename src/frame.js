@@ -5,11 +5,15 @@ import { ConfigRoot } from './config-root.js';
 import { frameFeatures } from './frame.features.js';
 
 /**
- * @todo: Consider if we need to immediately update the frame size when `fitContainer` is set true or false
+ * @think-about:
+ *   1. if we need to immediately update the frame size
+ *      when `fitContainer` is set true or false
+ *   2. add a `fit` method to fit the frame to the container
  */
 export class Frame {
   muntinSize = 5;
   windowEl = null;
+  containerEl = null;
 
   constructor(containerEl, settings) {
     Object.assign(this, frameFeatures);
@@ -27,13 +31,15 @@ export class Frame {
       this.rootSash = config.buildSashTree();
     }
 
+    this.droppable = config.droppable;
+    this.fitContainer = config.fitContainer;
     this.minPaneSize = config.minPaneSize;
     this.maxPaneSize = config.maxPaneSize;
-    this.fitContainer = config.fitContainer;
     this.resizable = config.resizable;
 
-    this.resizable && this.enableResize();
+    this.droppable && this.enableDrop();
     this.fitContainer && this.enableFitContainer();
+    this.resizable && this.enableResize();
 
     this.debug = true;
   }

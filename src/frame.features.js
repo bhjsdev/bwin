@@ -1,12 +1,16 @@
 export const frameFeatures = {
   activeMuntin: null,
   isResizeStarted: false,
+  isDropStarted: false,
   lastX: 0,
   lastY: 0,
   minPaneSize: 0,
   maxPaneSize: Infinity,
   fitContainer: false,
   resizable: true,
+  droppable: true,
+
+  enableDrop() {},
 
   enableFitContainer() {
     const resizeObserver = new ResizeObserver((entries) => {
