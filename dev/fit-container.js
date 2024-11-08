@@ -56,7 +56,9 @@ const frame = new Frame(document.querySelector('#container2'), settings);
 frame.create();
 
 let fit = true;
-document.querySelector('#toggle-fit-container').addEventListener('click', () => {
+
+document.querySelector('#toggle-fit-container').addEventListener('click', (event) => {
   fit = !fit;
+  event.target.textContent = fit ? 'Disable Fit Container' : 'Enable Fit Container';
   frame.fitContainer = fit;
 });

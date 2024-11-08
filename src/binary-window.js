@@ -1,6 +1,9 @@
 import { Frame } from './frame.js';
 
 export class BinaryWindow extends Frame {
+  constructor(containerEl, settings) {
+    super(containerEl, settings);
+  }
   // WARNING: Do not pass `sash-id` to child nodes.
   //          Because the child nodes can move around when add/remove panes.
   //          Instead, read parent pane's `sash-id` attribute.

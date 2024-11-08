@@ -1,7 +1,8 @@
-import { Sash } from './sash.js';
+import { genColor, genId, moveChildNodes } from './utils.js';
 import { Position } from './position.js';
+import { Sash } from './sash.js';
 
-export function addLeftPane(parentSash) {
+function addLeftPane(parentSash) {
   const newLeftSash = new Sash({
     top: parentSash.top,
     left: parentSash.left,
@@ -24,7 +25,7 @@ export function addLeftPane(parentSash) {
   parentSash.addChild(newRightSash);
 }
 
-export function addRightPane(parentSash) {
+function addRightPane(parentSash) {
   const newLeftSash = new Sash({
     top: parentSash.top,
     left: parentSash.left,
@@ -46,7 +47,7 @@ export function addRightPane(parentSash) {
   parentSash.addChild(newRightSash);
 }
 
-export function addTopPane(parentSash) {
+function addTopPane(parentSash) {
   const newTopSash = new Sash({
     top: parentSash.top,
     left: parentSash.left,
@@ -68,7 +69,7 @@ export function addTopPane(parentSash) {
   parentSash.addChild(newBottomSash);
 }
 
-export function addBottomPane(parentSash) {
+function addBottomPane(parentSash) {
   const newTopSash = new Sash({
     top: parentSash.top,
     left: parentSash.left,
@@ -90,7 +91,7 @@ export function addBottomPane(parentSash) {
   parentSash.addChild(newBottomSash);
 }
 
-export function addPaneByPosition(parentSash, position) {
+function addPaneByPosition(parentSash, position) {
   if (position === Position.Left) {
     addLeftPane(parentSash);
   }
@@ -105,7 +106,7 @@ export function addPaneByPosition(parentSash, position) {
   }
 }
 
-export function debug(parentEl) {
+function debug(parentEl) {
   const debugEl = document.createElement('pre');
   debugEl.style.fontSize = '9px';
 
@@ -121,3 +122,69 @@ position: ${parentEl.getAttribute('position')}
   debugEl.innerHTML = debugHtml.trim();
   return debugEl;
 }
+
+export const framePane = {
+  // `createPane` will be overridden in `binary-window.js`
+  createPane(sash, fromPaneEl) {
+    const paneEl = document.createElement('bw-pane');
+    paneEl.style.top = `${sash.top}px`;
+    paneEl.style.left = `${sash.left}px`;
+    paneEl.style.width = `${sash.width}px`;
+    paneEl.style.height = `${sash.height}px`;
+
+    paneEl.setAttribute('sash-id', sash.id);
+    paneEl.setAttribute('position', sash.position);
+
+    // Create the pane with the content of fromPaneEl
+    if (fromPaneEl) {
+      moveChildNodes(paneEl, fromPaneEl);
+    }
+
+    if (this.debug) {
+      paneEl.style.backgroundColor = genColor();
+      paneEl.append(debug(paneEl));
+    }
+
+    return paneEl;
+  },
+
+  updatePane(sash) {
+    const paneEl = sash.domNode;
+    paneEl.style.top = `${sash.top}px`;
+    paneEl.style.left = `${sash.left}px`;
+    paneEl.style.width = `${sash.width}px`;
+    paneEl.style.height = `${sash.height}px`;
+
+    if (this.debug) {
+      const paneEl = sash.domNode;
+      paneEl.innerHTML = '';
+      paneEl.append(debug(paneEl));
+    }
+  },
+
+  addPane(parentSashId, position) {
+    const parentSash = this.rootSash.getById(parentSashId);
+
+    if (!parentSash) throw new Error('[bwin] Parent pane not found');
+    if (!position) throw new Error('[bwin] Position is required');
+
+    addPaneByPosition(parentSash, position);
+    // Generate new ID for parent sash to create a new muntin
+    parentSash.id = genId();
+
+    this.update();
+  },
+
+  removePane(sashId) {
+    const parentSash = this.rootSash.getDescendantParentById(sashId);
+    const siblingSash = parentSash.getChildSiblingById(sashId);
+
+    parentSash.domNode = siblingSash.domNode;
+    // Remove all children, so it becomes a pane
+    parentSash.children = [];
+    // The muntin of old ID will be removed in `this.update`
+    parentSash.id = genId();
+
+    this.update();
+  },
+};

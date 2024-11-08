@@ -1,5 +1,5 @@
 export const frameFeatures = {
-  activeMuntin: null,
+  activeMuntinSash: null,
   isResizeStarted: false,
   isDropStarted: false,
   lastX: 0,
@@ -9,6 +9,12 @@ export const frameFeatures = {
   fitContainer: false,
   resizable: true,
   droppable: true,
+
+  initFeatures() {
+    this.droppable && this.enableDrop();
+    this.fitContainer && this.enableFitContainer();
+    this.resizable && this.enableResize();
+  },
 
   enableDrop() {},
 
@@ -28,10 +34,10 @@ export const frameFeatures = {
   },
 
   applyResizeStyles() {
-    if (this.activeMuntin.domNode.hasAttribute('vertical')) {
+    if (this.activeMuntinSash.domNode.hasAttribute('vertical')) {
       document.body.classList.add('body--bw-resize-x');
     }
-    else if (this.activeMuntin.domNode.hasAttribute('horizontal')) {
+    else if (this.activeMuntinSash.domNode.hasAttribute('horizontal')) {
       document.body.classList.add('body--bw-resize-y');
     }
   },
@@ -47,9 +53,9 @@ export const frameFeatures = {
       if (event.target.tagName !== 'BW-MUNTIN') return;
 
       const sashId = event.target.getAttribute('sash-id');
-      this.activeMuntin = this.rootSash.getById(sashId);
+      this.activeMuntinSash = this.rootSash.getById(sashId);
 
-      if (!this.activeMuntin) return;
+      if (!this.activeMuntinSash) return;
 
       this.isResizeStarted = true;
       this.lastX = event.pageX;
@@ -60,15 +66,12 @@ export const frameFeatures = {
 
     document.body.addEventListener('mousemove', (event) => {
       if (!this.resizable) return;
-      if (!this.isResizeStarted || !this.activeMuntin) return;
+      if (!this.isResizeStarted || !this.activeMuntinSash) return;
 
-      const leftChild = this.activeMuntin.getLeftChild();
-      const rightChild = this.activeMuntin.getRightChild();
-      const topChild = this.activeMuntin.getTopChild();
-      const bottomChild = this.activeMuntin.getBottomChild();
+      const [topChild, rightChild, bottomChild, leftChild] = this.activeMuntinSash.getChildren();
 
-      const isVerticalMuntin = this.activeMuntin.isVertSplit();
-      const isHorizontalMuntin = this.activeMuntin.isHorzSplit();
+      const isVerticalMuntin = this.activeMuntinSash.isVertSplit();
+      const isHorizontalMuntin = this.activeMuntinSash.isHorzSplit();
 
       if (isVerticalMuntin && leftChild && rightChild) {
         const distX = event.pageX - this.lastX;
@@ -116,7 +119,7 @@ export const frameFeatures = {
       if (!this.resizable) return;
 
       this.isResizeStarted = false;
-      this.activeMuntin = null;
+      this.activeMuntinSash = null;
       this.revertResizeStyles();
     });
   },
