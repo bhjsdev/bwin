@@ -120,3 +120,19 @@ export function isPlainObject(value) {
     Object.getPrototypeOf(value) === Object.prototype
   );
 }
+
+/**
+ * Assign properties from source object if they don't already exist in target object
+ *
+ * @param {object} target - The target object
+ * @param {object} source - The source object
+ */
+export function strictAssign(target, source) {
+  for (const key in source) {
+    if (key in target) {
+      throw new Error(`Key "${key}" already exists in target object`);
+    }
+    target[key] = source[key];
+  }
+  return target;
+}

@@ -2,164 +2,21 @@ import { genColor, genId, moveChildNodes } from './utils.js';
 import { Position } from './position.js';
 import { Sash } from './sash.js';
 
-function addLeftPane(parentSash) {
-  const newLeftSash = new Sash({
-    top: parentSash.top,
-    left: parentSash.left,
-    width: parentSash.width / 2,
-    height: parentSash.height,
-    position: Position.Left,
-  });
+let debug = true;
 
-  const newRightSash = new Sash({
-    top: parentSash.top,
-    left: parentSash.left + newLeftSash.width,
-    width: parentSash.width / 2,
-    height: parentSash.height,
-    position: Position.Right,
-    // Store parent sash's element and use its content for a new pane
-    domNode: parentSash.domNode,
-  });
-
-  parentSash.addChild(newLeftSash);
-  parentSash.addChild(newRightSash);
-}
-
-function addRightPane(parentSash) {
-  const newLeftSash = new Sash({
-    top: parentSash.top,
-    left: parentSash.left,
-    width: parentSash.width / 2,
-    height: parentSash.height,
-    position: Position.Left,
-    domNode: parentSash.domNode,
-  });
-
-  const newRightSash = new Sash({
-    top: parentSash.top,
-    left: parentSash.left + newLeftSash.width,
-    width: parentSash.width / 2,
-    height: parentSash.height,
-    position: Position.Right,
-  });
-
-  parentSash.addChild(newLeftSash);
-  parentSash.addChild(newRightSash);
-}
-
-function addTopPane(parentSash) {
-  const newTopSash = new Sash({
-    top: parentSash.top,
-    left: parentSash.left,
-    width: parentSash.width,
-    height: parentSash.height / 2,
-    position: Position.Top,
-  });
-
-  const newBottomSash = new Sash({
-    top: parentSash.top + newTopSash.height,
-    left: parentSash.left,
-    width: parentSash.width,
-    height: parentSash.height / 2,
-    position: Position.Bottom,
-    domNode: parentSash.domNode,
-  });
-
-  parentSash.addChild(newTopSash);
-  parentSash.addChild(newBottomSash);
-}
-
-function addBottomPane(parentSash) {
-  const newTopSash = new Sash({
-    top: parentSash.top,
-    left: parentSash.left,
-    width: parentSash.width,
-    height: parentSash.height / 2,
-    position: Position.Top,
-    domNode: parentSash.domNode,
-  });
-
-  const newBottomSash = new Sash({
-    top: parentSash.top + newTopSash.height,
-    left: parentSash.left,
-    width: parentSash.width,
-    height: parentSash.height / 2,
-    position: Position.Bottom,
-  });
-
-  parentSash.addChild(newTopSash);
-  parentSash.addChild(newBottomSash);
-}
-
-function addPaneByPosition(parentSash, position) {
-  if (position === Position.Left) {
-    addLeftPane(parentSash);
-  }
-  else if (position === Position.Right) {
-    addRightPane(parentSash);
-  }
-  else if (position === Position.Top) {
-    addTopPane(parentSash);
-  }
-  else if (position === Position.Bottom) {
-    addBottomPane(parentSash);
-  }
-}
-
-function debug(parentEl) {
-  const debugEl = document.createElement('pre');
-  debugEl.style.fontSize = '9px';
-
-  const debugHtml = `
-id: ${parentEl.getAttribute('sash-id')}
-top: ${parentEl.style.top}
-left: ${parentEl.style.left}
-width: ${parentEl.style.width}
-height: ${parentEl.style.height}
-position: ${parentEl.getAttribute('position')}
-`;
-
-  debugEl.innerHTML = debugHtml.trim();
-  return debugEl;
+export function enableDebug(value) {
+  debug = value;
 }
 
 export const framePane = {
-  // `createPane` will be overridden in `binary-window.js`
-  createPane(sash, fromPaneEl) {
-    const paneEl = document.createElement('bw-pane');
-    paneEl.style.top = `${sash.top}px`;
-    paneEl.style.left = `${sash.left}px`;
-    paneEl.style.width = `${sash.width}px`;
-    paneEl.style.height = `${sash.height}px`;
-
-    paneEl.setAttribute('sash-id', sash.id);
-    paneEl.setAttribute('position', sash.position);
-
-    // Create the pane with the content of fromPaneEl
-    if (fromPaneEl) {
-      moveChildNodes(paneEl, fromPaneEl);
-    }
-
-    if (this.debug) {
-      paneEl.style.backgroundColor = genColor();
-      paneEl.append(debug(paneEl));
-    }
-
-    return paneEl;
+  // `createPane` is overridden in `binary-window.js`
+  createPane(sash) {
+    return createPaneElement(sash);
   },
 
+  // `updatePane` may be overridden in `binary-window.js`, not yet
   updatePane(sash) {
-    const paneEl = sash.domNode;
-    paneEl.style.top = `${sash.top}px`;
-    paneEl.style.left = `${sash.left}px`;
-    paneEl.style.width = `${sash.width}px`;
-    paneEl.style.height = `${sash.height}px`;
-
-    if (this.debug) {
-      const paneEl = sash.domNode;
-      paneEl.innerHTML = '';
-      paneEl.append(debug(paneEl));
-    }
+    return updatePaneElement(sash);
   },
 
   addPane(parentSashId, position) {
@@ -188,3 +45,167 @@ export const framePane = {
     this.update();
   },
 };
+
+function createPaneElement(sash) {
+  const paneEl = document.createElement('bw-pane');
+  paneEl.style.top = `${sash.top}px`;
+  paneEl.style.left = `${sash.left}px`;
+  paneEl.style.width = `${sash.width}px`;
+  paneEl.style.height = `${sash.height}px`;
+  paneEl.setAttribute('sash-id', sash.id);
+  paneEl.setAttribute('position', sash.position);
+
+  if (debug) {
+    paneEl.style.backgroundColor = genColor();
+    paneEl.append(__debug(paneEl));
+  }
+
+  return paneEl;
+}
+
+function updatePaneElement(sash) {
+  const paneEl = sash.domNode;
+  paneEl.style.top = `${sash.top}px`;
+  paneEl.style.left = `${sash.left}px`;
+  paneEl.style.width = `${sash.width}px`;
+  paneEl.style.height = `${sash.height}px`;
+
+  if (debug) {
+    paneEl.innerHTML = '';
+    paneEl.append(__debug(paneEl));
+  }
+
+  return paneEl;
+}
+
+function addLeftPane(parentSash) {
+  const newLeftSash = new Sash({
+    top: parentSash.top,
+    left: parentSash.left,
+    width: parentSash.width / 2,
+    height: parentSash.height,
+    position: Position.Left,
+  });
+
+  const newRightSash = new Sash({
+    top: parentSash.top,
+    left: parentSash.left + newLeftSash.width,
+    width: parentSash.width / 2,
+    height: parentSash.height,
+    position: Position.Right,
+  });
+
+  const newPaneEl = createPaneElement(newRightSash);
+  newRightSash.domNode = newPaneEl;
+  moveChildNodes(newPaneEl, parentSash.domNode);
+
+  parentSash.addChild(newLeftSash);
+  parentSash.addChild(newRightSash);
+}
+
+function addRightPane(parentSash) {
+  const newLeftSash = new Sash({
+    top: parentSash.top,
+    left: parentSash.left,
+    width: parentSash.width / 2,
+    height: parentSash.height,
+    position: Position.Left,
+  });
+
+  const newPaneEl = createPaneElement(newLeftSash);
+  newLeftSash.domNode = newPaneEl;
+  moveChildNodes(newPaneEl, parentSash.domNode);
+
+  const newRightSash = new Sash({
+    top: parentSash.top,
+    left: parentSash.left + newLeftSash.width,
+    width: parentSash.width / 2,
+    height: parentSash.height,
+    position: Position.Right,
+  });
+
+  parentSash.addChild(newLeftSash);
+  parentSash.addChild(newRightSash);
+}
+
+function addTopPane(parentSash) {
+  const newTopSash = new Sash({
+    top: parentSash.top,
+    left: parentSash.left,
+    width: parentSash.width,
+    height: parentSash.height / 2,
+    position: Position.Top,
+  });
+
+  const newBottomSash = new Sash({
+    top: parentSash.top + newTopSash.height,
+    left: parentSash.left,
+    width: parentSash.width,
+    height: parentSash.height / 2,
+    position: Position.Bottom,
+  });
+
+  const newPaneEl = createPaneElement(newBottomSash);
+  newBottomSash.domNode = newPaneEl;
+  moveChildNodes(newPaneEl, parentSash.domNode);
+
+  parentSash.addChild(newTopSash);
+  parentSash.addChild(newBottomSash);
+}
+
+function addBottomPane(parentSash) {
+  const newTopSash = new Sash({
+    top: parentSash.top,
+    left: parentSash.left,
+    width: parentSash.width,
+    height: parentSash.height / 2,
+    position: Position.Top,
+  });
+
+  const newPaneEl = createPaneElement(newTopSash);
+  newTopSash.domNode = newPaneEl;
+  moveChildNodes(newPaneEl, parentSash.domNode);
+
+  const newBottomSash = new Sash({
+    top: parentSash.top + newTopSash.height,
+    left: parentSash.left,
+    width: parentSash.width,
+    height: parentSash.height / 2,
+    position: Position.Bottom,
+  });
+
+  parentSash.addChild(newTopSash);
+  parentSash.addChild(newBottomSash);
+}
+
+function addPaneByPosition(parentSash, position) {
+  if (position === Position.Left) {
+    addLeftPane(parentSash);
+  }
+  else if (position === Position.Right) {
+    addRightPane(parentSash);
+  }
+  else if (position === Position.Top) {
+    addTopPane(parentSash);
+  }
+  else if (position === Position.Bottom) {
+    addBottomPane(parentSash);
+  }
+}
+
+function __debug(parentEl) {
+  const debugEl = document.createElement('pre');
+  debugEl.style.fontSize = '9px';
+
+  const debugHtml = `
+id: ${parentEl.getAttribute('sash-id')}
+top: ${parentEl.style.top}
+left: ${parentEl.style.left}
+width: ${parentEl.style.width}
+height: ${parentEl.style.height}
+position: ${parentEl.getAttribute('position')}
+`;
+
+  debugEl.innerHTML = debugHtml.trim();
+  return debugEl;
+}

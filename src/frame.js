@@ -3,6 +3,7 @@ import { ConfigRoot } from './config-root.js';
 import { frameFeatures } from './frame.features.js';
 import { framePane } from './frame.pane.js';
 import { frameMuntin } from './frame.muntin.js';
+import { strictAssign } from './utils.js';
 
 /**
  * @think-about:
@@ -13,7 +14,6 @@ import { frameMuntin } from './frame.muntin.js';
 export class Frame {
   windowEl = null;
   containerEl = null;
-  debug = true;
 
   constructor(containerEl, settings) {
     this.containerEl = containerEl;
@@ -83,9 +83,8 @@ export class Frame {
     this.rootSash.walk((sash) => {
       if (sash.children.length > 0) {
         if (!allSashIdsInWindow.includes(sash.id)) {
-          const muntinEl = this.createMuntin(sash);
-          this.windowEl.append(muntinEl);
-          sash.domNode = muntinEl;
+          sash.domNode = this.createMuntin(sash);
+          this.windowEl.append(sash.domNode);
         }
         else {
           this.updateMuntin(sash);
@@ -93,10 +92,10 @@ export class Frame {
       }
       else {
         if (!allSashIdsInWindow.includes(sash.id)) {
-          // Create a new pane with the content of the old pane if it exists
-          const paneEl = sash.domNode ? this.createPane(sash, sash.domNode) : this.createPane(sash);
+          if (!sash.domNode) {
+            sash.domNode = this.createPane(sash);
+          }
 
-          sash.domNode = paneEl;
           this.windowEl.prepend(sash.domNode);
         }
         else {
@@ -107,6 +106,6 @@ export class Frame {
   }
 }
 
-Object.assign(Frame.prototype, frameMuntin);
-Object.assign(Frame.prototype, framePane);
-Object.assign(Frame.prototype, frameFeatures);
+strictAssign(Frame.prototype, frameMuntin);
+strictAssign(Frame.prototype, framePane);
+strictAssign(Frame.prototype, frameFeatures);
