@@ -6,7 +6,7 @@ export const DEFAULTS = {
   left: 0,
   width: 33,
   height: 33,
-  // If grandparent resizes, the width is likely to be less than minWidth
+  // Initial value, real min width is calculated based on children
   minWidth: 20,
 };
 
@@ -51,13 +51,22 @@ export class Sash {
     callback(this);
   }
 
-  isVertSplit() {
+  isLeaf() {
+    return this.children.length === 0;
+  }
+
+  // A sash that doesn't split is a leaf, in UI it's a pane
+  isSplit() {
+    return this.children.length > 0;
+  }
+
+  isLeftRightSplit() {
     return this.children.some(
       (child) => child.position === Position.Left || child.position === Position.Right
     );
   }
 
-  isHorzSplit() {
+  isTopBottomSplit() {
     return this.children.some(
       (child) => child.position === Position.Top || child.position === Position.Bottom
     );
@@ -116,21 +125,21 @@ export class Sash {
   }
 
   calcMinWidth() {
-    const leafDescendants = this.getAllLeafDescendants();
-
-    let totalHorzMinWidth = 0;
-    let biggestVertMinWidth = 0;
-
-    for (const each of leafDescendants) {
-      if (each.position === Position.Left || each.position === Position.Right) {
-        totalHorzMinWidth += each.minWidth;
-      }
-      else if (each.position === Position.Top || each.position === Position.Bottom) {
-        biggestVertMinWidth = Math.max(biggestVertMinWidth, each.minWidth);
-      }
+    if (this.isLeaf()) {
+      return this.minWidth;
     }
 
-    return Math.max(totalHorzMinWidth, biggestVertMinWidth, this.minWidth);
+    const [topChild, rightChild, bottomChild, leftChild] = this.getChildren();
+
+    if (leftChild && rightChild) {
+      const childrenMinWidth = leftChild.calcMinWidth() + rightChild.calcMinWidth();
+      return Math.max(this.minWidth, childrenMinWidth);
+    }
+
+    if (topChild && bottomChild) {
+      const childrenMinWidth = Math.max(topChild.calcMinWidth(), bottomChild.calcMinWidth());
+      return Math.max(this.minWidth, childrenMinWidth);
+    }
   }
 
   // Get self or descendant by id
@@ -250,26 +259,22 @@ export class Sash {
 
       // `newTotalWidth` is not same as `totalWidth` when minWidth is taken into account
       const newTotalWidth = newLeftChildWidth + newRightChildWidth;
+      const leftChildMinWidth = leftChild.calcMinWidth();
+      const rightChildMinWidth = rightChild.calcMinWidth();
 
-      if (newLeftChildWidth < leftChild.minWidth && newRightChildWidth > rightChild.minWidth) {
-        newLeftChildWidth = leftChild.minWidth;
+      if (newLeftChildWidth < leftChildMinWidth && newRightChildWidth > rightChildMinWidth) {
+        newLeftChildWidth = leftChildMinWidth;
         newRightChildWidth = newTotalWidth - newLeftChildWidth;
         newRightChildLeft = leftChild.left + newLeftChildWidth;
       }
-      else if (
-        newRightChildWidth < rightChild.minWidth &&
-        newLeftChildWidth > leftChild.minWidth
-      ) {
-        newRightChildWidth = rightChild.minWidth;
+      else if (newRightChildWidth < rightChildMinWidth && newLeftChildWidth > leftChildMinWidth) {
+        newRightChildWidth = rightChildMinWidth;
         newLeftChildWidth = newTotalWidth - newRightChildWidth;
         newRightChildLeft = leftChild.left + newLeftChildWidth;
       }
-      else if (
-        newLeftChildWidth < leftChild.minWidth &&
-        newRightChildWidth < rightChild.minWidth
-      ) {
-        // When child reaches min width, but grandparent keeps resizing
-        // In this case, children will be resized to less than their min width
+      else if (newLeftChildWidth < leftChildMinWidth && newRightChildWidth < rightChildMinWidth) {
+        // Edge case:
+        // When mouse moves really fast
       }
 
       leftChild.width = newLeftChildWidth;

@@ -48,7 +48,7 @@ export const frameFeatures = {
   },
 
   enableResize() {
-    document.body.addEventListener('mousedown', (event) => {
+    document.addEventListener('mousedown', (event) => {
       if (!this.resizable) return;
       if (event.target.tagName !== 'BW-MUNTIN') return;
 
@@ -64,14 +64,14 @@ export const frameFeatures = {
       this.applyResizeStyles();
     });
 
-    document.body.addEventListener('mousemove', (event) => {
+    document.addEventListener('mousemove', (event) => {
       if (!this.resizable) return;
       if (!this.isResizeStarted || !this.activeMuntinSash) return;
 
       const [topChild, rightChild, bottomChild, leftChild] = this.activeMuntinSash.getChildren();
 
-      const isVerticalMuntin = this.activeMuntinSash.isVertSplit();
-      const isHorizontalMuntin = this.activeMuntinSash.isHorzSplit();
+      const isVerticalMuntin = this.activeMuntinSash.isLeftRightSplit();
+      const isHorizontalMuntin = this.activeMuntinSash.isTopBottomSplit();
 
       if (isVerticalMuntin && leftChild && rightChild) {
         const distX = event.pageX - this.lastX;
@@ -115,7 +115,7 @@ export const frameFeatures = {
       }
     });
 
-    document.body.addEventListener('mouseup', () => {
+    document.addEventListener('mouseup', () => {
       if (!this.resizable) return;
 
       this.isResizeStarted = false;
