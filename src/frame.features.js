@@ -5,7 +5,6 @@ export const frameFeatures = {
   lastX: 0,
   lastY: 0,
   minPaneSize: 0,
-  maxPaneSize: Infinity,
   fitContainer: false,
   resizable: true,
   droppable: true,
@@ -100,18 +99,18 @@ export const frameFeatures = {
         const newBottomChildHeight = bottomChild.height - distY;
 
         if (
-          (newTopChildHeight > this.minPaneSize || newTopChildHeight === this.minPaneSize) &&
-          (newBottomChildHeight > this.minPaneSize || newBottomChildHeight === this.minPaneSize) &&
-          (newTopChildHeight < this.maxPaneSize || newTopChildHeight === this.maxPaneSize) &&
-          (newBottomChildHeight < this.maxPaneSize || newBottomChildHeight === this.maxPaneSize)
+          newTopChildHeight <= topChild.calcMinHeight() ||
+          newBottomChildHeight <= bottomChild.calcMinHeight()
         ) {
-          topChild.height += distY;
-          bottomChild.height -= distY;
-          bottomChild.top += distY;
-
-          this.update();
-          this.lastY = event.pageY;
+          return;
         }
+
+        topChild.height = newTopChildHeight;
+        bottomChild.height = newBottomChildHeight;
+        bottomChild.top = bottomChild.top + distY;
+
+        this.update();
+        this.lastY = event.pageY;
       }
     });
 

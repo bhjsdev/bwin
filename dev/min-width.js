@@ -29,3 +29,13 @@ const settings3 = {
 const frame3 = new Frame(document.querySelector('#container-3'), settings3);
 frame3.create();
 window.sash3 = frame2.rootSash;
+
+const settings4 = {
+  width: 600,
+  height: 100,
+  children: [{ size: 0.2, children: [0.3, 0.7] }, [0.2, [0.4]]],
+};
+
+const frame4 = new Frame(document.querySelector('#container-4'), settings4);
+frame4.create();
+window.sash3 = frame2.rootSash;

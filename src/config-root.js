@@ -11,7 +11,6 @@ export const FEAT_DEFAULTS = {
   resizable: true,
   fitContainer: false,
   minPaneSize: 0,
-  maxPaneSize: Infinity,
 };
 
 export class ConfigRoot extends ConfigNode {
@@ -24,7 +23,6 @@ export class ConfigRoot extends ConfigNode {
       droppable = FEAT_DEFAULTS.droppable,
       fitContainer = FEAT_DEFAULTS.fitContainer,
       minPaneSize = FEAT_DEFAULTS.minPaneSize,
-      maxPaneSize = FEAT_DEFAULTS.maxPaneSize,
       resizable = FEAT_DEFAULTS.resizable,
     } = {
       ...DEFAULTS,
@@ -42,7 +40,6 @@ export class ConfigRoot extends ConfigNode {
     this.droppable = droppable;
     this.fitContainer = fitContainer;
     this.minPaneSize = minPaneSize;
-    this.maxPaneSize = maxPaneSize;
     this.resizable = resizable;
   }
 }

@@ -8,6 +8,7 @@ export const DEFAULTS = {
   height: 33,
   // Initial value, real min width is calculated based on children
   minWidth: 20,
+  minHeight: 20,
 };
 
 /**
@@ -20,6 +21,7 @@ export class Sash {
     width = DEFAULTS.width,
     height = DEFAULTS.height,
     minWidth = DEFAULTS.minWidth,
+    minHeight = DEFAULTS.minHeight,
     parent = null,
     domNode = null,
     position,
@@ -41,6 +43,7 @@ export class Sash {
     this.dom;
     this.children = [];
     this.minWidth = minWidth;
+    this.minHeight = minHeight;
     this.parent = parent;
   }
 
@@ -139,6 +142,24 @@ export class Sash {
     if (topChild && bottomChild) {
       const childrenMinWidth = Math.max(topChild.calcMinWidth(), bottomChild.calcMinWidth());
       return Math.max(this.minWidth, childrenMinWidth);
+    }
+  }
+
+  calcMinHeight() {
+    if (this.isLeaf()) {
+      return this.minHeight;
+    }
+
+    const [topChild, rightChild, bottomChild, leftChild] = this.getChildren();
+
+    if (leftChild && rightChild) {
+      const childrenMinHeight = Math.max(leftChild.calcMinHeight(), rightChild.calcMinHeight());
+      return Math.max(this.minHeight, childrenMinHeight);
+    }
+
+    if (topChild && bottomChild) {
+      const childrenMinHeight = topChild.calcMinHeight() + bottomChild.calcMinHeight();
+      return Math.max(this.minHeight, childrenMinHeight);
     }
   }
 
@@ -273,8 +294,7 @@ export class Sash {
         newRightChildLeft = leftChild.left + newLeftChildWidth;
       }
       else if (newLeftChildWidth < leftChildMinWidth && newRightChildWidth < rightChildMinWidth) {
-        // Edge case:
-        // When mouse moves really fast
+        // Edge case: when mouse moves really fast
       }
 
       leftChild.width = newLeftChildWidth;
@@ -299,12 +319,41 @@ export class Sash {
     const [topChild, rightChild, bottomChild, leftChild] = this.getChildren();
 
     if (topChild && bottomChild) {
-      const topDist = dist * (topChild.height / (topChild.height + bottomChild.height));
-      const bottomDist = dist - topDist;
+      const totalHeight = topChild.height + bottomChild.height;
+      const topDist = dist * (topChild.height / totalHeight);
+      const bottomDist = dist * (bottomChild.height / totalHeight);
 
-      topChild.height += topDist;
-      bottomChild.height += bottomDist;
-      bottomChild.top += topDist;
+      let newTopChildHeight = topChild.height + topDist;
+      let newBottomChildHeight = bottomChild.height + bottomDist;
+      let newBottomChildTop = bottomChild.top + topDist;
+
+      const newTotalHeight = newTopChildHeight + newBottomChildHeight;
+      const topChildMinHeight = topChild.calcMinHeight();
+      const bottomChildMinHeight = bottomChild.calcMinHeight();
+
+      if (newTopChildHeight < topChildMinHeight && newBottomChildHeight > bottomChildMinHeight) {
+        newTopChildHeight = topChildMinHeight;
+        newBottomChildHeight = newTotalHeight - newTopChildHeight;
+        newBottomChildTop = topChild.top + newTopChildHeight;
+      }
+      else if (
+        newBottomChildHeight < bottomChildMinHeight &&
+        newTopChildHeight > topChildMinHeight
+      ) {
+        newBottomChildHeight = bottomChildMinHeight;
+        newTopChildHeight = newTotalHeight - newBottomChildHeight;
+        newBottomChildTop = topChild.top + newTopChildHeight;
+      }
+      else if (
+        newTopChildHeight < topChildMinHeight &&
+        newBottomChildHeight < bottomChildMinHeight
+      ) {
+        // Edge case: when mouse moves really fast
+      }
+
+      topChild.height = newTopChildHeight;
+      bottomChild.height = newBottomChildHeight;
+      bottomChild.top = newBottomChildTop;
     }
 
     if (leftChild && rightChild) {

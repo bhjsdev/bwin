@@ -5,7 +5,6 @@ const files = [
   'resize-x',
   'resize-y',
   'fit-container',
-  'min-max-pane-size',
   'add-pane-frame',
   'add-remove-panes-bwin',
   'config',
@@ -15,7 +14,10 @@ const files = [
   'config-simplest',
   'droppable',
   'resizable',
-  'min-max-sash-size',
+  'min-width',
+  'min-width-top-bottom',
+  'min-height',
+  'min-height-left-right',
 ].sort();
 
 const navEl = document.createElement('nav');

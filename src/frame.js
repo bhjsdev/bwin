@@ -10,6 +10,9 @@ import { strictAssign } from './utils.js';
  *   1. if we need to immediately update the frame size
  *      when `fitContainer` is set true or false
  *   2. add a `fit` method to fit the frame to the container
+ *
+ * @todo:
+ *   - Assign `minPaneSize` to Sash's minWidth and minHeight
  */
 export class Frame {
   windowEl = null;
@@ -33,7 +36,6 @@ export class Frame {
     this.fitContainer = config.fitContainer;
     this.resizable = config.resizable;
     this.minPaneSize = config.minPaneSize;
-    this.maxPaneSize = config.maxPaneSize;
 
     this.initFeatures();
   }

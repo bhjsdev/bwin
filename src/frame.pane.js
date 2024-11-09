@@ -1,4 +1,4 @@
-import { genColor, genId, moveChildNodes } from './utils.js';
+import { genBrightColor, genId, moveChildNodes } from './utils.js';
 import { Position } from './position.js';
 import { Sash } from './sash.js';
 
@@ -56,7 +56,7 @@ function createPaneElement(sash) {
   paneEl.setAttribute('position', sash.position);
 
   if (debug) {
-    paneEl.style.backgroundColor = genColor();
+    paneEl.style.backgroundColor = genBrightColor();
     paneEl.append(__debug(paneEl));
   }
 

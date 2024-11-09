@@ -14,6 +14,23 @@ export function genColor(maxOpacity = 0.5) {
 }
 
 /**
+ * Generate a bright random color string in the format of "rgba(r, g, b, a)"
+ *
+ * @param {number} maxOpacity - The maximum opacity value (0.5 to 1)
+ * @returns {string}
+ */
+export function genBrightColor(maxOpacity = 0.7, minBrightness = 128) {
+  const brightnessRange = 256 - minBrightness;
+
+  const r = Math.floor(Math.random() * brightnessRange + minBrightness);
+  const g = Math.floor(Math.random() * brightnessRange + minBrightness);
+  const b = Math.floor(Math.random() * brightnessRange + minBrightness);
+  const opacity = Math.max(0.5, Math.random() * maxOpacity);
+
+  return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+}
+
+/**
  * Generate a random string of digits
  *
  * @param {number} length - The length of the string
