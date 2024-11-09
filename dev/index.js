@@ -15,6 +15,7 @@ const files = [
   'config-simplest',
   'droppable',
   'resizable',
+  'min-max-sash-size',
 ].sort();
 
 const navEl = document.createElement('nav');

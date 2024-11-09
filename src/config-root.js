@@ -10,7 +10,7 @@ export const FEAT_DEFAULTS = {
   droppable: true,
   resizable: true,
   fitContainer: false,
-  minPaneSize: 20,
+  minPaneSize: 0,
   maxPaneSize: Infinity,
 };
 

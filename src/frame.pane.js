@@ -195,7 +195,7 @@ function addPaneByPosition(parentSash, position) {
 
 function __debug(parentEl) {
   const debugEl = document.createElement('pre');
-  debugEl.style.fontSize = '9px';
+  debugEl.style.fontSize = '10px';
 
   const debugHtml = `
 id: ${parentEl.getAttribute('sash-id')}

@@ -8,7 +8,7 @@ body {
 ._menu {
   margin: 0;
   padding: 0;
-  width: 180px;
+  width: 120px;
   height: 100vh;
   list-style: none;
   overflow-y: auto;
@@ -20,7 +20,7 @@ body {
 
   a {
     padding: 4px 8px;
-    font-size: 16px;
+    font-size: 14px;
     display: block;
     color: black;
     text-decoration: none;
@@ -39,7 +39,7 @@ body {
 main {
   flex-grow: 1;
   background-color: white;
-  padding: 0 20px;
+  padding: 0 10px;
   overflow-y: auto;
   max-height: 100vh;
 }
