@@ -206,6 +206,6 @@ height: ${parentEl.style.height}
 position: ${parentEl.getAttribute('position')}
 `;
 
-  debugEl.innerHTML = debugHtml.trim();
+  // debugEl.innerHTML = debugHtml.trim();
   return debugEl;
 }

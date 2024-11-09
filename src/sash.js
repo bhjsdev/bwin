@@ -6,6 +6,8 @@ export const DEFAULTS = {
   left: 0,
   width: 33,
   height: 33,
+  // If grandparent resizes, the width is likely to be less than minWidth
+  minWidth: 20,
 };
 
 /**
@@ -17,6 +19,8 @@ export class Sash {
     left = DEFAULTS.left,
     width = DEFAULTS.width,
     height = DEFAULTS.height,
+    minWidth = DEFAULTS.minWidth,
+    parent = null,
     domNode = null,
     position,
     id,
@@ -36,13 +40,14 @@ export class Sash {
     this.id = id ?? genId();
     this.dom;
     this.children = [];
+    this.minWidth = minWidth;
+    this.parent = parent;
   }
 
   walk(callback) {
     this.children.forEach((child) => child.walk(callback));
 
     // Visit the deepest node first
-    // So without giving z-index, muntins will be rendered on top of panes
     callback(this);
   }
 
@@ -96,6 +101,36 @@ export class Sash {
     }
 
     return [topChild, rightChild, bottomChild, leftChild];
+  }
+
+  getAllLeafDescendants() {
+    const leafDescendants = [];
+
+    this.walk((node) => {
+      if (node.children.length === 0) {
+        leafDescendants.push(node);
+      }
+    });
+
+    return leafDescendants;
+  }
+
+  calcMinWidth() {
+    const leafDescendants = this.getAllLeafDescendants();
+
+    let totalHorzMinWidth = 0;
+    let biggestVertMinWidth = 0;
+
+    for (const each of leafDescendants) {
+      if (each.position === Position.Left || each.position === Position.Right) {
+        totalHorzMinWidth += each.minWidth;
+      }
+      else if (each.position === Position.Top || each.position === Position.Bottom) {
+        biggestVertMinWidth = Math.max(biggestVertMinWidth, each.minWidth);
+      }
+    }
+
+    return Math.max(totalHorzMinWidth, biggestVertMinWidth, this.minWidth);
   }
 
   // Get self or descendant by id
@@ -205,12 +240,41 @@ export class Sash {
     const [topChild, rightChild, bottomChild, leftChild] = this.getChildren();
 
     if (leftChild && rightChild) {
-      const leftDist = dist * (leftChild.width / (leftChild.width + rightChild.width));
-      const rightDist = dist - leftDist;
+      const totalWidth = leftChild.width + rightChild.width;
+      const leftDist = dist * (leftChild.width / totalWidth);
+      const rightDist = dist * (rightChild.width / totalWidth);
 
-      leftChild.width += leftDist;
-      rightChild.width += rightDist;
-      rightChild.left += leftDist;
+      let newLeftChildWidth = leftChild.width + leftDist;
+      let newRightChildWidth = rightChild.width + rightDist;
+      let newRightChildLeft = rightChild.left + leftDist;
+
+      // `newTotalWidth` is not same as `totalWidth` when minWidth is taken into account
+      const newTotalWidth = newLeftChildWidth + newRightChildWidth;
+
+      if (newLeftChildWidth < leftChild.minWidth && newRightChildWidth > rightChild.minWidth) {
+        newLeftChildWidth = leftChild.minWidth;
+        newRightChildWidth = newTotalWidth - newLeftChildWidth;
+        newRightChildLeft = leftChild.left + newLeftChildWidth;
+      }
+      else if (
+        newRightChildWidth < rightChild.minWidth &&
+        newLeftChildWidth > leftChild.minWidth
+      ) {
+        newRightChildWidth = rightChild.minWidth;
+        newLeftChildWidth = newTotalWidth - newRightChildWidth;
+        newRightChildLeft = leftChild.left + newLeftChildWidth;
+      }
+      else if (
+        newLeftChildWidth < leftChild.minWidth &&
+        newRightChildWidth < rightChild.minWidth
+      ) {
+        // When child reaches min width, but grandparent keeps resizing
+        // In this case, children will be resized to less than their min width
+      }
+
+      leftChild.width = newLeftChildWidth;
+      rightChild.width = newRightChildWidth;
+      rightChild.left = newRightChildLeft;
     }
 
     if (topChild && bottomChild) {

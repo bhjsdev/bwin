@@ -80,18 +80,18 @@ export const frameFeatures = {
         const newRightChildWidth = rightChild.width - distX;
 
         if (
-          (newLeftChildWidth > this.minPaneSize || newLeftChildWidth === this.minPaneSize) &&
-          (newRightChildWidth > this.minPaneSize || newRightChildWidth === this.minPaneSize) &&
-          (newLeftChildWidth < this.maxPaneSize || newLeftChildWidth === this.maxPaneSize) &&
-          (newRightChildWidth < this.maxPaneSize || newRightChildWidth === this.maxPaneSize)
+          newLeftChildWidth <= leftChild.calcMinWidth() ||
+          newRightChildWidth <= rightChild.calcMinWidth()
         ) {
-          leftChild.width = newLeftChildWidth;
-          rightChild.width = newRightChildWidth;
-          rightChild.left = rightChild.left + distX;
-
-          this.update();
-          this.lastX = event.pageX;
+          return;
         }
+
+        leftChild.width = newLeftChildWidth;
+        rightChild.width = newRightChildWidth;
+        rightChild.left = rightChild.left + distX;
+
+        this.update();
+        this.lastX = event.pageX;
       }
       else if (isHorizontalMuntin && topChild && bottomChild) {
         const distY = event.pageY - this.lastY;
