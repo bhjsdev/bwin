@@ -270,14 +270,12 @@ export class Sash {
     if (leftChild && rightChild) {
       const totalWidth = leftChild.width + rightChild.width;
       const leftDist = dist * (leftChild.width / totalWidth);
-      const rightDist = dist * (rightChild.width / totalWidth);
 
+      const newTotalWidth = totalWidth + dist;
       let newLeftChildWidth = leftChild.width + leftDist;
-      let newRightChildWidth = rightChild.width + rightDist;
+      let newRightChildWidth = newTotalWidth - newLeftChildWidth;
       let newRightChildLeft = rightChild.left + leftDist;
 
-      // `newTotalWidth` is not same as `totalWidth` when minWidth is taken into account
-      const newTotalWidth = newLeftChildWidth + newRightChildWidth;
       const leftChildMinWidth = leftChild.calcMinWidth();
       const rightChildMinWidth = rightChild.calcMinWidth();
 
@@ -319,13 +317,12 @@ export class Sash {
     if (topChild && bottomChild) {
       const totalHeight = topChild.height + bottomChild.height;
       const topDist = dist * (topChild.height / totalHeight);
-      const bottomDist = dist * (bottomChild.height / totalHeight);
 
+      const newTotalHeight = totalHeight + dist;
       let newTopChildHeight = topChild.height + topDist;
-      let newBottomChildHeight = bottomChild.height + bottomDist;
+      let newBottomChildHeight = newTotalHeight - newTopChildHeight;
       let newBottomChildTop = bottomChild.top + topDist;
 
-      const newTotalHeight = newTopChildHeight + newBottomChildHeight;
       const topChildMinHeight = topChild.calcMinHeight();
       const bottomChildMinHeight = bottomChild.calcMinHeight();
 
