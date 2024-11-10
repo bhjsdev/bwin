@@ -4,15 +4,16 @@ import { Position } from './position';
 export const DEFAULTS = {
   top: 0,
   left: 0,
-  width: 33,
-  height: 33,
-  // Initial value, real min width is calculated based on children
+  width: 100,
+  height: 100,
+  // Initial min values, real min width/height is calculated based on children
   minWidth: 20,
   minHeight: 20,
 };
 
 /**
- * @todo: Add a min size to stop sash from resizing when parent is resized
+ * @think
+ *   1. When minWidth/minHeight is set larger than its owns width/height, what should happen?
  */
 export class Sash {
   constructor({
@@ -22,7 +23,6 @@ export class Sash {
     height = DEFAULTS.height,
     minWidth = DEFAULTS.minWidth,
     minHeight = DEFAULTS.minHeight,
-    parent = null,
     domNode = null,
     position,
     id,
@@ -40,11 +40,9 @@ export class Sash {
     this.position = position;
     this.domNode = domNode;
     this.id = id ?? genId();
-    this.dom;
     this.children = [];
     this.minWidth = minWidth;
     this.minHeight = minHeight;
-    this.parent = parent;
   }
 
   walk(callback) {

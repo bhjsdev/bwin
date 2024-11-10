@@ -16,9 +16,11 @@ export class ConfigNode {
   constructor(config) {
     this.domNode = config.domNode;
     this.parentRect = config.parentRect;
-    this.id = config.id;
     this.children = config.children;
     this.siblingConfigNode = config.siblingConfigNode;
+    this.id = config.id;
+    this.minWidth = config.minWidth;
+    this.minHeight = config.minHeight;
 
     this.position = this.getPosition(config.position);
     this.size = this.getSize(config.size);
@@ -142,6 +144,8 @@ export class ConfigNode {
       height: this.height,
       position: this.position,
       id: this.id,
+      minWidth: this.minWidth,
+      minHeight: this.minHeight,
     });
   }
 
@@ -178,6 +182,9 @@ export class ConfigNode {
       size: config.size ?? PRIMARY_DEFAULTS.size,
       position: config.position ?? PRIMARY_DEFAULTS.position,
       children: config.children,
+      id: config.id,
+      minWidth: config.minWidth,
+      minHeight: config.minHeight,
     });
   }
 
@@ -188,6 +195,9 @@ export class ConfigNode {
       position: config.position,
       children: config.children,
       siblingConfigNode: primaryConfigNode,
+      id: config.id,
+      minWidth: config.minWidth,
+      minHeight: config.minHeight,
     });
   }
 
