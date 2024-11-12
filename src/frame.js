@@ -1,6 +1,6 @@
-import { SashConfig } from './sash-config.js';
-import { ConfigRoot } from './config-root.js';
-import { strictAssign } from './utils.js';
+import { SashConfig } from './sash-config';
+import { ConfigRoot } from './config-root';
+import { strictAssign } from './utils';
 
 /**
  * @think-about:

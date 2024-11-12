@@ -1,4 +1,4 @@
-import { Frame } from './frame.js';
+import { Frame } from './frame';
 
 export class BinaryWindow extends Frame {
   // WARNING: Do not pass `sash-id` to child nodes.
