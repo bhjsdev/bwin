@@ -1,11 +1,5 @@
 import { SashConfig } from './sash-config.js';
 import { ConfigRoot } from './config-root.js';
-import frameMain from './frame.main.js';
-import frameMuntin from './frame.muntin.js';
-import framePane from './frame.pane.js';
-import frameFitContainer from './frame.fit-container.js';
-import frameResizable from './frame.resizable.js';
-import frameDroppable from './frame.droppable.js';
 import { strictAssign } from './utils.js';
 
 /**
@@ -41,9 +35,18 @@ export class Frame {
   }
 }
 
-strictAssign(Frame.prototype, frameMain);
-strictAssign(Frame.prototype, frameMuntin);
-strictAssign(Frame.prototype, framePane);
-strictAssign(Frame.prototype, frameResizable);
-strictAssign(Frame.prototype, frameFitContainer);
-strictAssign(Frame.prototype, frameDroppable);
+const modulePaths = [
+  './frame.main.js',
+  './frame.muntin.js',
+  './frame.pane.js',
+  './frame.fit-container.js',
+  './frame.resizable.js',
+  './frame.droppable.js',
+];
+
+for (const path of modulePaths) {
+  strictAssign(
+    Frame.prototype,
+    await import(/* @vite-ignore */ path).then((module) => module.default)
+  );
+}
