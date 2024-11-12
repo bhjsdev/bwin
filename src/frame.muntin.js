@@ -1,4 +1,4 @@
-export const frameMuntin = {
+export default {
   muntinSize: 5,
 
   createMuntin(sash) {

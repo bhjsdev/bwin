@@ -8,7 +8,7 @@ export function enableDebug(value) {
   debug = value;
 }
 
-export const framePane = {
+export default {
   // `createPane` is overridden in `binary-window.js`
   createPane(sash) {
     return createPaneElement(sash);

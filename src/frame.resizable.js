@@ -1,36 +1,10 @@
-export const frameFeatures = {
+export default {
   activeMuntinSash: null,
   isResizeStarted: false,
   isDropStarted: false,
   lastX: 0,
   lastY: 0,
-  minPaneSize: 0,
-  fitContainer: false,
   resizable: true,
-  droppable: true,
-
-  initFeatures() {
-    this.droppable && this.enableDrop();
-    this.fitContainer && this.enableFitContainer();
-    this.resizable && this.enableResize();
-  },
-
-  enableDrop() {},
-
-  enableFitContainer() {
-    const resizeObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        if (entry.target === this.containerEl && this.fitContainer) {
-          this.rootSash.width = entry.contentRect.width;
-          this.rootSash.height = entry.contentRect.height;
-
-          this.update();
-        }
-      }
-    });
-
-    resizeObserver.observe(this.containerEl);
-  },
 
   applyResizeStyles() {
     if (this.activeMuntinSash.domNode.hasAttribute('vertical')) {

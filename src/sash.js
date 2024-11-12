@@ -290,7 +290,7 @@ export class Sash {
         newRightChildLeft = leftChild.left + newLeftChildWidth;
       }
       else if (newLeftChildWidth < leftChildMinWidth && newRightChildWidth < rightChildMinWidth) {
-        // Edge case: when mouse moves really fast
+        // This happens when `calcMinWidth` is not checked in UI when resize
       }
 
       leftChild.width = newLeftChildWidth;
@@ -343,7 +343,7 @@ export class Sash {
         newTopChildHeight < topChildMinHeight &&
         newBottomChildHeight < bottomChildMinHeight
       ) {
-        // Edge case: when mouse moves really fast
+        // This happens when `calcMinHeight` is not checked in UI when resize
       }
 
       topChild.height = newTopChildHeight;
