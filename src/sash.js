@@ -73,19 +73,19 @@ export class Sash {
     );
   }
 
-  getLeftChild() {
+  get leftChild() {
     return this.children.find((child) => child.position === Position.Left);
   }
 
-  getRightChild() {
+  get rightChild() {
     return this.children.find((child) => child.position === Position.Right);
   }
 
-  getTopChild() {
+  get topChild() {
     return this.children.find((child) => child.position === Position.Top);
   }
 
-  getBottomChild() {
+  get bottomChild() {
     return this.children.find((child) => child.position === Position.Bottom);
   }
 
