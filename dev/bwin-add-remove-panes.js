@@ -1,5 +1,4 @@
 import { Sash, Position, BinaryWindow, SashConfig } from '../src';
-import { enableDebug } from '../src/frame.pane';
 
 const rootSash = new SashConfig({
   width: 200,
@@ -57,8 +56,8 @@ const pane4 = new Sash({
 sash2.children.push(pane3, pane4);
 rootSash.children.push(sash1, sash2);
 
-enableDebug(false);
 const bwin = new BinaryWindow(document.querySelector('#container'), rootSash);
+bwin.debug = false;
 bwin.create();
 
 document.querySelector('#add-pane').addEventListener('click', () => {

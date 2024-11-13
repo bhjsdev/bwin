@@ -6,7 +6,7 @@ const files = [
   'resize-y',
   'fit-container',
   'add-pane-frame',
-  'add-remove-panes-bwin',
+  'bwin-add-remove-panes',
   'config',
   'config-2',
   'config-array',
@@ -18,6 +18,7 @@ const files = [
   'min-width-top-bottom',
   'min-height',
   'min-height-left-right',
+  'bwin-droppable',
 ].sort();
 
 const navEl = document.createElement('nav');

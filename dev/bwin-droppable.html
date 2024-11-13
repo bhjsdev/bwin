@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script type="module" src="/index.js"></script>
-    <script type="module" src="/droppable.js"></script>
+    <script type="module" src="/bwin-droppable.js"></script>
   </head>
   <style>
     #draggable {
@@ -19,19 +19,12 @@
       height: 99px;
       border: 2px dashed #333;
     }
-    .highlight {
-      background: #eee;
-    }
   </style>
   <body>
     <main>
       <h2>Droppable</h2>
-      <div style="display: flex; gap: 20px">
-        <div id="draggable" draggable="true">Drag me</div>
-        <div id="dropzone">Drop here</div>
-      </div>
+      <div id="draggable" draggable="true">Drag me</div>
 
-      <button id="toggle-droppable">Disable Droppable</button>
       <section id="container" style="height: 150px"></section>
     </main>
   </body>

@@ -2,7 +2,84 @@ import { Frame } from '../src';
 
 const settings = {
   children: [100],
+  onDrop: (event, sash) => {
+    const paneEl = sash.domNode;
+    paneEl.append(dragItem);
+    const dropArea = paneEl.getAttribute('drop-area');
+    dragItem.style.position = 'absolute';
+
+    if (dropArea === 'top') {
+      dragItem.style.top = '0';
+      dragItem.style.left = '50%';
+      dragItem.style.transform = 'translateX(-50%)';
+    }
+    else if (dropArea === 'right') {
+      dragItem.style.top = '50%';
+      dragItem.style.left = 'auto';
+      dragItem.style.right = '0';
+      dragItem.style.transform = 'translateY(-50%)';
+    }
+    else if (dropArea === 'bottom') {
+      dragItem.style.top = 'auto';
+      dragItem.style.bottom = '0';
+      dragItem.style.left = '50%';
+      dragItem.style.transform = 'translateX(-50%)';
+    }
+    else if (dropArea === 'left') {
+      dragItem.style.top = '50%';
+      dragItem.style.left = '0';
+      dragItem.style.transform = 'translateY(-50%)';
+    }
+    else if (dropArea === 'center') {
+      dragItem.style.top = '50%';
+      dragItem.style.left = '50%';
+      dragItem.style.transform = 'translate(-50%, -50%)';
+    }
+  },
 };
 
 const frame = new Frame(document.querySelector('#container'), settings);
 frame.create();
+
+const dragItem = document.getElementById('draggable');
+const dropZone = document.getElementById('dropzone');
+
+// Drag events
+dragItem.addEventListener('dragstart', (event) => {
+  dragItem.style.opacity = '0.5';
+});
+
+dragItem.addEventListener('dragend', () => {
+  dragItem.style.opacity = '1';
+});
+
+// Drop events
+dropZone.addEventListener('dragover', (e) => {
+  e.preventDefault(); // Required to allow drop
+  dropZone.classList.add('highlight');
+});
+
+dropZone.addEventListener('dragleave', () => {
+  dropZone.classList.remove('highlight');
+});
+
+dropZone.addEventListener('drop', (event) => {
+  event.preventDefault();
+  console.log('🐞 -> dragItem:', dragItem);
+
+  dropZone.classList.remove('highlight');
+
+  dragItem.style.position = 'static';
+  dragItem.style.transform = 'none';
+  dropZone.appendChild(dragItem);
+});
+
+let droppable = true;
+
+document.querySelector('#toggle-droppable').addEventListener('click', (event) => {
+  droppable = !droppable;
+  event.target.textContent = droppable ? 'Disable Droppable' : 'Enable Droppable';
+  frame.droppable = droppable;
+});
+
+window.frame = frame;

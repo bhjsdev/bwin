@@ -1,0 +1,19 @@
+bw-glass {
+  --bw-glass-header-height: 20px;
+
+  display: block;
+  box-sizing: border-box;
+  height: 100%;
+}
+
+bw-glass-header {
+  display: block;
+  box-sizing: border-box;
+  height: var(--bw-glass-header-height);
+}
+
+bw-glass-content {
+  display: block;
+  box-sizing: border-box;
+  height: calc(100% - var(--bw-glass-header-height));
+}

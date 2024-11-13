@@ -40,6 +40,11 @@ function getMinorDiagonalX({ width, height, y }) {
   return width - (width / height) * y;
 }
 
+/**
+ * Get the cursor position relative to the element
+ *
+ * @returns {Position} The cursor position
+ */
 export function getCursorPosition(element, { clientX, clientY }) {
   const rect = element.getBoundingClientRect();
   const { width, height } = rect;

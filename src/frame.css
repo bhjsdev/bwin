@@ -2,21 +2,63 @@ bw-window {
   position: absolute;
   display: block;
   box-sizing: border-box;
-  outline: 1px solid black;
 }
 
 bw-pane {
   position: absolute;
   overflow: auto;
   box-sizing: border-box;
+  background-color: hsl(0, 0%, 95%);
+
+  &[drop-area]::before {
+    content: '';
+    position: absolute;
+    background-color: hsl(0, 0%, 0%, 0.1);
+  }
+
+  &[drop-area='top']::before {
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+  }
+
+  &[drop-area='right']::before {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 50%;
+  }
+
+  &[drop-area='bottom']::before {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+  }
+
+  &[drop-area='left']::before {
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 50%;
+  }
+
+  &[drop-area='center']::before {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
 }
 
 bw-muntin {
   box-sizing: border-box;
   position: absolute;
+  background-color: white;
 
   &:hover {
-    background-color: hsl(0, 0%, 0%, 0.2);
+    background-color: hsl(0, 0%, 0%, 0.1);
   }
 
   &[horizontal] {

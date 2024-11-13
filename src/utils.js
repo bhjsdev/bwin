@@ -153,3 +153,24 @@ export function strictAssign(target, source) {
   }
   return target;
 }
+
+/**
+ * Throttle a function to run at most once every `limit` milliseconds
+ *
+ * @param {Function} func - The function to throttle
+ * @param {number} limit - The time limit in milliseconds
+ */
+export function throttle(func, limit) {
+  let inThrottle = false;
+
+  return function (...args) {
+    if (!inThrottle) {
+      func.apply(this, args);
+      inThrottle = true;
+
+      setTimeout(() => {
+        inThrottle = false;
+      }, limit);
+    }
+  };
+}

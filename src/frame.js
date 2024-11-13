@@ -33,6 +33,7 @@ export class Frame {
     this.resizable = config.resizable;
     this.fitContainer = config.fitContainer;
     this.droppable = config.droppable;
+    this.onDrop = config.onDrop;
 
     // Features. Can work independently
     this.resizable && this.enableResize();

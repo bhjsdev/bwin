@@ -2,21 +2,17 @@ import { genBrightColor, genId, moveChildNodes } from './utils.js';
 import { Position } from './position.js';
 import { Sash } from './sash.js';
 
-let debug = true;
-
-export function enableDebug(value) {
-  debug = value;
-}
-
 export default {
+  debug: true,
+
   // `createPane` is overridden in `binary-window.js`
   createPane(sash) {
-    return createPaneElement(sash);
+    return createPaneElement.call(this, sash);
   },
 
   // `updatePane` may be overridden in `binary-window.js`, not yet
   updatePane(sash) {
-    return updatePaneElement(sash);
+    return updatePaneElement.call(this, sash);
   },
 
   addPane(parentSashId, position) {
@@ -46,7 +42,7 @@ export default {
   },
 };
 
-function createPaneElement(sash) {
+export function createPaneElement(sash) {
   const paneEl = document.createElement('bw-pane');
   paneEl.style.top = `${sash.top}px`;
   paneEl.style.left = `${sash.left}px`;
@@ -55,7 +51,7 @@ function createPaneElement(sash) {
   paneEl.setAttribute('sash-id', sash.id);
   paneEl.setAttribute('position', sash.position);
 
-  if (debug) {
+  if (this?.debug) {
     paneEl.style.backgroundColor = genBrightColor();
     paneEl.append(__debug(paneEl));
   }
@@ -70,7 +66,7 @@ function updatePaneElement(sash) {
   paneEl.style.width = `${sash.width}px`;
   paneEl.style.height = `${sash.height}px`;
 
-  if (debug) {
+  if (this?.debug) {
     paneEl.innerHTML = '';
     paneEl.append(__debug(paneEl));
   }
@@ -206,6 +202,6 @@ height: ${parentEl.style.height}
 position: ${parentEl.getAttribute('position')}
 `;
 
-  // debugEl.innerHTML = debugHtml.trim();
+  debugEl.innerHTML = debugHtml.trim();
   return debugEl;
 }

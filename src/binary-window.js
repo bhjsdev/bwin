@@ -1,4 +1,5 @@
 import { Frame } from './frame';
+import './glass.css';
 
 export class BinaryWindow extends Frame {
   // WARNING: Do not pass `sash-id` to child nodes.
