@@ -40,11 +40,19 @@ export class Frame {
     this.fitContainer && this.enableFitContainer();
     this.droppable && this.enableDrop();
   }
+
+  static assemble(...modules) {
+    modules.forEach((module) => {
+      strictAssign(Frame.prototype, module);
+    });
+  }
 }
 
-strictAssign(Frame.prototype, frameMain);
-strictAssign(Frame.prototype, frameMuntin);
-strictAssign(Frame.prototype, framePane);
-strictAssign(Frame.prototype, frameFitContainer);
-strictAssign(Frame.prototype, frameResizable);
-strictAssign(Frame.prototype, frameDroppable);
+Frame.assemble(
+  frameMain,
+  frameMuntin,
+  framePane,
+  frameFitContainer,
+  frameDroppable,
+  frameResizable
+);
