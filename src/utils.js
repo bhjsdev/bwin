@@ -80,8 +80,8 @@ export function genId(alphabetLength = 2, digitLength = 3) {
 /**
  * Move all child nodes from one DOM element to another
  *
- * @param {HTMLElement} toNode - The destination node
- * @param {HTMLElement} fromNode - The source node
+ * @param {Node} toNode - The destination node
+ * @param {Node} fromNode - The source node
  */
 export function moveChildNodes(toNode, fromNode) {
   while (fromNode.firstChild) {
@@ -126,7 +126,7 @@ export function parseSize(size) {
 /**
  * Check if a value is a plain object, not array, null, etc
  *
- * @param {any} value - The value to check
+ * @param {*} value - The value to check
  * @returns {boolean}
  */
 export function isPlainObject(value) {
@@ -173,4 +173,61 @@ export function throttle(func, limit) {
       }, limit);
     }
   };
+}
+
+/**
+ * Create a DocumentFragment from an HTML string
+ *
+ * @param {string} htmlString - The HTML string
+ * @returns {DocumentFragment}
+ */
+export function createFragment(htmlString) {
+  const templateEl = document.createElement('template');
+  templateEl.innerHTML = htmlString.trim();
+  return templateEl.content;
+}
+
+/**
+ * Create an element or a fragment from an HTML string
+ * If the string contains only one element, return that element
+ * Otherwise, return a DocumentFragment containing all elements
+ *
+ * @param {string} htmlString - The HTML string
+ * @returns {HTMLElement | DocumentFragment} - The created element or fragment
+ */
+export function createElementOrFragment(htmlString) {
+  const content = createFragment(htmlString);
+
+  if (content.childElementCount === 1) {
+    return content.firstElementChild;
+  }
+
+  return content;
+}
+
+/**
+ * Create a DOM node from a string or a node
+ *
+ * @param {*} content - The content to create a node from
+ * @returns {Node | null} - A DOM node or null if the content is empty
+ */
+export function createDomNode(content) {
+  if (content === null || content === undefined || content === '') {
+    return null;
+  }
+
+  if (typeof content === 'string') {
+    try {
+      return createElementOrFragment(content);
+    }
+    catch {
+      return document.createTextNode(content);
+    }
+  }
+
+  if (content instanceof Node) {
+    return content;
+  }
+
+  return document.createTextNode(String(content));
 }

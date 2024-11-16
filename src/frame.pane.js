@@ -51,8 +51,13 @@ export function createPaneElement(sash) {
   paneEl.setAttribute('sash-id', sash.id);
   paneEl.setAttribute('position', sash.position);
 
+  if (sash.domNode) {
+    paneEl.append(sash.domNode);
+  }
+
   if (this?.debug) {
     paneEl.style.backgroundColor = genBrightColor();
+    paneEl.innerHTML = '';
     paneEl.append(__debug(paneEl));
   }
 

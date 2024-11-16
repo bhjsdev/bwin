@@ -1,4 +1,4 @@
-import { parseSize, isPlainObject } from './utils';
+import { parseSize, isPlainObject, createDomNode } from './utils';
 import { Sash } from './sash';
 import { Position, getOppositePosition } from './position';
 
@@ -14,7 +14,7 @@ export class ConfigNode {
   height;
 
   constructor(config) {
-    this.domNode = config.domNode;
+    this.content = config.content;
     this.parentRect = config.parentRect;
     this.children = config.children;
     this.siblingConfigNode = config.siblingConfigNode;
@@ -146,6 +146,7 @@ export class ConfigNode {
       id: this.id,
       minWidth: this.minWidth,
       minHeight: this.minHeight,
+      domNode: createDomNode(this.content),
     });
   }
 
@@ -185,6 +186,7 @@ export class ConfigNode {
       id: config.id,
       minWidth: config.minWidth,
       minHeight: config.minHeight,
+      content: config.content,
     });
   }
 
@@ -198,6 +200,7 @@ export class ConfigNode {
       id: config.id,
       minWidth: config.minWidth,
       minHeight: config.minHeight,
+      content: config.content,
     });
   }
 

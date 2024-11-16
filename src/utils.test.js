@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseSize, strictAssign } from './utils';
+import { parseSize, strictAssign, createDomNode } from './utils';
 
 describe('parseSize', () => {
   it('returns the number when a valid number is passed', () => {
@@ -72,7 +72,7 @@ describe('strictAssign', () => {
     expect(target.b).toBe(2);
   });
 
-  it('work when source is added to the prototype of a class', () => {
+  it('works when source is added to the prototype of a class', () => {
     class Target {
       a = 1;
     }
@@ -95,5 +95,13 @@ describe('strictAssign', () => {
 
     const source2 = { a: 3 };
     expect(() => strictAssign(Target.prototype, source2)).toThrow();
+  });
+});
+
+describe('createDomNode', () => {
+  it('creates a text node from NaN', () => {
+    const node = createDomNode(NaN);
+    expect(node.nodeType).toBe(Node.TEXT_NODE);
+    expect(node.nodeValue).toBe('NaN');
   });
 });
