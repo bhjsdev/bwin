@@ -188,24 +188,6 @@ export function createFragment(htmlString) {
 }
 
 /**
- * Create an element or a fragment from an HTML string
- * If the string contains only one element, return that element
- * Otherwise, return a DocumentFragment containing all elements
- *
- * @param {string} htmlString - The HTML string
- * @returns {HTMLElement | DocumentFragment} - The created element or fragment
- */
-export function createElementOrFragment(htmlString) {
-  const content = createFragment(htmlString);
-
-  if (content.childElementCount === 1) {
-    return content.firstElementChild;
-  }
-
-  return content;
-}
-
-/**
  * Create a DOM node from a string or a node
  *
  * @param {*} content - The content to create a node from
@@ -218,7 +200,13 @@ export function createDomNode(content) {
 
   if (typeof content === 'string') {
     try {
-      return createElementOrFragment(content);
+      const frag = createFragment(content);
+
+      if (frag.childNodes.length === 1) {
+        return frag.firstChild;
+      }
+
+      return frag;
     }
     catch {
       return document.createTextNode(content);

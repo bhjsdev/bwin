@@ -22,6 +22,7 @@ export default {
       }
       else {
         elem = this.createPane(sash);
+        this.onPaneCreate(elem, sash);
         windowEl.prepend(elem);
       }
 
@@ -68,6 +69,7 @@ export default {
         }
         else {
           this.updatePane(sash);
+          this.onPaneUpdate(sash.domNode, sash);
         }
       }
     });

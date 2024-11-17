@@ -20,6 +20,7 @@ const files = [
   'min-height-left-right',
   'bwin-droppable',
   'dom-node',
+  'bwin-content',
 ].sort();
 
 const navEl = document.createElement('nav');

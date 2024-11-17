@@ -5,14 +5,34 @@ import { Sash } from './sash.js';
 export default {
   debug: true,
 
-  // `createPane` is overridden in `binary-window.js`
   createPane(sash) {
-    return createPaneElement.call(this, sash);
+    return createPaneElement(sash);
   },
 
-  // `updatePane` may be overridden in `binary-window.js`, not yet
+  // Intended to be overridden
+  onPaneCreate(paneEl, sash) {
+    // `dash.domNode` stores ConfigNode's content
+    if (sash.domNode) {
+      paneEl.append(sash.domNode);
+    }
+
+    if (this?.debug) {
+      paneEl.style.backgroundColor = genBrightColor();
+      paneEl.innerHTML = '';
+      paneEl.append(__debug(paneEl));
+    }
+  },
+
   updatePane(sash) {
-    return updatePaneElement.call(this, sash);
+    return updatePaneElement(sash);
+  },
+
+  // Intended to be overridden
+  onPaneUpdate(paneEl, sash) {
+    if (this?.debug) {
+      paneEl.innerHTML = '';
+      paneEl.append(__debug(paneEl));
+    }
   },
 
   addPane(parentSashId, position) {
@@ -51,16 +71,6 @@ export function createPaneElement(sash) {
   paneEl.setAttribute('sash-id', sash.id);
   paneEl.setAttribute('position', sash.position);
 
-  if (sash.domNode) {
-    paneEl.append(sash.domNode);
-  }
-
-  if (this?.debug) {
-    paneEl.style.backgroundColor = genBrightColor();
-    paneEl.innerHTML = '';
-    paneEl.append(__debug(paneEl));
-  }
-
   return paneEl;
 }
 
@@ -70,11 +80,6 @@ function updatePaneElement(sash) {
   paneEl.style.left = `${sash.left}px`;
   paneEl.style.width = `${sash.width}px`;
   paneEl.style.height = `${sash.height}px`;
-
-  if (this?.debug) {
-    paneEl.innerHTML = '';
-    paneEl.append(__debug(paneEl));
-  }
 
   return paneEl;
 }
