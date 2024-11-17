@@ -30,13 +30,12 @@ export class Frame {
       this.rootSash = config.buildSashTree();
     }
 
-    this.resizable = config.resizable;
     this.fitContainer = config.fitContainer;
     this.droppable = config.droppable;
     this.onDrop = config.onDrop;
 
     // Features. Can work independently
-    this.resizable && this.enableResize();
+    this.enableResize();
     this.fitContainer && this.enableFitContainer();
     this.droppable && this.enableDrop();
   }

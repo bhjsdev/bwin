@@ -4,7 +4,6 @@ export default {
   isDropStarted: false,
   lastX: 0,
   lastY: 0,
-  resizable: true,
 
   applyResizeStyles() {
     if (this.activeMuntinSash.domNode.hasAttribute('vertical')) {
@@ -22,8 +21,8 @@ export default {
 
   enableResize() {
     document.addEventListener('mousedown', (event) => {
-      if (!this.resizable) return;
       if (event.target.tagName !== 'BW-MUNTIN') return;
+      if (event.target.getAttribute('resizable') === 'false') return;
 
       const sashId = event.target.getAttribute('sash-id');
       this.activeMuntinSash = this.rootSash.getById(sashId);
@@ -38,7 +37,6 @@ export default {
     });
 
     document.addEventListener('mousemove', (event) => {
-      if (!this.resizable) return;
       if (!this.isResizeStarted || !this.activeMuntinSash) return;
 
       const [topChild, rightChild, bottomChild, leftChild] = this.activeMuntinSash.getChildren();
@@ -89,8 +87,6 @@ export default {
     });
 
     document.addEventListener('mouseup', () => {
-      if (!this.resizable) return;
-
       this.isResizeStarted = false;
       this.activeMuntinSash = null;
       this.revertResizeStyles();

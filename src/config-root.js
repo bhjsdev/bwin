@@ -8,7 +8,6 @@ const DEFAULTS = {
 
 export const FEAT_DEFAULTS = {
   droppable: true,
-  resizable: true,
   fitContainer: false,
   onDrop: null,
 };
@@ -22,8 +21,8 @@ export class ConfigRoot extends ConfigNode {
       height = DEFAULTS.height,
       droppable = FEAT_DEFAULTS.droppable,
       fitContainer = FEAT_DEFAULTS.fitContainer,
-      resizable = FEAT_DEFAULTS.resizable,
       onDrop = FEAT_DEFAULTS.onDrop,
+      ...rest
     } = {
       ...DEFAULTS,
       ...FEAT_DEFAULTS,
@@ -35,11 +34,11 @@ export class ConfigRoot extends ConfigNode {
       size: NaN,
       position: Position.Root,
       parentRect: { width, height },
+      ...rest,
     });
 
     this.droppable = droppable;
     this.fitContainer = fitContainer;
-    this.resizable = resizable;
     this.onDrop = onDrop;
   }
 }

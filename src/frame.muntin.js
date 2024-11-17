@@ -24,6 +24,8 @@ export default {
 
     muntinEl.setAttribute('sash-id', sash.id);
 
+    sash.store.resizable === false && muntinEl.setAttribute('resizable', 'false');
+
     return muntinEl;
   },
 

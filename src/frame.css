@@ -68,6 +68,14 @@ bw-muntin {
   &[vertical] {
     cursor: ew-resize;
   }
+
+  &[resizable='false'] {
+    cursor: auto;
+
+    &:hover {
+      background-color: white;
+    }
+  }
 }
 
 .body--bw-resize-x {

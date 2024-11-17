@@ -13,19 +13,17 @@ export class ConfigNode {
   width;
   height;
 
-  constructor(config) {
-    const {
-      parentRect,
-      children,
-      siblingConfigNode,
-      id,
-      minWidth,
-      minHeight,
-      position,
-      size,
-      ...rest
-    } = config;
-
+  constructor({
+    parentRect,
+    children,
+    siblingConfigNode,
+    id,
+    minWidth,
+    minHeight,
+    position,
+    size,
+    ...rest
+  }) {
     this.parentRect = parentRect;
     this.children = children;
     this.siblingConfigNode = siblingConfigNode;
@@ -188,9 +186,7 @@ export class ConfigNode {
     }
   }
 
-  createPrimaryConfigNode(config) {
-    const { size, position, children, id, minWidth, minHeight, ...rest } = config;
-
+  createPrimaryConfigNode({ size, position, children, id, minWidth, minHeight, ...rest }) {
     return new ConfigNode({
       parentRect: this,
       size: size ?? PRIMARY_DEFAULTS.size,
@@ -203,9 +199,10 @@ export class ConfigNode {
     });
   }
 
-  createSecondaryConfigNode(config, primaryConfigNode) {
-    const { size, position, children, id, minWidth, minHeight, ...rest } = config;
-
+  createSecondaryConfigNode(
+    { size, position, children, id, minWidth, minHeight, ...rest },
+    primaryConfigNode
+  ) {
     return new ConfigNode({
       parentRect: this,
       size,
