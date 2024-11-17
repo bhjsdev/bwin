@@ -24,6 +24,7 @@ export class Sash {
     minWidth = DEFAULTS.minWidth,
     minHeight = DEFAULTS.minHeight,
     domNode = null,
+    store = {},
     position,
     id,
   } = DEFAULTS) {
@@ -43,6 +44,9 @@ export class Sash {
     this.children = [];
     this.minWidth = minWidth;
     this.minHeight = minHeight;
+
+    // Store non-core props from `ConfigNode` e.g. content, title, tabs, actions, etc
+    this.store = store;
   }
 
   walk(callback) {

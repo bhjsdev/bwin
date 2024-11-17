@@ -1,4 +1,4 @@
-import { parseSize, isPlainObject, createDomNode } from './utils';
+import { parseSize, isPlainObject } from './utils';
 import { Sash } from './sash';
 import { Position, getOppositePosition } from './position';
 
@@ -14,16 +14,27 @@ export class ConfigNode {
   height;
 
   constructor(config) {
-    this.content = config.content;
-    this.parentRect = config.parentRect;
-    this.children = config.children;
-    this.siblingConfigNode = config.siblingConfigNode;
-    this.id = config.id;
-    this.minWidth = config.minWidth;
-    this.minHeight = config.minHeight;
+    const {
+      parentRect,
+      children,
+      siblingConfigNode,
+      id,
+      minWidth,
+      minHeight,
+      position,
+      size,
+      ...rest
+    } = config;
 
-    this.position = this.getPosition(config.position);
-    this.size = this.getSize(config.size);
+    this.parentRect = parentRect;
+    this.children = children;
+    this.siblingConfigNode = siblingConfigNode;
+    this.id = id;
+    this.minWidth = minWidth;
+    this.minHeight = minHeight;
+    this.position = this.getPosition(position);
+    this.size = this.getSize(size);
+    this.nonCoreData = rest;
 
     this.setBounds();
   }
@@ -146,7 +157,7 @@ export class ConfigNode {
       id: this.id,
       minWidth: this.minWidth,
       minHeight: this.minHeight,
-      domNode: createDomNode(this.content),
+      store: this.nonCoreData,
     });
   }
 
@@ -178,29 +189,33 @@ export class ConfigNode {
   }
 
   createPrimaryConfigNode(config) {
+    const { size, position, children, id, minWidth, minHeight, ...rest } = config;
+
     return new ConfigNode({
       parentRect: this,
-      size: config.size ?? PRIMARY_DEFAULTS.size,
-      position: config.position ?? PRIMARY_DEFAULTS.position,
-      children: config.children,
-      id: config.id,
-      minWidth: config.minWidth,
-      minHeight: config.minHeight,
-      content: config.content,
+      size: size ?? PRIMARY_DEFAULTS.size,
+      position: position ?? PRIMARY_DEFAULTS.position,
+      children,
+      id,
+      minWidth,
+      minHeight,
+      ...rest,
     });
   }
 
   createSecondaryConfigNode(config, primaryConfigNode) {
+    const { size, position, children, id, minWidth, minHeight, ...rest } = config;
+
     return new ConfigNode({
       parentRect: this,
-      size: config.size,
-      position: config.position,
-      children: config.children,
+      size,
+      position,
+      children,
       siblingConfigNode: primaryConfigNode,
-      id: config.id,
-      minWidth: config.minWidth,
-      minHeight: config.minHeight,
-      content: config.content,
+      id,
+      minWidth,
+      minHeight,
+      ...rest,
     });
   }
 

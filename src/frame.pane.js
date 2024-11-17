@@ -1,4 +1,4 @@
-import { genBrightColor, genId, moveChildNodes } from './utils.js';
+import { genBrightColor, genId, moveChildNodes, createDomNode } from './utils.js';
 import { Position } from './position.js';
 import { Sash } from './sash.js';
 
@@ -11,9 +11,8 @@ export default {
 
   // Intended to be overridden
   onPaneCreate(paneEl, sash) {
-    // `dash.domNode` stores ConfigNode's content
-    if (sash.domNode) {
-      paneEl.append(sash.domNode);
+    if (sash.store.content) {
+      paneEl.append(createDomNode(sash.store.content));
     }
 
     if (this?.debug) {
