@@ -10,7 +10,7 @@ const settings = {
       position: 'right',
       size: '60%',
       id: 'resizer',
-      resizable: false,
+      // resizable: false,
       children: [
         { position: 'top', size: '30%' },
         { position: 'bottom', size: '70%' },
@@ -25,8 +25,11 @@ frame.create();
 const resizer = document.querySelector('[sash-id="resizer"]');
 let resizable = resizer.getAttribute('resizable') !== 'false';
 
-document.querySelector('#toggle-resizable').addEventListener('click', () => {
+document.querySelector('#toggle-resizable').addEventListener('click', (event) => {
   resizable = !resizable;
+  event.target.textContent = resizable
+    ? 'Disable resizable on right panes'
+    : 'Enable resizable on right panes';
   resizer.setAttribute('resizable', resizable);
 });
 

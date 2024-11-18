@@ -1,14 +1,11 @@
 import { getCursorPosition } from './position';
 
 export default {
-  droppable: true,
   hoveredPaneEl: null,
   onDrop: () => {},
 
   enableDrop() {
     this.containerEl.addEventListener('dragover', (event) => {
-      if (!this.droppable) return;
-
       // `preventDefault` is required to allow drop
       event.preventDefault();
 
@@ -25,14 +22,20 @@ export default {
         this.hoveredPaneEl = paneEl;
       }
 
+      if (paneEl.getAttribute('droppable') === 'false') return;
+
       const position = getCursorPosition(paneEl, event);
       paneEl.setAttribute('drop-area', position);
     });
 
     this.containerEl.addEventListener('dragleave', (event) => {
       // Prevent `dragleave` from triggering on child elements in Chrome
-      if (event.currentTarget.contains(event.relatedTarget)) return;
-      if (!this.droppable) return;
+      if (
+        event.currentTarget.contains(event.relatedTarget) &&
+        event.currentTarget !== event.relatedTarget
+      ) {
+        return;
+      }
 
       if (this.hoveredPaneEl) {
         this.hoveredPaneEl.removeAttribute('drop-area');
@@ -41,8 +44,8 @@ export default {
     });
 
     this.containerEl.addEventListener('drop', (event) => {
-      if (!this.droppable) return;
       if (!this.hoveredPaneEl) return;
+      if (this.hoveredPaneEl.getAttribute('droppable') === 'false') return;
 
       if (typeof this.onDrop === 'function') {
         const sashId = this.hoveredPaneEl.getAttribute('sash-id');

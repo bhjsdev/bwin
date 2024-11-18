@@ -1,7 +1,7 @@
 import { Frame } from '../src';
 
 const settings = {
-  children: [100],
+  children: [{ size: 100, droppable: false, id: 'droppable-pane' }, { droppable: true }],
   onDrop: (event, sash) => {
     const paneEl = sash.domNode;
     paneEl.append(dragItem);
@@ -74,12 +74,15 @@ dropZone.addEventListener('drop', (event) => {
   dropZone.appendChild(dragItem);
 });
 
-let droppable = true;
+const droppablePaneEl = document.querySelector('[sash-id="droppable-pane"]');
+let droppable = droppablePaneEl.getAttribute('droppable') !== 'false';
 
 document.querySelector('#toggle-droppable').addEventListener('click', (event) => {
   droppable = !droppable;
-  event.target.textContent = droppable ? 'Disable Droppable' : 'Enable Droppable';
-  frame.droppable = droppable;
+  event.target.textContent = droppable
+    ? 'Disable droppable on left pane'
+    : 'Enable droppable on left pane';
+  droppablePaneEl.setAttribute('droppable', droppable);
 });
 
 window.frame = frame;

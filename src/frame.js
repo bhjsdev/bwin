@@ -31,13 +31,12 @@ export class Frame {
     }
 
     this.fitContainer = config.fitContainer;
-    this.droppable = config.droppable;
     this.onDrop = config.onDrop;
 
     // Features. Can work independently
     this.enableResize();
+    this.enableDrop();
     this.fitContainer && this.enableFitContainer();
-    this.droppable && this.enableDrop();
   }
 
   static assemble(...modules) {

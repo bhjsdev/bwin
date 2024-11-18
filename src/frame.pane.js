@@ -6,7 +6,11 @@ export default {
   debug: true,
 
   createPane(sash) {
-    return createPaneElement(sash);
+    const paneEl = createPaneElement(sash);
+    if (sash.store.droppable === false) {
+      paneEl.setAttribute('droppable', 'false');
+    }
+    return paneEl;
   },
 
   // Intended to be overridden
