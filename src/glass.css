@@ -67,11 +67,20 @@ bw-glass-tab-container {
   align-self: flex-end;
   display: flex;
   gap: 4px;
+}
 
-  .bw-glass-tab {
-    font-family: var(--bw-font-family);
-    border: 1px solid var(--bw-glass-border-color);
-    border-bottom: none;
+.bw-glass-tab {
+  font-family: var(--bw-font-family);
+  border: 1px solid var(--bw-glass-border-color);
+  border-bottom: none;
+  cursor: pointer;
+
+  &:hover {
+    background-color: white;
+  }
+
+  &:active {
+    transform: translateY(1px);
   }
 }
 
@@ -80,18 +89,18 @@ bw-glass-action-container {
   margin-left: auto;
   display: flex;
   gap: 2px;
+}
 
-  .bw-glass-action {
-    font-family: var(--bw-font-family);
-    border: 1px solid var(--bw-glass-border-color);
-    cursor: pointer;
-  }
+.bw-glass-action {
+  font-family: var(--bw-font-family);
+  border: 1px solid var(--bw-glass-border-color);
+  cursor: pointer;
 
-  .bw-glass-action:hover {
+  &:hover {
     background-color: white;
   }
 
-  .bw-glass-action:active {
+  &:active {
     transform: scale(0.95);
   }
 }
