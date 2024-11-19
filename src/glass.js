@@ -9,7 +9,7 @@ const DEFAULTS = {
   actions: [],
 };
 
-const BUILTIN_ACTIONS = [{ label: '✕', className: 'bw-glass-action--close' }];
+const BUILTIN_ACTIONS = [{ label: '', className: 'bw-glass-action--close' }];
 
 export class Glass {
   domNode;

@@ -52,6 +52,8 @@ bw-glass {
   inset: var(--bw-glass-clearance);
   border: 1px solid var(--bw-glass-border-color);
   background-color: white;
+  display: flex;
+  flex-direction: column;
 }
 
 bw-glass-header {
@@ -59,7 +61,7 @@ bw-glass-header {
   display: flex;
   align-items: center;
   padding: var(--bw-glass-header-padding);
-  height: var(--bw-glass-header-height);
+  flex-basis: var(--bw-glass-header-height);
   border-bottom: 1px solid var(--bw-glass-border-color);
 }
 
@@ -105,9 +107,15 @@ bw-glass-action-container {
   }
 }
 
+.bw-glass-action--close {
+  &::before {
+    content: '✕';
+  }
+}
+
 bw-glass-content {
   display: block;
   box-sizing: border-box;
   overflow: auto;
-  height: calc(100% - var(--bw-glass-header-height));
+  flex-grow: 1;
 }
