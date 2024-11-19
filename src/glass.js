@@ -54,7 +54,8 @@ export class Glass {
     const containerEl = document.createElement('bw-glass-tab-container');
 
     for (const tab of this.tabs) {
-      const tabEl = createDomNode(`<bw-glass-tab>${tab?.label || tab}</bw-glass-tab>`);
+      const label = tab?.label ?? tab;
+      const tabEl = createDomNode(`<button class="bw-glass-tab">${label}</button>`);
       containerEl.append(tabEl);
     }
 
@@ -65,7 +66,7 @@ export class Glass {
     const containerEl = document.createElement('bw-glass-action-container');
 
     for (const action of [...this.actions, ...BUILTIN_ACTIONS]) {
-      const label = action?.label || action;
+      const label = action?.label ?? action;
       const className = action.className
         ? `bw-glass-action ${action.className}`
         : 'bw-glass-action';

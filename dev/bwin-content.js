@@ -1,8 +1,8 @@
 import { BinaryWindow } from '../src';
 
 const settings = {
-  width: 333,
-  height: 222,
+  width: 555,
+  height: 333,
   children: [
     { position: 'left', size: '40%', id: 'my-left-pane', content: 'Left', title: 'Left Pane' },
     {
@@ -27,11 +27,5 @@ const settings = {
 
 const win = new BinaryWindow(document.querySelector('#container'), settings);
 win.create();
-
-document.querySelector('#toggle-background').addEventListener('click', () => {
-  const mainBgColor = 'lavender';
-  const mainEl = document.querySelector('main');
-  mainEl.style.backgroundColor = mainEl.style.backgroundColor === mainBgColor ? '' : mainBgColor;
-});
 
 window.sash = win.rootSash;

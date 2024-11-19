@@ -37,9 +37,16 @@ function genLinkText(file) {
 
 navEl.innerHTML = `
   <menu class="_menu">
+    <li><button id="_toggle-bg">Toggle BG</button></li>
     <li><a href="/debug.html">Debug</a></li>
     ${files.map((file) => `<li><a href="/${file}.html">${genLinkText(file)}</a></li>`).join('')}
   </menu>
 `;
+
+navEl.querySelector('#_toggle-bg').addEventListener('click', () => {
+  const mainBgColor = 'lavender';
+  const mainEl = document.querySelector('main');
+  mainEl.style.backgroundColor = mainEl.style.backgroundColor === mainBgColor ? '' : mainBgColor;
+});
 
 document.body.prepend(navEl);

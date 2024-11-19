@@ -7,35 +7,35 @@ bw-window:has(bw-glass) {
     }
 
     &[drop-area='top']::before {
-      top: var(--bw-glass-gap);
-      left: var(--bw-glass-gap);
-      right: var(--bw-glass-gap);
+      top: var(--bw-glass-clearance);
+      left: var(--bw-glass-clearance);
+      right: var(--bw-glass-clearance);
       height: 50%;
     }
 
     &[drop-area='right']::before {
-      top: var(--bw-glass-gap);
-      right: var(--bw-glass-gap);
-      bottom: var(--bw-glass-gap);
+      top: var(--bw-glass-clearance);
+      right: var(--bw-glass-clearance);
+      bottom: var(--bw-glass-clearance);
       width: 50%;
     }
 
     &[drop-area='bottom']::before {
-      bottom: var(--bw-glass-gap);
-      left: var(--bw-glass-gap);
-      right: var(--bw-glass-gap);
+      bottom: var(--bw-glass-clearance);
+      left: var(--bw-glass-clearance);
+      right: var(--bw-glass-clearance);
       height: 50%;
     }
 
     &[drop-area='left']::before {
-      top: var(--bw-glass-gap);
-      left: var(--bw-glass-gap);
-      bottom: var(--bw-glass-gap);
+      top: var(--bw-glass-clearance);
+      left: var(--bw-glass-clearance);
+      bottom: var(--bw-glass-clearance);
       width: 50%;
     }
 
     &[drop-area='center']::before {
-      inset: var(--bw-glass-gap);
+      inset: var(--bw-glass-clearance);
     }
   }
 
@@ -49,7 +49,7 @@ bw-glass {
   font-size: var(--bw-font-size);
   box-sizing: border-box;
   position: absolute;
-  inset: var(--bw-glass-gap);
+  inset: var(--bw-glass-clearance);
   border: 1px solid var(--bw-glass-border-color);
   background-color: white;
 }
@@ -63,13 +63,37 @@ bw-glass-header {
   border-bottom: 1px solid var(--bw-glass-border-color);
 }
 
+bw-glass-tab-container {
+  align-self: flex-end;
+  display: flex;
+  gap: 4px;
+
+  .bw-glass-tab {
+    font-family: var(--bw-font-family);
+    border: 1px solid var(--bw-glass-border-color);
+    border-bottom: none;
+  }
+}
+
 bw-glass-action-container {
   /* always on the right */
   margin-left: auto;
-}
+  display: flex;
+  gap: 2px;
 
-.bw-glass-action {
-  font-family: var(--bw-font-family);
+  .bw-glass-action {
+    font-family: var(--bw-font-family);
+    border: 1px solid var(--bw-glass-border-color);
+    cursor: pointer;
+  }
+
+  .bw-glass-action:hover {
+    background-color: white;
+  }
+
+  .bw-glass-action:active {
+    transform: scale(0.95);
+  }
 }
 
 bw-glass-content {
