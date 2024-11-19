@@ -1,19 +1,80 @@
-bw-glass {
-  --bw-glass-header-height: 20px;
+bw-window:has(bw-glass) {
+  bw-pane {
+    background-color: transparent;
 
-  display: block;
+    &[drop-area]::before {
+      z-index: 1;
+    }
+
+    &[drop-area='top']::before {
+      top: var(--bw-glass-gap);
+      left: var(--bw-glass-gap);
+      right: var(--bw-glass-gap);
+      height: 50%;
+    }
+
+    &[drop-area='right']::before {
+      top: var(--bw-glass-gap);
+      right: var(--bw-glass-gap);
+      bottom: var(--bw-glass-gap);
+      width: 50%;
+    }
+
+    &[drop-area='bottom']::before {
+      bottom: var(--bw-glass-gap);
+      left: var(--bw-glass-gap);
+      right: var(--bw-glass-gap);
+      height: 50%;
+    }
+
+    &[drop-area='left']::before {
+      top: var(--bw-glass-gap);
+      left: var(--bw-glass-gap);
+      bottom: var(--bw-glass-gap);
+      width: 50%;
+    }
+
+    &[drop-area='center']::before {
+      inset: var(--bw-glass-gap);
+    }
+  }
+
+  bw-muntin {
+    background-color: transparent;
+  }
+}
+
+bw-glass {
+  font-family: var(--bw-font-family);
+  font-size: var(--bw-font-size);
   box-sizing: border-box;
-  height: 100%;
+  position: absolute;
+  inset: var(--bw-glass-gap);
+  border: 1px solid var(--bw-glass-border-color);
+  background-color: white;
 }
 
 bw-glass-header {
-  display: block;
   box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  padding: var(--bw-glass-header-padding);
   height: var(--bw-glass-header-height);
+  border-bottom: 1px solid var(--bw-glass-border-color);
+}
+
+bw-glass-action-container {
+  /* always on the right */
+  margin-left: auto;
+}
+
+.bw-glass-action {
+  font-family: var(--bw-font-family);
 }
 
 bw-glass-content {
   display: block;
   box-sizing: border-box;
+  overflow: auto;
   height: calc(100% - var(--bw-glass-header-height));
 }

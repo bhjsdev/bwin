@@ -18,6 +18,7 @@ export default {
       // Prepend the new pane, so muntins are always on top
       if (sash.children.length > 0) {
         elem = this.createMuntin(sash);
+        this.onMuntinCreate(elem, sash);
         windowEl.append(elem);
       }
       else {
@@ -57,6 +58,7 @@ export default {
         }
         else {
           this.updateMuntin(sash);
+          this.onMuntinUpdate(sash.domNode, sash);
         }
       }
       else {

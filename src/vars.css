@@ -1,0 +1,9 @@
+:root {
+  --bw-font-family: system-ui, sans-serif;
+  --bw-font-size: 14px;
+
+  --bw-glass-header-height: 30px;
+  --bw-glass-header-padding: 0 4px;
+  --bw-glass-gap: 2px;
+  --bw-glass-border-color: hsl(0, 0%, 10%);
+}

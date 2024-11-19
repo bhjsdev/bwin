@@ -1,5 +1,5 @@
 export default {
-  muntinSize: 5,
+  muntinSize: 4,
 
   createMuntin(sash) {
     const muntinEl = document.createElement('bw-muntin');
@@ -29,6 +29,10 @@ export default {
     return muntinEl;
   },
 
+  onMuntinCreate(muntinEl, sash) {
+    // For overriding
+  },
+
   updateMuntin(sash) {
     const muntinEl = sash.domNode;
     const leftChild = sash.leftChild;
@@ -44,5 +48,9 @@ export default {
       muntinEl.style.top = `${sash.top + topChild.height - this.muntinSize / 2}px`;
       muntinEl.style.left = `${sash.left}px`;
     }
+  },
+
+  onMuntinUpdate(muntinEl, sash) {
+    // For overriding
   },
 };

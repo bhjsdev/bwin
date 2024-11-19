@@ -13,7 +13,7 @@ bw-pane {
   &[drop-area]::before {
     content: '';
     position: absolute;
-    background-color: hsl(0, 0%, 0%, 0.1);
+    background-color: hsl(0, 0%, 0%, 0.05);
   }
 
   &[drop-area='top']::before {
@@ -58,7 +58,7 @@ bw-muntin {
   background-color: white;
 
   &:hover {
-    background-color: hsl(0, 0%, 0%, 0.1);
+    background-color: hsl(0, 0%, 0%, 0.2);
   }
 
   &[horizontal] {

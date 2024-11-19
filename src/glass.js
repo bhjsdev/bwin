@@ -1,13 +1,29 @@
-import './glass.css';
 import { createDomNode } from './utils';
+import './vars.css';
+import './glass.css';
+
+const DEFAULTS = {
+  title: null,
+  content: null,
+  tabs: [],
+  actions: [],
+};
+
+const BUILTIN_ACTIONS = [{ label: '✕', className: 'bw-glass-action--close' }];
 
 export class Glass {
   domNode;
 
-  constructor({ content, title, tabs }) {
+  constructor({
+    title = DEFAULTS.title,
+    content = DEFAULTS.content,
+    tabs = DEFAULTS.tabs,
+    actions = DEFAULTS.actions,
+  }) {
     this.title = title;
     this.content = content;
     this.tabs = tabs;
+    this.actions = actions;
     this.build();
   }
 
@@ -23,6 +39,8 @@ export class Glass {
       headerEl.append(titleEl);
     }
 
+    headerEl.append(this.createActions());
+
     const contentEl = document.createElement('bw-glass-content');
     const contentNode = createDomNode(this.content);
 
@@ -36,9 +54,24 @@ export class Glass {
     const containerEl = document.createElement('bw-glass-tab-container');
 
     for (const tab of this.tabs) {
-      const tabEl = document.createElement('bw-glass-tab');
-      tabEl.append(createDomNode(tab?.label || tab));
+      const tabEl = createDomNode(`<bw-glass-tab>${tab?.label || tab}</bw-glass-tab>`);
       containerEl.append(tabEl);
+    }
+
+    return containerEl;
+  }
+
+  createActions() {
+    const containerEl = document.createElement('bw-glass-action-container');
+
+    for (const action of [...this.actions, ...BUILTIN_ACTIONS]) {
+      const label = action?.label || action;
+      const className = action.className
+        ? `bw-glass-action ${action.className}`
+        : 'bw-glass-action';
+
+      const buttonEl = createDomNode(`<button class="${className}">${label}</button>`);
+      containerEl.append(buttonEl);
     }
 
     return containerEl;
