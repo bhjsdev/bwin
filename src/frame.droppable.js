@@ -5,7 +5,7 @@ export default {
   onDrop: () => {},
 
   enableDrop() {
-    this.containerElement.addEventListener('dragover', (event) => {
+    this.windowElement.addEventListener('dragover', (event) => {
       // `preventDefault` is required to allow drop
       event.preventDefault();
 
@@ -28,7 +28,7 @@ export default {
       paneEl.setAttribute('drop-area', position);
     });
 
-    this.containerElement.addEventListener('dragleave', (event) => {
+    this.windowElement.addEventListener('dragleave', (event) => {
       // Prevent `dragleave` from triggering on child elements in Chrome
       if (
         event.currentTarget.contains(event.relatedTarget) &&
@@ -43,7 +43,7 @@ export default {
       }
     });
 
-    this.containerElement.addEventListener('drop', (event) => {
+    this.windowElement.addEventListener('drop', (event) => {
       if (!this.hoveredPaneEl) return;
       if (this.hoveredPaneEl.getAttribute('droppable') === 'false') return;
 
