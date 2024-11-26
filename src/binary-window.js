@@ -1,7 +1,13 @@
 import { Frame } from './frame';
 import { Glass } from './glass';
+import binaryWindowClosable from './binary-window.closable';
 
 export class BinaryWindow extends Frame {
+  mount(containerEl) {
+    super.mount(containerEl);
+    this.enableClose();
+  }
+
   onPaneCreate(paneEl, sash) {
     const glass = new Glass({ ...sash.store });
 
@@ -36,3 +42,5 @@ export class BinaryWindow extends Frame {
     this.trimMuntin(muntinEl);
   }
 }
+
+BinaryWindow.assemble(binaryWindowClosable);

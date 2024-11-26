@@ -5,7 +5,7 @@ const files = [
   'resize-x',
   'resize-y',
   'fit-container',
-  'add-pane',
+  'add-remove-pane',
   'bwin-add-remove-panes',
   'config',
   'config-2',

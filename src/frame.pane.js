@@ -3,8 +3,6 @@ import { Position } from './position.js';
 import { Sash } from './sash.js';
 
 export default {
-  debug: true,
-
   createPane(sash) {
     const paneEl = createPaneElement(sash);
     if (sash.store.droppable === false) {
@@ -55,12 +53,33 @@ export default {
     const parentSash = this.rootSash.getDescendantParentById(sashId);
     const siblingSash = parentSash.getChildSiblingById(sashId);
 
-    parentSash.domNode = siblingSash.domNode;
-    // Remove all children, so it becomes a pane
-    parentSash.children = [];
     // The muntin of old ID will be removed in `this.update`
     parentSash.id = genId();
 
+    if (siblingSash.children.length === 0) {
+      parentSash.domNode = siblingSash.domNode;
+      parentSash.domNode.setAttribute('sash-id', parentSash.id);
+      parentSash.children = [];
+    }
+    else {
+      parentSash.children = siblingSash.children;
+
+      if (siblingSash.position === Position.Left) {
+        siblingSash.width = parentSash.width;
+      }
+      else if (siblingSash.position === Position.Right) {
+        siblingSash.width = parentSash.width;
+        siblingSash.left = parentSash.left;
+      }
+      else if (siblingSash.position === Position.Top) {
+        siblingSash.height = parentSash.height;
+      }
+      else if (siblingSash.position === Position.Bottom) {
+        siblingSash.height = parentSash.height;
+        siblingSash.top = parentSash.top;
+      }
+    }
+    console.log(this.rootSash);
     this.update();
   },
 };
@@ -83,6 +102,7 @@ function updatePaneElement(sash) {
   paneEl.style.left = `${sash.left}px`;
   paneEl.style.width = `${sash.width}px`;
   paneEl.style.height = `${sash.height}px`;
+  paneEl.setAttribute('position', sash.position);
 
   return paneEl;
 }

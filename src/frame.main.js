@@ -1,7 +1,4 @@
 export default {
-  windowElement: null,
-  containerElement: null,
-
   create() {
     const windowEl = document.createElement('bw-window');
     windowEl.style.width = `${this.rootSash.width}px`;

@@ -16,8 +16,14 @@ const settings = {
           tabs: [{ label: 'Tab 1' }, 'Tab 2'],
           actions: ['A1', 'A2'],
           title: 'Top Right Pane', // should not be displayed when tabs are present
+          content: '<mark>Top Right Pane</mark>',
         },
-        { position: 'bottom', size: '70%', actions: ['B1', 'B2'] },
+        {
+          position: 'bottom',
+          size: '70%',
+          actions: ['B1', 'B2'],
+          content: 'Bottom Right Pane',
+        },
       ],
       id: 'my-right-horz-muntin',
     },

@@ -57,7 +57,6 @@ sash2.children.push(pane3, pane4);
 rootSash.children.push(sash1, sash2);
 
 const bwin = new BinaryWindow(rootSash);
-bwin.debug = false;
 bwin.mount(document.querySelector('#container'));
 
 document.querySelector('#add-pane').addEventListener('click', () => {
