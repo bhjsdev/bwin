@@ -19,6 +19,7 @@ const settings = {
 };
 
 const frame = new Frame(settings);
+frame.debug = false;
 frame.mount(document.querySelector('#container'));
 
 window.sash = frame.rootSash;

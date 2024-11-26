@@ -57,10 +57,6 @@ bw-muntin {
   position: absolute;
   background-color: white;
 
-  &:hover {
-    background-color: hsl(0, 0%, 0%, 0.2);
-  }
-
   &[horizontal] {
     cursor: ns-resize;
   }
@@ -71,10 +67,6 @@ bw-muntin {
 
   &[resizable='false'] {
     cursor: auto;
-
-    &:hover {
-      background-color: white;
-    }
   }
 }
 
