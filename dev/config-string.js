@@ -6,5 +6,5 @@ const settings = {
   children: [0.4, [{ size: 0.3, position: 'top' }, '70%']],
 };
 
-const frame = new Frame(document.querySelector('#container'), settings);
-frame.create();
+const frame = new Frame(settings);
+frame.mount(document.querySelector('#container'));

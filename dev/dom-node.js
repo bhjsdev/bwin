@@ -26,8 +26,8 @@ const settings = {
   id: 'my-root',
 };
 
-const frame = new Frame(document.querySelector('#container'), settings);
+const frame = new Frame(settings);
 frame.debug = false;
-frame.init();
+frame.mount(document.querySelector('#container'));
 
 window.sash = frame.rootSash;

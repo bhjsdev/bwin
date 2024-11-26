@@ -6,8 +6,8 @@ const settings = {
   children: [0.2],
 };
 
-const frame = new Frame(document.querySelector('#container'), settings);
-frame.create();
+const frame = new Frame(settings);
+frame.mount(document.querySelector('#container'));
 window.sash = frame.rootSash;
 
 const settings2 = {
@@ -16,8 +16,8 @@ const settings2 = {
   children: [0.2, [0.8]],
 };
 
-const frame2 = new Frame(document.querySelector('#container-2'), settings2);
-frame2.create();
+const frame2 = new Frame(settings2);
+frame2.mount(document.querySelector('#container-2'));
 window.sash2 = frame2.rootSash;
 
 const settings3 = {
@@ -26,8 +26,8 @@ const settings3 = {
   children: [0.2, [0.2, [0.4]]],
 };
 
-const frame3 = new Frame(document.querySelector('#container-3'), settings3);
-frame3.create();
+const frame3 = new Frame(settings3);
+frame3.mount(document.querySelector('#container-3'));
 window.sash3 = frame2.rootSash;
 
 const settings4 = {
@@ -36,6 +36,6 @@ const settings4 = {
   children: [{ size: 0.2, children: [0.3, 0.7] }, [0.2, [0.4]]],
 };
 
-const frame4 = new Frame(document.querySelector('#container-4'), settings4);
-frame4.create();
+const frame4 = new Frame(settings4);
+frame4.mount(document.querySelector('#container-4'));
 window.sash3 = frame2.rootSash;

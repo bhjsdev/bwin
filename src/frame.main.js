@@ -2,10 +2,6 @@ export default {
   windowEl: null,
   containerEl: null,
 
-  init() {
-    this.create();
-  },
-
   create() {
     const windowEl = document.createElement('bw-window');
     windowEl.style.width = `${this.rootSash.width}px`;
@@ -30,8 +26,8 @@ export default {
       sash.domNode = elem;
     });
 
-    this.containerEl.append(windowEl);
     this.windowEl = windowEl;
+    this.containerEl.append(this.windowEl);
   },
 
   update() {

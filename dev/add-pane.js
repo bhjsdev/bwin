@@ -55,8 +55,8 @@ const pane4 = new Sash({
 sash2.children.push(pane3, pane4);
 rootSash.children.push(sash1, sash2);
 
-const frame = new Frame(document.querySelector('#container'), rootSash);
-frame.create();
+const frame = new Frame(rootSash);
+frame.mount(document.querySelector('#container'));
 
 document.querySelector('#add-pane').addEventListener('click', () => {
   const parentId = document.querySelector('#sash-id').value.trim();

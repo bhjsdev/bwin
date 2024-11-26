@@ -74,8 +74,8 @@ sash2.children.push(pane3, sash3);
 
 sashTree.children.push(sash1, sash2);
 
-const layout = new Frame(document.querySelector('#resize-x'), sashTree);
-layout.create();
+const layout = new Frame(sashTree);
+layout.mount(document.querySelector('#resize-x'));
 
 document.querySelector('#left').addEventListener('click', () => {
   const step = -8;

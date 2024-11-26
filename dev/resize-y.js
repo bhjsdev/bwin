@@ -79,8 +79,8 @@ sash_1.children.push(sash_1_1, sash_1_2);
 sash_1_2.children.push(sash_1_2_1, sash_1_2_2);
 sash_2.children.push(sash_2_1, sash_2_2);
 
-const layout = new Frame(document.querySelector('#resize-y'), rootSash);
-layout.create();
+const layout = new Frame(rootSash);
+layout.mount(document.querySelector('#resize-y'));
 
 document.querySelector('#up').addEventListener('click', () => {
   const step = 8;

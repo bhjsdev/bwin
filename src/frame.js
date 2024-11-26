@@ -16,9 +16,7 @@ import frameDroppable from './frame.droppable';
  *
  */
 export class Frame {
-  constructor(containerEl, settings) {
-    this.containerEl = containerEl;
-
+  constructor(settings) {
     let config = null;
 
     if (settings instanceof SashConfig) {
@@ -32,6 +30,11 @@ export class Frame {
 
     this.fitContainer = config.fitContainer;
     this.onDrop = config.onDrop;
+  }
+
+  mount(containerEl) {
+    this.containerEl = containerEl;
+    this.create();
 
     // Features. Can work independently
     this.enableResize();

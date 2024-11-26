@@ -25,7 +25,7 @@ const settings = {
   id: 'my-root',
 };
 
-const win = new BinaryWindow(document.querySelector('#container'), settings);
-win.create();
+const win = new BinaryWindow(settings);
+win.mount(document.querySelector('#container'));
 
 window.sash = win.rootSash;

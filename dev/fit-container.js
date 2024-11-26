@@ -42,8 +42,8 @@ const sash_2 = new Sash({
 rootSash.children.push(sash_1, sash_2);
 rootSash.fitContainer = true;
 
-const layout = new Frame(document.querySelector('#container'), rootSash);
-layout.create();
+const layout = new Frame(rootSash);
+layout.mount(document.querySelector('#container'));
 
 const settings = {
   width: 200,
@@ -52,8 +52,8 @@ const settings = {
   children: [0.4, [0.3]],
 };
 
-const frame = new Frame(document.querySelector('#container2'), settings);
-frame.create();
+const frame = new Frame(settings);
+frame.mount(document.querySelector('#container2'));
 
 let fit = true;
 

@@ -13,6 +13,7 @@ const settings = {
   ],
 };
 
-const frame = new Frame(document.querySelector('#container'), settings);
-frame.create();
+const frame = new Frame(settings);
+frame.mount(document.querySelector('#container'));
+
 window.sash = frame.rootSash;

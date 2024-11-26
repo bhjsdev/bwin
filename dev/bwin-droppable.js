@@ -40,5 +40,5 @@ const settings = {
 
 const dragItem = document.getElementById('draggable');
 
-const bwin = new BinaryWindow(document.querySelector('#container'), settings);
-bwin.create();
+const win = new BinaryWindow(settings);
+win.mount(document.querySelector('#container'));
