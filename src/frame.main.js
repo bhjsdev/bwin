@@ -1,6 +1,6 @@
 export default {
-  windowEl: null,
-  containerEl: null,
+  windowElement: null,
+  containerElement: null,
 
   create() {
     const windowEl = document.createElement('bw-window');
@@ -26,18 +26,18 @@ export default {
       sash.domNode = elem;
     });
 
-    this.windowEl = windowEl;
-    this.containerEl.append(this.windowEl);
+    this.windowElement = windowEl;
+    this.containerElement.append(this.windowElement);
   },
 
   update() {
-    this.windowEl.style.width = `${this.rootSash.width}px`;
-    this.windowEl.style.height = `${this.rootSash.height}px`;
+    this.windowElement.style.width = `${this.rootSash.width}px`;
+    this.windowElement.style.height = `${this.rootSash.height}px`;
 
     const allSashIdsFromRoot = this.rootSash.getAllIds();
     const allSashIdsInWindow = [];
 
-    this.windowEl.querySelectorAll('[sash-id]').forEach((el) => {
+    this.windowElement.querySelectorAll('[sash-id]').forEach((el) => {
       const sashId = el.getAttribute('sash-id');
       allSashIdsInWindow.push(sashId);
 
@@ -50,7 +50,7 @@ export default {
       if (sash.children.length > 0) {
         if (!allSashIdsInWindow.includes(sash.id)) {
           sash.domNode = this.createMuntin(sash);
-          this.windowEl.append(sash.domNode);
+          this.windowElement.append(sash.domNode);
         }
         else {
           this.updateMuntin(sash);
@@ -63,7 +63,7 @@ export default {
             sash.domNode = this.createPane(sash);
           }
 
-          this.windowEl.prepend(sash.domNode);
+          this.windowElement.prepend(sash.domNode);
         }
         else {
           this.updatePane(sash);

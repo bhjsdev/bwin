@@ -33,7 +33,7 @@ export class Frame {
   }
 
   mount(containerEl) {
-    this.containerEl = containerEl;
+    this.containerElement = containerEl;
     this.create();
 
     // Features. Can work independently

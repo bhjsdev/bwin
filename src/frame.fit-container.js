@@ -4,7 +4,7 @@ export default {
   enableFitContainer() {
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
-        if (entry.target === this.containerEl && this.fitContainer) {
+        if (entry.target === this.containerElement && this.fitContainer) {
           this.rootSash.width = entry.contentRect.width;
           this.rootSash.height = entry.contentRect.height;
 
@@ -13,6 +13,6 @@ export default {
       }
     });
 
-    resizeObserver.observe(this.containerEl);
+    resizeObserver.observe(this.containerElement);
   },
 };
