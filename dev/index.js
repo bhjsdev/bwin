@@ -21,6 +21,7 @@ const files = [
   'bwin-droppable',
   'dom-node',
   'bwin-content',
+  'one-pane',
 ].sort();
 
 const navEl = document.createElement('nav');

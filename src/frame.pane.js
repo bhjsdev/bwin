@@ -51,6 +51,8 @@ export default {
 
   removePane(sashId) {
     const parentSash = this.rootSash.getDescendantParentById(sashId);
+    if (!parentSash) throw new Error('[bwin] Can not remove root pane');
+
     const siblingSash = parentSash.getChildSiblingById(sashId);
 
     // The muntin of old ID will be removed in `this.update`

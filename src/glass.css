@@ -111,6 +111,20 @@ bw-glass-action-container {
   &::before {
     content: '✕';
   }
+
+  &:disabled {
+    border: 1px solid var(--bw-glass-border-color-disabled);
+    background-color: var(--bw-glass-bg-color-disabled);
+    cursor: not-allowed;
+
+    &:hover {
+      background-color: var(--bw-glass-bg-color-disabled);
+    }
+
+    &:active {
+      transform: scale(1);
+    }
+  }
 }
 
 bw-glass-content {
