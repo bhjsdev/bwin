@@ -40,7 +40,7 @@ export class Frame {
     this.containerElement = containerEl;
     this.create();
 
-    // Features. Can work independently
+    // Features. Can work independently to each other
     this.enableResize();
     this.enableDrop();
     this.fitContainer && this.enableFitContainer();

@@ -1,15 +1,15 @@
 import { Frame } from './frame';
 import { Glass } from './glass';
-import binaryWindowClosable from './binary-window.closable';
+import binaryWindowObservers from './binary-window.observers';
 
 export class BinaryWindow extends Frame {
   mount(containerEl) {
     super.mount(containerEl);
-    this.enableClose();
+    this.enableObservers();
   }
 
   onPaneCreate(paneEl, sash) {
-    const glass = new Glass({ ...sash.store });
+    const glass = new Glass({ ...sash.store, sash, binaryWindow: this });
 
     paneEl.innerHTML = '';
     paneEl.append(glass.domNode);
@@ -43,4 +43,4 @@ export class BinaryWindow extends Frame {
   }
 }
 
-BinaryWindow.assemble(binaryWindowClosable);
+BinaryWindow.assemble(binaryWindowObservers);

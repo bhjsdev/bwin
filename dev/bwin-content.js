@@ -1,4 +1,4 @@
-import { BinaryWindow } from '../src';
+import { BinaryWindow, BUILTIN_ACTIONS } from '../src';
 
 const settings = {
   width: 555,
@@ -14,14 +14,14 @@ const settings = {
           size: '30%',
           id: 'my-right-top-pane',
           tabs: [{ label: 'Tab 1' }, 'Tab 2'],
-          actions: ['A1', 'A2'],
+          actions: [{ label: 'A1', onClick: (event, glass, win) => {} }, ...BUILTIN_ACTIONS, 'A2'],
           title: 'Top Right Pane', // should not be displayed when tabs are present
           content: '<mark>Top Right Pane</mark>',
         },
         {
           position: 'bottom',
           size: '70%',
-          actions: ['B1', 'B2'],
+          actions: null,
           content: 'Bottom Right Pane',
         },
       ],

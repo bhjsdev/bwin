@@ -1,4 +1,5 @@
 import { createDomNode } from './utils';
+import { BUILTIN_ACTIONS } from './glass.actions';
 import './vars.css';
 import './glass.css';
 
@@ -6,10 +7,8 @@ const DEFAULTS = {
   title: null,
   content: null,
   tabs: [],
-  actions: [],
+  actions: undefined,
 };
-
-const BUILTIN_ACTIONS = [{ label: '', className: 'bw-glass-action--close' }];
 
 export class Glass {
   domNode;
@@ -18,12 +17,16 @@ export class Glass {
     title = DEFAULTS.title,
     content = DEFAULTS.content,
     tabs = DEFAULTS.tabs,
-    actions = DEFAULTS.actions,
+    actions,
+    sash,
+    binaryWindow,
   }) {
     this.title = title;
     this.content = content;
     this.tabs = tabs;
     this.actions = actions;
+    this.sash = sash;
+    this.binaryWindow = binaryWindow;
     this.build();
   }
 
@@ -64,14 +67,27 @@ export class Glass {
 
   createActions() {
     const containerEl = document.createElement('bw-glass-action-container');
+    const actions =
+      this.actions === undefined
+        ? BUILTIN_ACTIONS
+        : Array.isArray(this.actions)
+          ? this.actions
+          : [];
 
-    for (const action of [...this.actions, ...BUILTIN_ACTIONS]) {
+    for (const action of actions) {
       const label = action?.label ?? action;
       const className = action.className
         ? `bw-glass-action ${action.className}`
         : 'bw-glass-action';
 
       const buttonEl = createDomNode(`<button class="${className}">${label}</button>`);
+
+      if (typeof action.onClick === 'function') {
+        buttonEl.addEventListener('click', (event) => {
+          action.onClick(event, this);
+        });
+      }
+
       containerEl.append(buttonEl);
     }
 

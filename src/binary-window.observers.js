@@ -1,15 +1,12 @@
-import { getSashIdFromPane } from './frame.utils.js';
+import { CLOSE_BUTTON_CLASSNAME } from './glass.actions';
 
 export default {
-  enableClose() {
-    const closeButtonSelector = '.bw-glass-action--close';
+  enableObservers() {
+    this.observeCloseButtons();
+  },
 
-    this.windowElement.addEventListener('click', (event) => {
-      if (event.target.matches(closeButtonSelector)) {
-        const sashId = getSashIdFromPane(event.target);
-        this.removePane(sashId);
-      }
-    });
+  observeCloseButtons() {
+    const cssSelector = `.${CLOSE_BUTTON_CLASSNAME}`;
 
     const paneCountObserver = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
@@ -17,11 +14,11 @@ export default {
           const paneCount = this.windowElement.querySelectorAll('bw-pane').length;
 
           if (paneCount === 1) {
-            const closeButtonEl = this.windowElement.querySelector(closeButtonSelector);
+            const closeButtonEl = this.windowElement.querySelector(cssSelector);
             closeButtonEl && closeButtonEl.setAttribute('disabled', '');
           }
           else {
-            this.windowElement.querySelectorAll(closeButtonSelector).forEach((closeButtonEl) => {
+            this.windowElement.querySelectorAll(cssSelector).forEach((closeButtonEl) => {
               closeButtonEl.removeAttribute('disabled');
             });
           }
