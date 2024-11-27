@@ -1,7 +1,5 @@
 import { createDomNode } from './utils';
-import { BUILTIN_ACTIONS } from './glass.actions';
-import './vars.css';
-import './glass.css';
+import { BUILTIN_ACTIONS } from './actions';
 
 const DEFAULTS = {
   title: null,
@@ -17,7 +15,7 @@ export class Glass {
     title = DEFAULTS.title,
     content = DEFAULTS.content,
     tabs = DEFAULTS.tabs,
-    actions,
+    actions = DEFAULTS.actions,
     sash,
     binaryWindow,
   }) {

@@ -69,13 +69,3 @@ bw-muntin {
     cursor: auto;
   }
 }
-
-.body--bw-resize-x {
-  user-select: none;
-  cursor: ew-resize;
-}
-
-.body--bw-resize-y {
-  user-select: none;
-  cursor: ns-resize;
-}

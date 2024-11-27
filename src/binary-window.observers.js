@@ -1,4 +1,4 @@
-import { CLOSE_BUTTON_CLASSNAME } from './glass.actions';
+import { CLOSE_BUTTON_CLASSNAME } from './actions';
 
 export default {
   enableObservers() {
