@@ -81,7 +81,7 @@ export default {
         siblingSash.top = parentSash.top;
       }
     }
-    console.log(this.rootSash);
+
     this.update();
   },
 };

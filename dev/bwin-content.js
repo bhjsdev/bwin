@@ -4,7 +4,14 @@ const settings = {
   width: 555,
   height: 333,
   children: [
-    { position: 'left', size: '40%', id: 'my-left-pane', content: 'Left', title: 'Left Pane' },
+    {
+      position: 'left',
+      size: '40%',
+      id: 'my-left-pane',
+      content: 'Left',
+      title: 'Left Pane',
+      draggable: false,
+    },
     {
       position: 'right',
       size: '60%',
@@ -13,9 +20,22 @@ const settings = {
           position: 'top',
           size: '30%',
           id: 'my-right-top-pane',
+          // Should not be droppable all the time
+          droppable: false,
           tabs: [{ label: 'Tab 1' }, 'Tab 2'],
-          actions: [{ label: 'A1', onClick: (event, glass, win) => {} }, ...BUILTIN_ACTIONS, 'A2'],
-          title: 'Top Right Pane', // should not be displayed when tabs are present
+          actions: [
+            {
+              label: 'Update content',
+              onClick: (event, glass) => {
+                glass.headerElement.style.backgroundColor = 'lightblue';
+                glass.contentElement.innerHTML = 'Content updated!';
+              },
+            },
+            ...BUILTIN_ACTIONS,
+            'A2',
+          ],
+          // should not be displayed when tabs are present
+          title: 'Top Right Pane',
           content: '<mark>Top Right Pane</mark>',
         },
         {

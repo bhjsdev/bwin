@@ -54,6 +54,10 @@ bw-glass {
   background-color: white;
   display: flex;
   flex-direction: column;
+
+  &:has(bw-glass-header[draggable='true']:active) {
+    opacity: 0.3;
+  }
 }
 
 bw-glass-header {
@@ -63,6 +67,10 @@ bw-glass-header {
   padding: var(--bw-glass-header-padding);
   flex-basis: var(--bw-glass-header-height);
   border-bottom: 1px solid var(--bw-glass-border-color);
+
+  &[draggable='true']:active {
+    cursor: move;
+  }
 }
 
 bw-glass-tab-container {

@@ -6,6 +6,7 @@ const DEFAULTS = {
   content: null,
   tabs: [],
   actions: undefined,
+  draggable: true,
 };
 
 export class Glass {
@@ -16,6 +17,7 @@ export class Glass {
     content = DEFAULTS.content,
     tabs = DEFAULTS.tabs,
     actions = DEFAULTS.actions,
+    draggable = DEFAULTS.draggable,
     sash,
     binaryWindow,
   }) {
@@ -24,6 +26,7 @@ export class Glass {
     this.tabs = tabs;
     this.actions = actions;
     this.sash = sash;
+    this.draggable = draggable;
     this.binaryWindow = binaryWindow;
     this.build();
   }
@@ -39,6 +42,8 @@ export class Glass {
       titleEl.append(createDomNode(this.title));
       headerEl.append(titleEl);
     }
+
+    headerEl.setAttribute('draggable', this.draggable);
 
     headerEl.append(this.createActions());
 
@@ -94,5 +99,9 @@ export class Glass {
 
   get contentElement() {
     return this.domNode.querySelector('bw-glass-content');
+  }
+
+  get headerElement() {
+    return this.domNode.querySelector('bw-glass-header');
   }
 }

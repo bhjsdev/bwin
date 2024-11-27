@@ -1,11 +1,14 @@
 import { Frame } from './frame';
 import { Glass } from './glass';
 import binaryWindowObservers from './binary-window.observers';
+import binaryWindowDraggable from './binary-window.draggable';
 
 export class BinaryWindow extends Frame {
   mount(containerEl) {
     super.mount(containerEl);
+
     this.enableObservers();
+    this.enableDrag();
   }
 
   onPaneCreate(paneEl, sash) {
@@ -43,4 +46,4 @@ export class BinaryWindow extends Frame {
   }
 }
 
-BinaryWindow.assemble(binaryWindowObservers);
+BinaryWindow.assemble(binaryWindowObservers, binaryWindowDraggable);

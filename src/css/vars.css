@@ -1,6 +1,7 @@
 :root {
-  --bw-font-family: system-ui, sans-serif;
+  --bw-font-family: system-ui;
   --bw-font-size: 14px;
+  --bw-drop-area-bg-color: hsl(0, 0%, 0%, 0.05);
 
   --bw-glass-header-height: 30px;
   --bw-glass-header-padding: 0 4px;
