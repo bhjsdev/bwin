@@ -1,41 +1,45 @@
 import { Frame } from '../src';
 
-const settings = {
-  children: [{ size: 100, droppable: false, id: 'droppable-pane' }, { droppable: true }],
-  onDrop: (event, sash) => {
-    const paneEl = sash.domNode;
-    paneEl.append(dragItem);
-    const dropArea = paneEl.getAttribute('drop-area');
-    dragItem.style.position = 'absolute';
+function handleDrop(event, sash) {
+  const paneEl = sash.domNode;
+  paneEl.append(dragItem);
+  const dropArea = paneEl.getAttribute('drop-area');
+  dragItem.style.position = 'absolute';
 
-    if (dropArea === 'top') {
-      dragItem.style.top = '0';
-      dragItem.style.left = '50%';
-      dragItem.style.transform = 'translateX(-50%)';
-    }
-    else if (dropArea === 'right') {
-      dragItem.style.top = '50%';
-      dragItem.style.left = 'auto';
-      dragItem.style.right = '0';
-      dragItem.style.transform = 'translateY(-50%)';
-    }
-    else if (dropArea === 'bottom') {
-      dragItem.style.top = 'auto';
-      dragItem.style.bottom = '0';
-      dragItem.style.left = '50%';
-      dragItem.style.transform = 'translateX(-50%)';
-    }
-    else if (dropArea === 'left') {
-      dragItem.style.top = '50%';
-      dragItem.style.left = '0';
-      dragItem.style.transform = 'translateY(-50%)';
-    }
-    else if (dropArea === 'center') {
-      dragItem.style.top = '50%';
-      dragItem.style.left = '50%';
-      dragItem.style.transform = 'translate(-50%, -50%)';
-    }
-  },
+  if (dropArea === 'top') {
+    dragItem.style.top = '0';
+    dragItem.style.left = '50%';
+    dragItem.style.transform = 'translateX(-50%)';
+  }
+  else if (dropArea === 'right') {
+    dragItem.style.top = '50%';
+    dragItem.style.left = 'auto';
+    dragItem.style.right = '0';
+    dragItem.style.transform = 'translateY(-50%)';
+  }
+  else if (dropArea === 'bottom') {
+    dragItem.style.top = 'auto';
+    dragItem.style.bottom = '0';
+    dragItem.style.left = '50%';
+    dragItem.style.transform = 'translateX(-50%)';
+  }
+  else if (dropArea === 'left') {
+    dragItem.style.top = '50%';
+    dragItem.style.left = '0';
+    dragItem.style.transform = 'translateY(-50%)';
+  }
+  else if (dropArea === 'center') {
+    dragItem.style.top = '50%';
+    dragItem.style.left = '50%';
+    dragItem.style.transform = 'translate(-50%, -50%)';
+  }
+}
+
+const settings = {
+  children: [
+    { size: 100, droppable: false, id: 'droppable-pane', onDrop: handleDrop },
+    { droppable: true, onDrop: handleDrop },
+  ],
 };
 
 const frame = new Frame(settings);

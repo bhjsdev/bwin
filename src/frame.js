@@ -33,7 +33,6 @@ export class Frame {
     }
 
     this.fitContainer = config.fitContainer;
-    this.onDrop = config.onDrop;
   }
 
   mount(containerEl) {

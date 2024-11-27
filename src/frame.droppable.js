@@ -2,7 +2,6 @@ import { getCursorPosition } from './position';
 
 export default {
   hoveredPaneEl: null,
-  onDrop: () => {},
 
   enableDrop() {
     this.windowElement.addEventListener('dragover', (event) => {
@@ -47,10 +46,11 @@ export default {
       if (!this.hoveredPaneEl) return;
       if (this.hoveredPaneEl.getAttribute('droppable') === 'false') return;
 
-      if (typeof this.onDrop === 'function') {
-        const sashId = this.hoveredPaneEl.getAttribute('sash-id');
-        const sash = this.rootSash.getById(sashId);
-        this.onDrop(event, sash);
+      const sashId = this.hoveredPaneEl.getAttribute('sash-id');
+      const sash = this.rootSash.getById(sashId);
+
+      if (typeof sash.store.onDrop === 'function') {
+        sash.store.onDrop(event, sash);
       }
 
       this.hoveredPaneEl.removeAttribute('drop-area');

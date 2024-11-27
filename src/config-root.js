@@ -8,7 +8,6 @@ const DEFAULTS = {
 
 export const FEAT_DEFAULTS = {
   fitContainer: false,
-  onDrop: null,
 };
 
 export class ConfigRoot extends ConfigNode {
@@ -19,7 +18,6 @@ export class ConfigRoot extends ConfigNode {
       width = DEFAULTS.width,
       height = DEFAULTS.height,
       fitContainer = FEAT_DEFAULTS.fitContainer,
-      onDrop = FEAT_DEFAULTS.onDrop,
       ...rest
     } = {
       ...DEFAULTS,
@@ -36,6 +34,5 @@ export class ConfigRoot extends ConfigNode {
     });
 
     this.fitContainer = fitContainer;
-    this.onDrop = onDrop;
   }
 }
