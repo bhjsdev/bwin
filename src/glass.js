@@ -1,5 +1,5 @@
 import { createDomNode } from './utils';
-import { BUILTIN_ACTIONS } from './actions';
+import { BUILTIN_ACTIONS } from './glass.actions';
 
 const DEFAULTS = {
   title: null,
@@ -43,8 +43,7 @@ export class Glass {
       headerEl.append(titleEl);
     }
 
-    headerEl.setAttribute('draggable', this.draggable);
-
+    headerEl.setAttribute('can-drag', this.draggable);
     headerEl.append(this.createActions());
 
     const contentEl = document.createElement('bw-glass-content');

@@ -5,8 +5,9 @@ import { Sash } from './sash.js';
 export default {
   createPane(sash) {
     const paneEl = createPaneElement(sash);
+
     if (sash.store.droppable === false) {
-      paneEl.setAttribute('droppable', 'false');
+      paneEl.setAttribute('can-drop', 'false');
     }
     return paneEl;
   },

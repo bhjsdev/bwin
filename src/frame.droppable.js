@@ -1,7 +1,7 @@
 import { getCursorPosition } from './position';
 
 export default {
-  hoveredPaneEl: null,
+  activeDropPaneEl: null,
 
   enableDrop() {
     this.windowElement.addEventListener('dragover', (event) => {
@@ -14,14 +14,14 @@ export default {
 
       if (!paneEl) return;
 
-      if (paneEl !== this.hoveredPaneEl) {
-        if (this.hoveredPaneEl) {
-          this.hoveredPaneEl.removeAttribute('drop-area');
+      if (paneEl !== this.activeDropPaneEl) {
+        if (this.activeDropPaneEl) {
+          this.activeDropPaneEl.removeAttribute('drop-area');
         }
-        this.hoveredPaneEl = paneEl;
+        this.activeDropPaneEl = paneEl;
       }
 
-      if (paneEl.getAttribute('droppable') === 'false') return;
+      if (paneEl.getAttribute('can-drop') === 'false') return;
 
       const position = getCursorPosition(paneEl, event);
       paneEl.setAttribute('drop-area', position);
@@ -36,25 +36,25 @@ export default {
         return;
       }
 
-      if (this.hoveredPaneEl) {
-        this.hoveredPaneEl.removeAttribute('drop-area');
-        this.hoveredPaneEl = null;
+      if (this.activeDropPaneEl) {
+        this.activeDropPaneEl.removeAttribute('drop-area');
+        this.activeDropPaneEl = null;
       }
     });
 
     this.windowElement.addEventListener('drop', (event) => {
-      if (!this.hoveredPaneEl) return;
-      if (this.hoveredPaneEl.getAttribute('droppable') === 'false') return;
+      if (!this.activeDropPaneEl) return;
+      if (this.activeDropPaneEl.getAttribute('can-drop') === 'false') return;
 
-      const sashId = this.hoveredPaneEl.getAttribute('sash-id');
+      const sashId = this.activeDropPaneEl.getAttribute('sash-id');
       const sash = this.rootSash.getById(sashId);
 
       if (typeof sash.store.onDrop === 'function') {
         sash.store.onDrop(event, sash);
       }
 
-      this.hoveredPaneEl.removeAttribute('drop-area');
-      this.hoveredPaneEl = null;
+      this.activeDropPaneEl.removeAttribute('drop-area');
+      this.activeDropPaneEl = null;
     });
   },
 };

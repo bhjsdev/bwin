@@ -10,7 +10,7 @@ const settings = {
       id: 'my-left-pane',
       content: 'Left',
       title: 'Left Pane',
-      draggable: false,
+      // draggable: false,
     },
     {
       position: 'right',

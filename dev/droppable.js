@@ -79,14 +79,14 @@ dropZone.addEventListener('drop', (event) => {
 });
 
 const droppablePaneEl = document.querySelector('[sash-id="droppable-pane"]');
-let droppable = droppablePaneEl.getAttribute('droppable') !== 'false';
+let droppable = droppablePaneEl.getAttribute('can-drop') !== 'false';
 
 document.querySelector('#toggle-droppable').addEventListener('click', (event) => {
   droppable = !droppable;
   event.target.textContent = droppable
     ? 'Disable droppable on left pane'
     : 'Enable droppable on left pane';
-  droppablePaneEl.setAttribute('droppable', droppable);
+  droppablePaneEl.setAttribute('can-drop', droppable);
 });
 
 window.frame = frame;
