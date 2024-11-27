@@ -23,3 +23,4 @@ frame.debug = false;
 frame.mount(document.querySelector('#container'));
 
 window.sash = frame.rootSash;
+window.frame = frame;

@@ -3,6 +3,9 @@ import { getCursorPosition } from './position';
 export default {
   activeDropPaneEl: null,
 
+  // Intended to be overridden in `BinaryWindow` class
+  onPaneDrop() {},
+
   enableDrop() {
     this.windowElement.addEventListener('dragover', (event) => {
       // `preventDefault` is required to allow drop
@@ -48,6 +51,8 @@ export default {
 
       const sashId = this.activeDropPaneEl.getAttribute('sash-id');
       const sash = this.rootSash.getById(sashId);
+
+      this.onPaneDrop(event, sash);
 
       if (typeof sash.store.onDrop === 'function') {
         sash.store.onDrop(event, sash);

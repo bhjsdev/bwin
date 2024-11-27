@@ -55,3 +55,4 @@ const win = new BinaryWindow(settings);
 win.mount(document.querySelector('#container'));
 
 window.sash = win.rootSash;
+window.win = win;

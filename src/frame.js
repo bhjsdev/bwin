@@ -47,7 +47,7 @@ export class Frame {
 
   static assemble(...modules) {
     modules.forEach((module) => {
-      strictAssign(Frame.prototype, module);
+      strictAssign(this.prototype, module);
     });
   }
 }

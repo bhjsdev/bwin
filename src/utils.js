@@ -146,7 +146,7 @@ export function isPlainObject(value) {
  */
 export function strictAssign(target, source) {
   for (const key in source) {
-    if (key in target) {
+    if (Object.hasOwn(target, key)) {
       throw new Error(`Key "${key}" already exists in target object`);
     }
     target[key] = source[key];

@@ -1,11 +1,15 @@
 export default {
   activeDragGlassEl: null,
   // Stores original value of pane's can-drop attribute
-  activeDragGlassPaneCanDrop: true,
+  activeDragGlassPaneCanDrop: false,
+
+  onPaneDrop(event, sash) {
+    // todo: implement
+  },
 
   enableDrag() {
     // Identify the glass element to be dragged
-    // This avoids child elements of glass header to trigger drag
+    // This prevents drag from being triggered by child elements, e.g. action buttons
     document.addEventListener('mousedown', (event) => {
       if (!event.target.matches('bw-glass-header')) return;
       if (event.target.getAttribute('can-drag') === 'false') return;
