@@ -18,7 +18,7 @@ export class BinaryWindow extends Frame {
     paneEl.append(glass.domNode);
 
     if (this.debug) {
-      glass.contentElement.prepend(`[${sash.id}]`);
+      glass.contentElement.prepend(`${sash.id}`);
     }
   }
 
@@ -29,13 +29,13 @@ export class BinaryWindow extends Frame {
   /**
    * Add glass into the target pane.
    *
-   * @param {string} targetPaneSashId - The Sash ID of the pane that the glass moves into
+   * @param {string} paneSashId - The Sash ID of the pane that the glass moves into
    * @param {'top'|'right'|'bottom'|'left'} position - The position of the glass relative to the target pane
    * @param {Object} glassProps - The glass properties
    *
    */
-  addGlass(targetPaneSashId, position, glassProps) {
-    const paneSash = this.addPane(targetPaneSashId, position);
+  addGlassToPane(paneSashId, position, glassProps) {
+    const paneSash = this.addPane(paneSashId, position);
     const glass = new Glass({ ...glassProps, sash: paneSash, binaryWindow: this });
     paneSash.domNode.append(glass.domNode);
   }
@@ -46,7 +46,7 @@ export class BinaryWindow extends Frame {
    * @param {string} paneSashId - The Sash ID of the pane that contains the glass
    * @param {boolean} removePane - Whether to remove the pane together
    */
-  removeGlass(paneSashId, removePane) {
+  removeGlassFromPane(paneSashId, removePane) {
     if (removePane) {
       this.removePane(paneSashId);
     }
