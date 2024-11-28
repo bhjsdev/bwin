@@ -51,7 +51,7 @@ export function genDigits(length = 5) {
  *
  * @param {number} alphabetLength - The length of the alphabet part
  * @param {number} digitLength - The length of the digit part
- * @returns {string}
+ * @returns {string} - The generated ID
  */
 export function genId(alphabetLength = 2, digitLength = 3) {
   if (alphabetLength < 0 || digitLength < 0) {

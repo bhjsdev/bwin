@@ -26,6 +26,39 @@ export class BinaryWindow extends Frame {
     // Overriding Frame's debug pane update
   }
 
+  /**
+   * Add glass into the target pane.
+   *
+   * @param {string} targetPaneSashId - The Sash ID of the pane that the glass moves into
+   * @param {'top'|'right'|'bottom'|'left'} position - The position of the glass relative to the target pane
+   * @param {Object} glassProps - The glass properties
+   *
+   */
+  addGlass(targetPaneSashId, position, glassProps) {
+    const paneSash = this.addPane(targetPaneSashId, position);
+    const glass = new Glass({ ...glassProps, sash: paneSash, binaryWindow: this });
+    paneSash.domNode.append(glass.domNode);
+  }
+
+  /**
+   * Remove glass from or together with the pane
+   *
+   * @param {string} paneSashId - The Sash ID of the pane that contains the glass
+   * @param {boolean} removePane - Whether to remove the pane together
+   */
+  removeGlass(paneSashId, removePane) {
+    if (removePane) {
+      this.removePane(paneSashId);
+    }
+    else {
+      const paneSash = this.rootSash.getById(paneSashId);
+      if (!paneSash) throw new Error(`[bwin] Pane not found when removing glass`);
+
+      const glassEl = paneSash.domNode.querySelector('bw-glass');
+      if (glassEl) glassEl.remove();
+    }
+  }
+
   trimMuntin(muntinEl) {
     if (muntinEl.hasAttribute('vertical')) {
       muntinEl.style.top = `${parseFloat(muntinEl.style.top) + this.muntinSize / 2}px`;

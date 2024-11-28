@@ -1,6 +1,6 @@
 import { Frame } from '../src';
 
-function handleDrop(sash) {
+function handleDrop(event, sash) {
   const paneEl = sash.domNode;
   paneEl.append(dragItem);
   const dropArea = paneEl.getAttribute('drop-area');
