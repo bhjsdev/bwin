@@ -1,10 +1,24 @@
+import { getSashIdFromPane } from './frame.utils';
+
 export default {
   activeDragGlassEl: null,
   // Stores original value of pane's can-drop attribute
   activeDragGlassPaneCanDrop: false,
 
-  onPaneDrop(event, sash) {
-    // todo: implement
+  onPaneDrop(sash) {
+    if (!this.activeDragGlassEl) return;
+    const dropArea = this.activeDropPaneEl.getAttribute('drop-area');
+
+    // Swap the content of the two panes
+    if (dropArea === 'center') {
+      return;
+    }
+    else {
+      const oldSashId = getSashIdFromPane(this.activeDragGlassEl);
+      const newPaneSash = this.addPane(sash.id, dropArea);
+      newPaneSash.domNode.append(this.activeDragGlassEl);
+      this.removePane(oldSashId);
+    }
   },
 
   enableDrag() {
@@ -33,14 +47,14 @@ export default {
     });
 
     document.addEventListener('dragend', () => {
-      if (this.activeDragGlassEl) {
-        this.activeDragGlassEl.removeAttribute('draggable');
+      if (!this.activeDragGlassEl) return;
 
-        const paneEl = this.activeDragGlassEl.closest('bw-pane');
-        paneEl.setAttribute('can-drop', this.activeDragGlassPaneCanDrop);
+      this.activeDragGlassEl.removeAttribute('draggable');
 
-        this.activeDragGlassEl = null;
-      }
+      const paneEl = this.activeDragGlassEl.closest('bw-pane');
+      paneEl.setAttribute('can-drop', this.activeDragGlassPaneCanDrop);
+
+      this.activeDragGlassEl = null;
     });
   },
 };

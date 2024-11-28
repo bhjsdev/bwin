@@ -29,18 +29,18 @@ export class Sash {
     id,
   } = DEFAULTS) {
     // Relative position to its parent
+    this.id = id ?? genId();
+    if (!position) {
+      throw new Error('[bwin] Sash position is required');
+    }
+    this.position = position;
+    this.domNode = domNode;
+
     this._top = top;
     this._left = left;
     this._width = width;
     this._height = height;
 
-    if (!position) {
-      throw new Error('[bwin] Sash position is required');
-    }
-
-    this.position = position;
-    this.domNode = domNode;
-    this.id = id ?? genId();
     this.children = [];
     this.minWidth = minWidth;
     this.minHeight = minHeight;

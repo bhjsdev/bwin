@@ -8,10 +8,11 @@ document.addEventListener('dragstart', (event) => {
   canDrag = event.target === dragItem;
 });
 
-function handleDrop(event, sash) {
+function handleDrop(sash) {
   if (!canDrag) return;
 
-  const paneEl = event.target;
+  // const paneEl = event.target;
+  const paneEl = sash.domNode;
   paneEl.append(dragItem);
   const dropArea = paneEl.getAttribute('drop-area');
   dragItem.style.position = 'absolute';

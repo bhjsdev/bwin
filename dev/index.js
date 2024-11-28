@@ -22,6 +22,7 @@ const files = [
   'dom-node',
   'bwin-content',
   'one-pane',
+  'bwin-more',
 ].sort();
 
 const navEl = document.createElement('nav');

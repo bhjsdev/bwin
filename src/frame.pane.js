@@ -37,19 +37,33 @@ export default {
     }
   },
 
-  addPane(parentSashId, position) {
-    const parentSash = this.rootSash.getById(parentSashId);
+  /**
+   * Add a pane into the target pane. The two panes become next to each other
+   *
+   * @param {string} targetPaneSashId - The Sash ID of the target pane that the new pane moves into
+   * @param {'top'|'right'|'bottom'|'left'} position - The position of the new pane relative to the target pane
+   * @returns {Sash} - The newly created sash
+   */
+  addPane(targetPaneSashId, position) {
+    if (!position) throw new Error('[bwin] Position is required when adding pane');
 
-    if (!parentSash) throw new Error('[bwin] Parent pane not found');
-    if (!position) throw new Error('[bwin] Position is required');
+    const parentSash = this.rootSash.getById(targetPaneSashId);
+    if (!parentSash) throw new Error('[bwin] Parent sash not found when adding pane');
 
-    addPaneByPosition(parentSash, position);
+    const newPaneSash = addPaneByPosition(parentSash, position);
     // Generate new ID for parent sash to create a new muntin
     parentSash.id = genId();
 
     this.update();
+
+    return newPaneSash;
   },
 
+  /**
+   * Remove a pane
+   *
+   * @param {string} sashId - The Sash ID of the pane to be removed
+   */
   removePane(sashId) {
     const parentSash = this.rootSash.getDescendantParentById(sashId);
     if (!parentSash) throw new Error('[bwin] Can not remove root pane');
@@ -133,6 +147,8 @@ function addLeftPane(parentSash) {
 
   parentSash.addChild(newLeftSash);
   parentSash.addChild(newRightSash);
+
+  return newLeftSash;
 }
 
 function addRightPane(parentSash) {
@@ -158,6 +174,8 @@ function addRightPane(parentSash) {
 
   parentSash.addChild(newLeftSash);
   parentSash.addChild(newRightSash);
+
+  return newRightSash;
 }
 
 function addTopPane(parentSash) {
@@ -183,6 +201,8 @@ function addTopPane(parentSash) {
 
   parentSash.addChild(newTopSash);
   parentSash.addChild(newBottomSash);
+
+  return newTopSash;
 }
 
 function addBottomPane(parentSash) {
@@ -208,20 +228,22 @@ function addBottomPane(parentSash) {
 
   parentSash.addChild(newTopSash);
   parentSash.addChild(newBottomSash);
+
+  return newBottomSash;
 }
 
 function addPaneByPosition(parentSash, position) {
   if (position === Position.Left) {
-    addLeftPane(parentSash);
+    return addLeftPane(parentSash);
   }
   else if (position === Position.Right) {
-    addRightPane(parentSash);
+    return addRightPane(parentSash);
   }
   else if (position === Position.Top) {
-    addTopPane(parentSash);
+    return addTopPane(parentSash);
   }
   else if (position === Position.Bottom) {
-    addBottomPane(parentSash);
+    return addBottomPane(parentSash);
   }
 }
 

@@ -52,10 +52,10 @@ export default {
       const sashId = this.activeDropPaneEl.getAttribute('sash-id');
       const sash = this.rootSash.getById(sashId);
 
-      this.onPaneDrop(event, sash);
+      this.onPaneDrop(sash);
 
       if (typeof sash.store.onDrop === 'function') {
-        sash.store.onDrop(event, sash);
+        sash.store.onDrop(sash);
       }
 
       this.activeDropPaneEl.removeAttribute('drop-area');

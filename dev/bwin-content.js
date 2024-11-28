@@ -22,7 +22,6 @@ const settings = {
           id: 'my-right-top-pane',
           // Should not be droppable all the time
           droppable: false,
-          tabs: [{ label: 'Tab 1' }, 'Tab 2'],
           actions: [
             {
               label: 'Update content',
@@ -42,6 +41,7 @@ const settings = {
           position: 'bottom',
           size: '70%',
           actions: null,
+          tabs: [{ label: 'Tab 1' }, 'Tab 2'],
           content: 'Bottom Right Pane',
         },
       ],
