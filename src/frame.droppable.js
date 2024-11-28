@@ -4,7 +4,7 @@ export default {
   activeDropPaneEl: null,
 
   // Intended to be overridden in `BinaryWindow` class
-  onPaneDrop() {},
+  onPaneDrop(event, sash) {},
 
   enableDrop() {
     this.windowElement.addEventListener('dragover', (event) => {

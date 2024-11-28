@@ -6,7 +6,7 @@ export default {
   // Stores original `can-drop` attribute value of pane element
   activeDragGlassPaneCanDrop: false,
 
-  onPaneDrop(sash) {
+  onPaneDrop(event, sash) {
     if (!this.activeDragGlassEl) return;
     const dropArea = this.activeDropPaneEl.getAttribute('drop-area');
 
