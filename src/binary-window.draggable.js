@@ -1,8 +1,9 @@
 import { getSashIdFromPane } from './frame.utils';
+import { swapChildNodes } from './utils';
 
 export default {
   activeDragGlassEl: null,
-  // Stores original value of pane's can-drop attribute
+  // Stores original `can-drop` attribute value of pane element
   activeDragGlassPaneCanDrop: false,
 
   onPaneDrop(sash) {
@@ -11,12 +12,20 @@ export default {
 
     // Swap the content of the two panes
     if (dropArea === 'center') {
+      const sourcePaneEl = this.activeDragGlassEl.closest('bw-pane');
+      const activeDropPaneCanDrop = this.activeDropPaneEl.getAttribute('can-drop') !== 'false';
+
+      swapChildNodes(sourcePaneEl, this.activeDropPaneEl);
+      sourcePaneEl.setAttribute('can-drop', activeDropPaneCanDrop);
+
       return;
     }
+    // Add the pane of glass next to the current pane
     else {
       const oldSashId = getSashIdFromPane(this.activeDragGlassEl);
       const newPaneSash = this.addPane(sash.id, dropArea);
       newPaneSash.domNode.append(this.activeDragGlassEl);
+
       this.removePane(oldSashId);
     }
   },
@@ -37,24 +46,24 @@ export default {
 
     document.addEventListener('dragstart', (event) => {
       if (!event.target.matches('bw-glass')) return;
+      if (!this.activeDragGlassEl) return;
 
       event.dataTransfer.effectAllowed = 'move';
 
-      const paneEl = event.target.closest('bw-pane');
-      this.activeDragGlassPaneCanDrop = paneEl.getAttribute('droppable') !== 'false';
-
+      const paneEl = this.activeDragGlassEl.closest('bw-pane');
+      this.activeDragGlassPaneCanDrop = paneEl.getAttribute('can-drop') !== 'false';
       paneEl.setAttribute('can-drop', false);
     });
 
     document.addEventListener('dragend', () => {
-      if (!this.activeDragGlassEl) return;
-
-      this.activeDragGlassEl.removeAttribute('draggable');
-
-      const paneEl = this.activeDragGlassEl.closest('bw-pane');
-      paneEl.setAttribute('can-drop', this.activeDragGlassPaneCanDrop);
-
-      this.activeDragGlassEl = null;
+      if (this.activeDragGlassEl) {
+        this.activeDragGlassEl.removeAttribute('draggable');
+        // Carry over `can-drop` attribute
+        this.activeDragGlassEl
+          .closest('bw-pane')
+          .setAttribute('can-drop', this.activeDragGlassPaneCanDrop);
+        this.activeDragGlassEl = null;
+      }
     });
   },
 };

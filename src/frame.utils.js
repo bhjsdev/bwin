@@ -1,3 +1,9 @@
+/**
+ * Read `sash-id` attribute from the pane element
+ *
+ * @param {Element} innerElement - Element inside the pane element
+ * @returns {string} - Sash ID
+ */
 export function getSashIdFromPane(innerElement) {
   if (innerElement.tagName === 'BW-PANE') {
     return innerElement.getAttribute('sash-id');

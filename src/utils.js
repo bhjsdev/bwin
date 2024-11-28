@@ -90,6 +90,20 @@ export function moveChildNodes(toNode, fromNode) {
 }
 
 /**
+ * Swap two DOM nodes' child nodes
+ *
+ * @param {Node} parentNode1 - The parent node
+ * @param {Node} parentNode2 - Another parent node
+ */
+export function swapChildNodes(parentNode1, parentNode2) {
+  const tempNode = document.createElement('div');
+
+  moveChildNodes(tempNode, parentNode1);
+  moveChildNodes(parentNode1, parentNode2);
+  moveChildNodes(parentNode2, tempNode);
+}
+
+/**
  * Parse a size string into a number, e.g. "100px" -> 100, "50%" -> 0.5
  *
  * @param {string | number} size - The size string to parse
