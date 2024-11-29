@@ -44,6 +44,15 @@ export default {
       this.activeDragGlassEl = glassEl;
     });
 
+    // Prevent glass element having a `draggable` state after mouse release
+    // This can happen when `dragend` event is not triggered
+    document.addEventListener('mouseup', () => {
+      if (this.activeDragGlassEl) {
+        this.activeDragGlassEl.removeAttribute('draggable');
+        this.activeDragGlassEl = null;
+      }
+    });
+
     document.addEventListener('dragstart', (event) => {
       if (!event.target.matches('bw-glass')) return;
       if (!this.activeDragGlassEl) return;
