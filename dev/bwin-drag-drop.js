@@ -46,8 +46,9 @@ function handleDrop(event, sash) {
 }
 
 const settings = {
-  children: [{ size: 100, onDrop: handleDrop }, { onDrop: handleDrop }],
+  children: [{ size: 0.5, onDrop: handleDrop, draggable: false }, { onDrop: handleDrop }],
 };
 
 const win = new BinaryWindow(settings);
+win.debug = false;
 win.mount(document.querySelector('#container'));
