@@ -1,11 +1,11 @@
 {
   "name": "bwin",
-  "description": "A window tiling manager for web browsers",
+  "description": "A tiling window manager for web browsers",
   "type": "module",
   "version": "0.1.0",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/bhjsdev/bwin"
   },
   "keywords": [
     "ui",
@@ -17,6 +17,8 @@
   ],
   "author": "Bhjs Dev <bhjsdev@gmail.com>",
   "license": "MIT",
+  "bugs": "https://github.com/bhjsdev/bwin/issues",
+  "homepage": "https://github.com/bhjsdev/bwin#readme",
   "files": [
     "dist"
   ],
