@@ -5,7 +5,7 @@
   "version": "0.1.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/bhjsdev/bwin"
+    "url": "git+https://github.com/bhjsdev/bwin.git"
   },
   "keywords": [
     "ui",
