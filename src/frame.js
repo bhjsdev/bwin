@@ -18,7 +18,7 @@ import frameDroppable from './frame.droppable';
 export class Frame {
   windowElement = null;
   containerElement = null;
-  debug = true;
+  debug = false;
 
   constructor(settings) {
     let config = null;

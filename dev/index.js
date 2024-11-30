@@ -23,6 +23,7 @@ const files = [
   'one-pane',
   'bwin-more',
   'bwin-add-remove-glasses',
+  'release-check',
 ].sort();
 
 const navEl = document.createElement('nav');
@@ -40,6 +41,7 @@ function genLinkText(file) {
 navEl.innerHTML = `
   <menu class="_menu">
     <li><button id="_toggle-bg">Toggle BG</button></li>
+    <li><a href="/release-check.html"><b>Release check</b></a></li>
     <li><a href="/debug.html">Debug</a></li>
     ${files.map((file) => `<li><a href="/${file}.html">${genLinkText(file)}</a></li>`).join('')}
   </menu>
