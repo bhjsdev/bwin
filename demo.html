@@ -12,17 +12,31 @@
         width: 800,
         height: 600,
         children: [
-          { position: 'left', size: 300, content: 'Hello Binary Window!' },
+          {
+            position: 'left',
+            size: 300,
+            title: 'Left',
+            title: 'My title',
+            content: 'Hello Binary Window!',
+          },
           {
             position: 'right',
             size: 500,
             children: [
-              { position: 'top', size: '30%', content: '<b>Top right</b>' },
+              {
+                position: 'top',
+                size: '30%',
+                title: 'No action buttons',
+                actions: null,
+                content: 'Drag disabled',
+                draggable: false,
+              },
               {
                 position: 'bottom',
                 size: '70%',
+                title: 'Content is a DOM element',
                 content: Object.assign(document.createElement('div'), {
-                  innerHTML: '<i>Bottom right</i>',
+                  innerHTML: '<i>Drop disabled</i>',
                 }),
               },
             ],

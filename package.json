@@ -1,11 +1,33 @@
 {
   "name": "bwin",
-  "private": true,
-  "version": "0.1.0",
+  "description": "A window tiling manager for web browsers",
   "type": "module",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "keywords": [
+    "ui",
+    "drag",
+    "drop",
+    "resize",
+    "window-manager",
+    "tiling-window-manager"
+  ],
+  "author": "Bhjs Dev <bhjsdev@gmail.com>",
+  "license": "MIT",
   "files": [
     "dist"
   ],
+  "main": "./dist/bwin.js",
+  "module": "./dist/bwin.js",
+  "exports": {
+    ".": {
+      "import": "./dist/bwin.js"
+    },
+    "./bwin.css": "./dist/bwin.css"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
