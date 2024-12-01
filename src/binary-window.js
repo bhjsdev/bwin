@@ -2,6 +2,7 @@ import { Frame } from './frame';
 import { Glass } from './glass';
 import binaryWindowObservers from './binary-window.observers';
 import binaryWindowDraggable from './binary-window.draggable';
+import binaryWindowTrim from './binary-window.trim';
 
 export class BinaryWindow extends Frame {
   mount(containerEl) {
@@ -58,25 +59,6 @@ export class BinaryWindow extends Frame {
       if (glassEl) glassEl.remove();
     }
   }
-
-  trimMuntin(muntinEl) {
-    if (muntinEl.hasAttribute('vertical')) {
-      muntinEl.style.top = `${parseFloat(muntinEl.style.top) + this.muntinSize / 2}px`;
-      muntinEl.style.height = `${parseFloat(muntinEl.style.height) - this.muntinSize}px`;
-    }
-    else if (muntinEl.hasAttribute('horizontal')) {
-      muntinEl.style.left = `${parseFloat(muntinEl.style.left) + this.muntinSize / 2}px`;
-      muntinEl.style.width = `${parseFloat(muntinEl.style.width) - this.muntinSize}px`;
-    }
-  }
-
-  onMuntinCreate(muntinEl) {
-    this.trimMuntin(muntinEl);
-  }
-
-  onMuntinUpdate(muntinEl) {
-    this.trimMuntin(muntinEl);
-  }
 }
 
-BinaryWindow.assemble(binaryWindowObservers, binaryWindowDraggable);
+BinaryWindow.assemble(binaryWindowObservers, binaryWindowDraggable, binaryWindowTrim);
