@@ -5,9 +5,8 @@ import binaryWindowDraggable from './binary-window.draggable';
 import binaryWindowTrim from './binary-window.trim';
 
 export class BinaryWindow extends Frame {
-  mount(containerEl) {
-    super.mount(containerEl);
-
+  enableFeatures() {
+    super.enableFeatures();
     this.enableObservers();
     this.enableDrag();
   }

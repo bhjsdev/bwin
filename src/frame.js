@@ -35,10 +35,8 @@ export class Frame {
     this.fitContainer = config.fitContainer;
   }
 
-  onMount() {
-    this.create();
-
-    // Features. Can work independently to each other
+  // Features can work independently to each other
+  enableFeatures() {
     this.enableResize();
     this.enableDrop();
     this.fitContainer && this.enableFitContainer();
@@ -46,7 +44,8 @@ export class Frame {
 
   mount(containerEl) {
     this.containerElement = containerEl;
-    this.onMount();
+    this.create();
+    this.enableFeatures();
   }
 
   static assemble(...modules) {
