@@ -9,11 +9,10 @@
   <body>
     <main>
       <h1>Chrome drag bug</h1>
+      <p>`dragover` is triggered even when `draggable` is false. Not happening on Firefox</p>
       <button id="toggle-draggable">Toggle draggable</button>
-      <div id="draggable-container" style="padding: 10px; border: 1px solid black" draggable="true">
-        <div id="draggable-item" style="height: 100px; width: 100px; background-color: pink"></div>
-      </div>
-      <div id="dropzone" style="padding: 10px; border: 1px solid black; margin-top: 10px; height: 100px">
+      <div id="draggable-item" style="width: 33px; height: 33px; background-color: bisque;" draggable="true"></div>
+      <div id="dropzone" style="width: 99px; height: 99px; border: 1px solid black;">
     </main>
   </body>
 </html>

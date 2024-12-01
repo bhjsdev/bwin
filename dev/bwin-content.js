@@ -1,30 +1,31 @@
 import { BinaryWindow, BUILTIN_ACTIONS } from '../src';
 
+const isDraggable = false;
+const isDroppable = false;
+
 const settings = {
-  width: 555,
+  width: 666,
   height: 333,
   children: [
     {
       position: 'left',
-      size: '40%',
+      size: '45%',
       id: 'my-left-pane',
-      content: 'Left',
-      title: 'Left Pane',
-      draggable: false,
+      title: `draggable: ${isDraggable}`,
+      draggable: isDraggable,
     },
     {
       position: 'right',
-      size: '60%',
       children: [
         {
           position: 'top',
           size: '30%',
           id: 'my-right-top-pane',
           // Should not be droppable all the time
-          droppable: false,
+          droppable: isDroppable,
           actions: [
             {
-              label: 'Update content',
+              label: 'Update',
               onClick: (event, glass) => {
                 glass.headerElement.style.backgroundColor = 'lightblue';
                 glass.contentElement.innerHTML = 'Content updated!';
@@ -33,15 +34,15 @@ const settings = {
             ...BUILTIN_ACTIONS,
             'A2',
           ],
-          // should not be displayed when tabs are present
-          title: 'Top Right Pane',
-          content: '<mark>Top Right Pane</mark>',
+          title: `<mark>droppable: ${isDroppable}</mark>`,
         },
         {
           position: 'bottom',
           size: '70%',
           actions: null,
+          title: 'My title',
           tabs: [{ label: 'Tab 1' }, 'Tab 2'],
+          // should not be displayed when tabs are present
           content: 'Bottom Right Pane',
         },
       ],

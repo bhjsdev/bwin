@@ -1,10 +1,7 @@
-const draggableContainer = document.querySelector('#draggable-container');
+const el = document.querySelector('#draggable-item');
 
 document.querySelector('#toggle-draggable').addEventListener('click', (event) => {
-  draggableContainer.setAttribute(
-    'draggable',
-    draggableContainer.getAttribute('draggable') === 'true' ? 'false' : 'true'
-  );
+  el.setAttribute('draggable', el.getAttribute('draggable') === 'true' ? 'false' : 'true');
 });
 
 document.querySelector('#dropzone').addEventListener('dragover', (event) => {

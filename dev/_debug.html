@@ -6,15 +6,41 @@
     <script type="module" src="/index.js"></script>
     <script type="module" src="/_debug.js"></script>
   </head>
+  <style>
+    #no-draggable-attribute {
+      width: 33px;
+      height: 33px;
+      background-color: antiquewhite;
+    }
+
+    #draggable-container {
+      padding: 10px;
+      border: 1px solid black;
+    }
+
+    #draggable-item {
+      height: 100px;
+      width: 100px;
+      background-color: lightblue;
+    }
+
+    #dropzone {
+      padding: 10px;
+      border: 1px solid black;
+      margin-top: 10px;
+      height: 100px;
+    }
+  </style>
   <body>
     <main>
       <h1>Debug</h1>
       <button id="toggle-draggable">Toggle draggable</button>
-      <div style="width: 233px; height:33px; background-color: antiquewhite;">no draggable attribute</div>
-      <div id="draggable-container" draggable="true" style="padding: 10px; border: 1px solid black">
-        <div id="draggable-item" style="height: 100px; width: 100px; background-color: lightblue"></div>
+      <div id="draggable-container" draggable="false">
+        <button id="button">Click me</button>
+        <span>Text node</span>
       </div>
-      <div id="dropzone" style="padding: 10px; border: 1px solid black; margin-top: 10px; height: 100px">
+      <div id="dropzone"></div>
+      <div id="no-draggable-attribute" draggable="true"></div>
     </main>
   </body>
 </html>

@@ -20,7 +20,7 @@ export default {
 
       return;
     }
-    // Add the pane of glass next to the current pane
+    // Add the pane of glass next to the current pane, vertically or horizontally
     else {
       const oldSashId = getSashIdFromPane(this.activeDragGlassEl);
       const newPaneSash = this.addPane(sash.id, dropArea);
@@ -31,11 +31,18 @@ export default {
   },
 
   enableDrag() {
-    // Identify the glass element to be dragged
-    // This prevents drag from being triggered by child elements, e.g. action buttons
+    // Identify which "glass" element to be dragged
+    // Prevent drag from being triggered by child elements, e.g. action buttons
+    // It is possible to use `preventDefault` on `mousedown` if `event.target` is a child element
+    // But it also prevents text from selection
     document.addEventListener('mousedown', (event) => {
       if (!event.target.matches('bw-glass-header')) return;
-      if (event.target.getAttribute('can-drag') === 'false') return;
+      if (event.target.getAttribute('can-drag') === 'false') {
+        // Chrome bug: use `event.preventDefault` to trigger `dragover` event
+        // even if there's no `draggable` attribute set
+        event.preventDefault();
+        return;
+      }
 
       const headerEl = event.target;
       const glassEl = headerEl.closest('bw-glass');
@@ -44,8 +51,6 @@ export default {
       this.activeDragGlassEl = glassEl;
     });
 
-    // Prevent glass element having a `draggable` state after mouse release
-    // This can happen when `dragend` event is not triggered
     document.addEventListener('mouseup', () => {
       if (this.activeDragGlassEl) {
         this.activeDragGlassEl.removeAttribute('draggable');
@@ -54,8 +59,13 @@ export default {
     });
 
     document.addEventListener('dragstart', (event) => {
-      if (!event.target.matches('bw-glass')) return;
-      if (!this.activeDragGlassEl) return;
+      if (
+        !(event.target instanceof HTMLElement) ||
+        !event.target.matches('bw-glass') ||
+        !this.activeDragGlassEl
+      ) {
+        return;
+      }
 
       event.dataTransfer.effectAllowed = 'move';
 
