@@ -45,15 +45,16 @@ bw-window:has(bw-glass) {
 }
 
 bw-glass {
+  position: absolute;
+  inset: var(--bw-glass-clearance);
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--bw-glass-border-color);
+  border-radius: var(--bw-glass-border-radius);
+  background-color: white;
   font-family: var(--bw-font-family);
   font-size: var(--bw-font-size);
   box-sizing: border-box;
-  position: absolute;
-  inset: var(--bw-glass-clearance);
-  border: 1px solid var(--bw-glass-border-color);
-  background-color: white;
-  display: flex;
-  flex-direction: column;
 
   &[draggable='true']:active {
     cursor: move;
@@ -70,6 +71,8 @@ bw-glass-header {
   padding-inline: var(--bw-glass-header-gap);
   flex-basis: var(--bw-glass-header-height);
   border-bottom: 1px solid var(--bw-glass-border-color);
+  border-top-left-radius: var(--bw-glass-border-radius);
+  border-top-right-radius: var(--bw-glass-border-radius);
   background-color: var(--bw-glass-header-bg-color);
 }
 
@@ -83,6 +86,8 @@ bw-glass-tab-container {
   font-family: var(--bw-font-family);
   border: 1px solid var(--bw-glass-border-color);
   border-bottom: none;
+  border-top-left-radius: var(--bw-glass-border-radius);
+  border-top-right-radius: var(--bw-glass-border-radius);
   cursor: pointer;
 
   &:hover {
@@ -104,6 +109,7 @@ bw-glass-action-container {
 .bw-glass-action {
   font-family: var(--bw-font-family);
   border: 1px solid var(--bw-glass-border-color);
+  border-radius: var(--bw-glass-border-radius);
   cursor: pointer;
 
   &:hover {
