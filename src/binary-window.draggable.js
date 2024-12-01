@@ -3,7 +3,6 @@ import { swapChildNodes } from './utils';
 
 export default {
   activeDragGlassEl: null,
-  // Stores original `can-drop` attribute value of pane element
   activeDragGlassPaneCanDrop: false,
 
   onPaneDrop(event, sash) {
@@ -70,6 +69,7 @@ export default {
       event.dataTransfer.effectAllowed = 'move';
 
       const paneEl = this.activeDragGlassEl.closest('bw-pane');
+      // Save original `can-drop` attribute for later carry-over
       this.activeDragGlassPaneCanDrop = paneEl.getAttribute('can-drop') !== 'false';
       paneEl.setAttribute('can-drop', false);
     });

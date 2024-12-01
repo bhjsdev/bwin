@@ -4,7 +4,7 @@
   --bw-drop-area-bg-color: hsl(0, 0%, 0%, 0.05);
 
   --bw-glass-header-height: 30px;
-  --bw-glass-header-padding: 0 4px;
+  --bw-glass-header-gap: 4px;
   --bw-glass-header-bg-color: hsl(0, 0%, 97%);
   --bw-glass-clearance: 2px;
   --bw-glass-border-color: hsl(0, 0%, 10%);
