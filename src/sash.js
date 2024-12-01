@@ -7,8 +7,8 @@ export const DEFAULTS = {
   width: 100,
   height: 100,
   // Initial min values, real min width/height is calculated based on children
-  minWidth: 20,
-  minHeight: 20,
+  minWidth: 50,
+  minHeight: 50,
 };
 
 /**
