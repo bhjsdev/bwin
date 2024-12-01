@@ -18,7 +18,7 @@ import frameDroppable from './frame.droppable';
 export class Frame {
   windowElement = null;
   containerElement = null;
-  debug = false;
+  debug = import.meta.env.PROD ? false : true;
 
   constructor(settings) {
     let config = null;
