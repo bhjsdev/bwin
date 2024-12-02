@@ -86,7 +86,7 @@ export class Glass {
 
       if (typeof action.onClick === 'function') {
         buttonEl.addEventListener('click', (event) => {
-          action.onClick(event, this);
+          action.onClick(event, this.binaryWindow);
         });
       }
 

@@ -6,9 +6,9 @@ export const BUILTIN_ACTIONS = [
   {
     label: '',
     className: CLOSE_BUTTON_CLASSNAME,
-    onClick: (event, glass) => {
+    onClick: (event, binaryWindow) => {
       const sashId = getSashIdFromPane(event.target);
-      glass.binaryWindow.removePane(sashId);
+      binaryWindow.removePane(sashId);
     },
   },
 ];

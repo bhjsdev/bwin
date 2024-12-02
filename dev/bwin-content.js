@@ -26,9 +26,13 @@ const settings = {
           actions: [
             {
               label: 'Update',
-              onClick: (event, glass) => {
-                glass.headerElement.style.backgroundColor = 'lightblue';
-                glass.contentElement.innerHTML = 'Content updated!';
+              onClick: (event) => {
+                const buttonEl = event.target;
+                const headerEl = buttonEl.closest('bw-glass-header');
+                headerEl.style.backgroundColor = 'lightblue';
+
+                const contentEl = buttonEl.closest('bw-glass').querySelector('bw-glass-content');
+                contentEl.innerHTML = 'Content updated!';
               },
             },
             ...BUILTIN_ACTIONS,
