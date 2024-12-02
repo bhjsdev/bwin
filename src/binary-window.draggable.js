@@ -35,7 +35,7 @@ export default {
     // It is possible to use `preventDefault` on `mousedown` if `event.target` is a child element
     // But it also prevents text from selection
     document.addEventListener('mousedown', (event) => {
-      if (!event.target.matches('bw-glass-header')) return;
+      if (event.button !== 0 || !event.target.matches('bw-glass-header')) return;
       if (event.target.getAttribute('can-drag') === 'false') {
         // Chrome bug: use `event.preventDefault` to trigger `dragover` event
         // even if there's no `draggable` attribute set
