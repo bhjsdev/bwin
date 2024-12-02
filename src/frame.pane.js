@@ -66,7 +66,7 @@ export default {
    */
   removePane(sashId) {
     const parentSash = this.rootSash.getDescendantParentById(sashId);
-    if (!parentSash) throw new Error('[bwin] Can not remove root pane');
+    if (!parentSash) throw new Error('[bwin] Parent sash not found when removing pane');
 
     const siblingSash = parentSash.getChildSiblingById(sashId);
 
