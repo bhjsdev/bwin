@@ -1,10 +1,13 @@
 export default {
-  create() {
+  createWindow() {
     const windowEl = document.createElement('bw-window');
     windowEl.style.width = `${this.rootSash.width}px`;
     windowEl.style.height = `${this.rootSash.height}px`;
     windowEl.setAttribute('sash-id', this.rootSash.id);
+    return windowEl;
+  },
 
+  glaze(windowEl) {
     this.rootSash.walk((sash) => {
       let elem = null;
 
@@ -22,9 +25,6 @@ export default {
 
       sash.domNode = elem;
     });
-
-    this.windowElement = windowEl;
-    this.containerElement.append(this.windowElement);
   },
 
   update() {
