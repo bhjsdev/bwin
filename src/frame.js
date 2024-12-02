@@ -43,11 +43,10 @@ export class Frame {
   }
 
   mount(containerEl) {
-    this.containerElement = containerEl;
-
     const windowEl = this.createWindow();
     this.glaze(windowEl);
 
+    this.containerElement = containerEl;
     this.containerElement.append(windowEl);
     this.windowElement = windowEl;
     this.enableFeatures();

@@ -25,6 +25,7 @@ const files = [
   'release-check',
   'bwin-drag-drop',
   'zombie-chrome-drag-bug',
+  'bwin-multiple',
 ].sort();
 
 const navEl = document.createElement('nav');

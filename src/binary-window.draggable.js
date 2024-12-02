@@ -57,7 +57,7 @@ export default {
       }
     });
 
-    document.addEventListener('dragstart', (event) => {
+    this.windowElement.addEventListener('dragstart', (event) => {
       if (
         !(event.target instanceof HTMLElement) ||
         !event.target.matches('bw-glass') ||
@@ -74,7 +74,7 @@ export default {
       paneEl.setAttribute('can-drop', false);
     });
 
-    document.addEventListener('dragend', () => {
+    this.windowElement.addEventListener('dragend', () => {
       if (this.activeDragGlassEl) {
         this.activeDragGlassEl.removeAttribute('draggable');
         // Carry over `can-drop` attribute
