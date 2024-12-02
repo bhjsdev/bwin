@@ -116,10 +116,10 @@ export class ConfigNode {
       this.height = this.parentRect.height;
     }
     else if (this.position === Position.Left) {
-      const parsedSize = this.size < 1 ? this.parentRect.width * this.size : this.size;
+      const absoluteSize = this.size < 1 ? this.parentRect.width * this.size : this.size;
       this.left = this.parentRect.left;
       this.top = this.parentRect.top;
-      this.width = parsedSize;
+      this.width = absoluteSize;
       this.height = this.parentRect.height;
     }
     else if (this.position === Position.Right) {
