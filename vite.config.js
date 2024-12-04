@@ -12,13 +12,5 @@ export default defineConfig({
       name: 'BinaryWindow',
       fileName: 'bwin',
     },
-    rollupOptions: {
-      output: {
-        assetFileNames: (assetInfo) => {
-          if (assetInfo.name == 'style.css') return 'bwin.css';
-          return assetInfo.name;
-        },
-      },
-    },
   },
 });
