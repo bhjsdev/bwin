@@ -1,12 +1,10 @@
-import { CLOSE_BUTTON_CLASSNAME } from './builtin-actions';
-
 export default {
   enableObservers() {
     this.observeCloseButtons();
   },
 
   toggleCloseButtonsDisabledState() {
-    const cssSelector = `.${CLOSE_BUTTON_CLASSNAME}`;
+    const cssSelector = `.bw-glass-action--close`;
     const paneCount = this.windowElement.querySelectorAll('bw-pane').length;
 
     if (paneCount === 1) {

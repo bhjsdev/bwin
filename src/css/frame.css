@@ -2,6 +2,11 @@ bw-window {
   position: absolute;
   display: block;
   box-sizing: border-box;
+
+  /* When one pane maximized, hide all other panes and muntins */
+  &:has(> bw-pane[maximized]) > :not([maximized]) {
+    display: none;
+  }
 }
 
 bw-pane {
