@@ -7,7 +7,7 @@ export default {
     return windowEl;
   },
 
-  glaze(windowEl) {
+  glaze() {
     this.rootSash.walk((sash) => {
       let elem = null;
 
@@ -15,12 +15,12 @@ export default {
       if (sash.children.length > 0) {
         elem = this.createMuntin(sash);
         this.onMuntinCreate(elem, sash);
-        windowEl.append(elem);
+        this.windowElement.append(elem);
       }
       else {
         elem = this.createPane(sash);
         this.onPaneCreate(elem, sash);
-        windowEl.prepend(elem);
+        this.windowElement.prepend(elem);
       }
 
       sash.domNode = elem;

@@ -1,5 +1,5 @@
 import { createDomNode } from './utils';
-import { BUILTIN_ACTIONS } from './builtin-actions';
+import { BUILTIN_ACTIONS } from './binary-window.actions';
 
 const DEFAULTS = {
   title: null,

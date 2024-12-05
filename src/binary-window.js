@@ -1,17 +1,26 @@
 import { Frame } from './frame';
 import { Glass } from './glass';
-import binaryWindowObservers from './binary-window.observers';
+import { createDomNode } from './utils';
 import binaryWindowDraggable from './binary-window.draggable';
 import binaryWindowTrim from './binary-window.trim';
-import binaryWindowSill from './binary-window.sill';
+import binaryWindowActions from './binary-window.actions';
 
 export class BinaryWindow extends Frame {
+  sillElement = null;
+
+  constructor() {
+    super(...arguments);
+
+    const sillEl = createDomNode('<bw-sill />');
+    this.windowElement.append(sillEl);
+    this.sillElement = sillEl;
+  }
+
   enableFeatures() {
     super.enableFeatures();
 
-    this.enableObservers();
     this.enableDrag();
-    this.enableSill();
+    this.enableActions();
   }
 
   onPaneCreate(paneEl, sash) {
@@ -63,9 +72,4 @@ export class BinaryWindow extends Frame {
   }
 }
 
-BinaryWindow.assemble(
-  binaryWindowObservers,
-  binaryWindowDraggable,
-  binaryWindowTrim,
-  binaryWindowSill
-);
+BinaryWindow.assemble(binaryWindowDraggable, binaryWindowTrim, binaryWindowActions);
