@@ -8,6 +8,6 @@ export { Frame } from './frame/frame';
 export { BinaryWindow } from './binary-window/binary-window';
 export { BUILTIN_ACTIONS } from './binary-window/actions';
 export { Sash } from './sash';
-export { SashConfig } from './sash-config';
-export { ConfigRoot } from './config-root';
+export { SashConfig } from './config/sash-config';
+export { ConfigRoot } from './config/config-root';
 export { Position } from './position';

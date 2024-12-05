@@ -1,5 +1,5 @@
-import { SashConfig } from '../sash-config';
-import { ConfigRoot } from '../config-root';
+import { SashConfig } from '../config/sash-config';
+import { ConfigRoot } from '../config/config-root';
 import { strictAssign } from '../utils';
 import paneModule from './pane';
 import mainModule from './main';

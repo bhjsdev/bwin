@@ -1,6 +1,6 @@
-import { parseSize, isPlainObject } from './utils';
-import { Sash } from './sash';
-import { Position, getOppositePosition } from './position';
+import { parseSize, isPlainObject } from '../utils';
+import { Sash } from '../sash';
+import { Position, getOppositePosition } from '../position';
 
 const PRIMARY_NODE_DEFAULTS = {
   size: '50%',
