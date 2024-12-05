@@ -21,14 +21,12 @@ export const BUILTIN_ACTIONS = [
       }
       else {
         paneEl.setAttribute('maximized', '');
-
         paneEl.bwOriginalBoundingBox = {
           left: paneEl.style.left,
           top: paneEl.style.top,
           width: paneEl.style.width,
           height: paneEl.style.height,
         };
-
         paneEl.style.left = '0';
         paneEl.style.top = '0';
         paneEl.style.width = '100%';
