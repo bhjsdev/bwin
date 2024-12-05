@@ -1,38 +1,18 @@
-const draggableContainer = document.querySelector('#draggable-container');
+import { BinaryWindow } from '../src';
 
-document.querySelector('#toggle-draggable').addEventListener('click', (event) => {
-  draggableContainer.setAttribute(
-    'draggable',
-    draggableContainer.getAttribute('draggable') === 'true' ? 'false' : 'true'
-  );
-});
+const settings = {
+  width: 444,
+  height: 333,
+  children: [
+    { position: 'left', size: '40%' },
+    {
+      children: [
+        { position: 'top', size: '30%' },
+        { position: 'bottom', size: '70%' },
+      ],
+    },
+  ],
+};
 
-document.addEventListener('dragstart', (event) => {
-  if (
-    event.target.matches('#draggable-container') &&
-    event.target.getAttribute('draggable') === 'false'
-  ) {
-    event.preventDefault();
-  }
-});
-
-document.addEventListener('mousedown', (event) => {
-  if (
-    !event.target.matches('#draggable-container') &&
-    event.target.closest('#draggable-container')
-  ) {
-    console.log('found draggable container');
-    event.preventDefault();
-  }
-});
-
-document.addEventListener('click', (event) => {
-  if (event.target.matches('#button')) {
-    console.log('click on button');
-  }
-});
-
-document.querySelector('#dropzone').addEventListener('dragover', (event) => {
-  event.preventDefault();
-  console.log('dragover 1');
-});
+const bwin = new BinaryWindow(settings);
+bwin.mount(document.querySelector('#container'));

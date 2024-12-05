@@ -4,7 +4,7 @@ bw-window {
   box-sizing: border-box;
 
   /* When one pane maximized, hide all other panes and muntins */
-  &:has(> bw-pane[maximized]) > :not([maximized]) {
+  &:has(> bw-pane[maximized]) > :is(bw-pane, bw-muntin):not([maximized]) {
     display: none;
   }
 }

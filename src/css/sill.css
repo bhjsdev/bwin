@@ -1,0 +1,28 @@
+bw-sill {
+  position: absolute;
+  top: 100%;
+  margin-top: calc(var(--bw-sill-gap) - var(--bw-glass-clearance));
+  width: 100%;
+  display: flex;
+  gap: var(--bw-sill-gap);
+  box-sizing: border-box;
+  padding-inline: var(--bw-glass-clearance);
+}
+
+.bw-minimized-glass {
+  display: block;
+  flex-basis: 10%;
+  height: 10px;
+  border: 1px solid var(--bw-glass-border-color);
+  border-radius: var(--bw-glass-border-radius);
+  cursor: pointer;
+  background-color: var(--bw-glass-header-bg-color);
+
+  &:hover {
+    background-color: white;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
