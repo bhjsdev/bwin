@@ -1,4 +1,4 @@
-import { Frame } from '../frame';
+import { Frame } from '../frame/frame';
 import { Glass } from './glass';
 import { createDomNode } from '../utils';
 import draggableModule from './draggable';

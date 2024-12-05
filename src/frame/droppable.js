@@ -1,4 +1,4 @@
-import { getCursorPosition } from './position';
+import { getCursorPosition } from '../position';
 
 export default {
   activeDropPaneEl: null,

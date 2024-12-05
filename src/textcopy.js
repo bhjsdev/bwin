@@ -1,1 +1,0 @@
-export const TEXT = `The outline property may be specified using one, two, or three of the values listed below. The order of the values does not matter. As with all shorthand properties, any omitted sub-values will be set to their initial value.`;

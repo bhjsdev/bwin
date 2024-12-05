@@ -1,6 +1,6 @@
-import { genBrightColor, genId, moveChildNodes, createDomNode } from './utils.js';
-import { Position } from './position.js';
-import { Sash } from './sash.js';
+import { genBrightColor, genId, moveChildNodes, createDomNode } from '../utils.js';
+import { Position } from '../position.js';
+import { Sash } from '../sash.js';
 
 export default {
   createPane(sash) {

@@ -1,12 +1,12 @@
-import { SashConfig } from './sash-config';
-import { ConfigRoot } from './config-root';
-import { strictAssign } from './utils';
-import framePane from './frame.pane';
-import frameMain from './frame.main';
-import frameMuntin from './frame.muntin';
-import frameFitContainer from './frame.fit-container';
-import frameResizable from './frame.resizable';
-import frameDroppable from './frame.droppable';
+import { SashConfig } from '../sash-config';
+import { ConfigRoot } from '../config-root';
+import { strictAssign } from '../utils';
+import paneModule from './pane';
+import mainModule from './main';
+import muntinModule from './muntin';
+import fitContainerModule from './fit-container';
+import resizableModule from './resizable';
+import droppableModule from './droppable';
 
 /**
  * @think-about:
@@ -58,10 +58,10 @@ export class Frame {
 }
 
 Frame.assemble(
-  frameMain,
-  frameMuntin,
-  framePane,
-  frameFitContainer,
-  frameDroppable,
-  frameResizable
+  mainModule,
+  muntinModule,
+  paneModule,
+  fitContainerModule,
+  droppableModule,
+  resizableModule
 );
