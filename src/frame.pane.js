@@ -63,6 +63,7 @@ export default {
    * Remove a pane
    *
    * @param {string} sashId - The Sash ID of the pane to be removed
+   * @returns {string} - The new Sash ID of previous sibling pane
    */
   removePane(sashId) {
     const parentSash = this.rootSash.getDescendantParentById(sashId);
@@ -98,6 +99,8 @@ export default {
     }
 
     this.update();
+
+    return parentSash.id;
   },
 };
 

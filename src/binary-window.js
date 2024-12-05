@@ -3,15 +3,15 @@ import { Glass } from './glass';
 import binaryWindowObservers from './binary-window.observers';
 import binaryWindowDraggable from './binary-window.draggable';
 import binaryWindowTrim from './binary-window.trim';
+import binaryWindowSill from './binary-window.sill';
 
 export class BinaryWindow extends Frame {
-  sillElement = null;
-
   enableFeatures() {
     super.enableFeatures();
 
     this.enableObservers();
     this.enableDrag();
+    this.enableSill();
   }
 
   onPaneCreate(paneEl, sash) {
@@ -63,4 +63,9 @@ export class BinaryWindow extends Frame {
   }
 }
 
-BinaryWindow.assemble(binaryWindowObservers, binaryWindowDraggable, binaryWindowTrim);
+BinaryWindow.assemble(
+  binaryWindowObservers,
+  binaryWindowDraggable,
+  binaryWindowTrim,
+  binaryWindowSill
+);

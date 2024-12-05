@@ -12,4 +12,6 @@
   --bw-glass-header-height: 30px;
   --bw-glass-header-gap: 4px;
   --bw-glass-header-bg-color: hsl(0, 0%, 97%);
+
+  --bw-sill-gap: 6px;
 }
