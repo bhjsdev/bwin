@@ -63,17 +63,23 @@ bw-glass {
 }
 
 bw-glass-header {
-  white-space: nowrap;
   box-sizing: border-box;
   display: flex;
+  flex-basis: var(--bw-glass-header-height);
   align-items: center;
   gap: var(--bw-glass-header-gap);
+  overflow: hidden;
   padding-inline: var(--bw-glass-header-gap);
-  flex-basis: var(--bw-glass-header-height);
   border-bottom: 1px solid var(--bw-glass-border-color);
   border-top-left-radius: var(--bw-glass-border-radius);
   border-top-right-radius: var(--bw-glass-border-radius);
   background-color: var(--bw-glass-header-bg-color);
+}
+
+bw-glass-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 bw-glass-tab-container {
@@ -103,6 +109,7 @@ bw-glass-action-container {
   /* always on the right */
   margin-left: auto;
   display: flex;
+  flex-shrink: 0;
   gap: 2px;
 }
 
@@ -119,12 +126,6 @@ bw-glass-action-container {
   &:active {
     transform: scale(0.95);
   }
-}
-
-.bw-glass-action--close {
-  &::before {
-    content: '✕';
-  }
 
   &:disabled {
     border: 1px solid var(--bw-glass-border-color-disabled);
@@ -138,6 +139,25 @@ bw-glass-action-container {
     &:active {
       transform: scale(1);
     }
+  }
+}
+
+.bw-glass-action--close {
+  &::before {
+    content: '✕';
+  }
+}
+
+.bw-glass-action--expand {
+  &::before {
+    /* 🗖 🗗 ◫ □ ☐*/
+    content: '☐';
+  }
+}
+
+.bw-glass-action--minimize {
+  &::before {
+    content: '−';
   }
 }
 

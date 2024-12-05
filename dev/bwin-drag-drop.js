@@ -46,7 +46,10 @@ function handleDrop(event, sash) {
 }
 
 const settings = {
-  children: [{ size: 0.5, onDrop: handleDrop, draggable: false }, { onDrop: handleDrop }],
+  children: [
+    { size: 0.5, onDrop: handleDrop, draggable: false, title: 'no drag' },
+    { onDrop: handleDrop },
+  ],
 };
 
 const win = new BinaryWindow(settings);

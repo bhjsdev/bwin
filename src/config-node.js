@@ -2,7 +2,7 @@ import { parseSize, isPlainObject } from './utils';
 import { Sash } from './sash';
 import { Position, getOppositePosition } from './position';
 
-const PRIMARY_DEFAULTS = {
+const PRIMARY_NODE_DEFAULTS = {
   size: '50%',
   position: Position.Left,
 };
@@ -189,8 +189,8 @@ export class ConfigNode {
   createPrimaryConfigNode({ size, position, children, id, minWidth, minHeight, ...rest }) {
     return new ConfigNode({
       parentRect: this,
-      size: size ?? PRIMARY_DEFAULTS.size,
-      position: position ?? PRIMARY_DEFAULTS.position,
+      size: size ?? PRIMARY_NODE_DEFAULTS.size,
+      position: position ?? PRIMARY_NODE_DEFAULTS.position,
       children,
       id,
       minWidth,

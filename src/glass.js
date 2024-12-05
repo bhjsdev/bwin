@@ -1,5 +1,5 @@
 import { createDomNode } from './utils';
-import { BUILTIN_ACTIONS } from './glass.actions';
+import { BUILTIN_ACTIONS } from './builtin-actions';
 
 const DEFAULTS = {
   title: null,

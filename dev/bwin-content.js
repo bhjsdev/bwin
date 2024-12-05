@@ -2,6 +2,8 @@ import { BinaryWindow, BUILTIN_ACTIONS } from '../src';
 
 const isDraggable = false;
 const isDroppable = false;
+const minWidth = 100;
+const minHeight = 133;
 
 const settings = {
   width: 666,
@@ -13,6 +15,8 @@ const settings = {
       id: 'my-left-pane',
       title: `draggable: ${isDraggable}`,
       draggable: isDraggable,
+      minWidth: minWidth,
+      content: `<mark>min width ${minWidth}</mark>`,
     },
     {
       position: 'right',
@@ -20,6 +24,7 @@ const settings = {
         {
           position: 'top',
           size: '30%',
+          minHeight: minHeight,
           id: 'my-right-top-pane',
           // Should not be droppable all the time
           droppable: isDroppable,
@@ -38,7 +43,8 @@ const settings = {
             ...BUILTIN_ACTIONS,
             'A2',
           ],
-          title: `<mark>droppable: ${isDroppable}</mark>`,
+          title: `droppable: ${isDroppable}`,
+          content: `<mark>min height ${minHeight}</mark>`,
         },
         {
           position: 'bottom',
