@@ -1,6 +1,6 @@
-import closeAction from './binary-window.actions.close';
-import minimizeAction from './binary-window.actions.minimize';
-import maximizeAction from './binary-window.actions.maximize';
+import closeAction from './actions.close';
+import minimizeAction from './actions.minimize';
+import maximizeAction from './actions.maximize';
 
 export const BUILTIN_ACTIONS = [minimizeAction, maximizeAction, closeAction];
 

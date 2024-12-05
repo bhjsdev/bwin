@@ -1,9 +1,9 @@
-import { Frame } from './frame';
+import { Frame } from '../frame';
 import { Glass } from './glass';
-import { createDomNode } from './utils';
-import binaryWindowDraggable from './binary-window.draggable';
-import binaryWindowTrim from './binary-window.trim';
-import binaryWindowActions from './binary-window.actions';
+import { createDomNode } from '../utils';
+import draggableModule from './draggable';
+import trimModule from './trim';
+import actionsModule from './actions';
 
 export class BinaryWindow extends Frame {
   sillElement = null;
@@ -72,4 +72,4 @@ export class BinaryWindow extends Frame {
   }
 }
 
-BinaryWindow.assemble(binaryWindowDraggable, binaryWindowTrim, binaryWindowActions);
+BinaryWindow.assemble(draggableModule, trimModule, actionsModule);

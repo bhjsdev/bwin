@@ -1,5 +1,5 @@
-import { getSashIdFromPane } from './frame.utils';
-import { swapChildNodes } from './utils';
+import { getSashIdFromPane } from '../frame.utils';
+import { swapChildNodes } from '../utils';
 
 export default {
   activeDragGlassEl: null,

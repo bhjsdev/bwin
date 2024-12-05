@@ -1,4 +1,4 @@
-import { createDomNode } from './utils';
+import { createDomNode } from '../utils';
 
 export default {
   label: '',
