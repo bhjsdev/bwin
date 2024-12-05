@@ -18,10 +18,6 @@ export const BUILTIN_ACTIONS = [
 
       minimizedGlassEl.bwPrevSelfPosition = panePosition;
       minimizedGlassEl.bwPrevSiblingSashId = binaryWindow.removePane(paneSashId);
-      console.log(
-        '🐞 -> minimizedGlassEl.bwPrevSiblingSashId:',
-        minimizedGlassEl.bwPrevSiblingSashId
-      );
 
       const glassEl = event.target.closest('bw-glass');
       minimizedGlassEl.bwGlassElement = glassEl;
