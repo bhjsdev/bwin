@@ -9,9 +9,9 @@
 /**
  * Get the intersect rect of two rects
  *
- * @param {Rect} rect1
- * @param {Rect} rect2
- * @returns {Rect | null}
+ * @param {Rect} rect1 - Rect 1
+ * @param {Rect} rect2 - Rect 2
+ * @returns {Rect | null} - The intersection rect or null if there is no intersection
  */
 export function getIntersectRect(rect1, rect2) {
   const rect1Right = rect1.left + rect1.width;

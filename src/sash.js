@@ -1,13 +1,8 @@
 import { genId } from './utils';
 import { Position } from './position';
 
-let MIN_WIDTH = 10;
-let MIN_HEIGHT = 10;
-
-if (import.meta.env.PROD) {
-  MIN_WIDTH = 100;
-  MIN_HEIGHT = 100;
-}
+const MIN_WIDTH = Number(import.meta.env.VITE_DEFAULT_SASH_MIN_WIDTH);
+const MIN_HEIGHT = Number(import.meta.env.VITE_DEFAULT_SASH_MIN_HEIGHT);
 
 export const DEFAULTS = {
   left: 0,

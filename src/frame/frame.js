@@ -8,6 +8,8 @@ import fitContainerModule from './fit-container';
 import resizableModule from './resizable';
 import droppableModule from './droppable';
 
+const DEBUG = import.meta.env.VITE_DEFAULT_DEBUG == 'true' ? true : false;
+
 /**
  * @think-about:
  *   1. if we need to immediately update the frame size
@@ -18,7 +20,7 @@ import droppableModule from './droppable';
 export class Frame {
   windowElement = null;
   containerElement = null;
-  debug = import.meta.env.PROD ? false : true;
+  debug = DEBUG;
 
   constructor(settings) {
     let config = null;
