@@ -133,10 +133,7 @@ function addPaneToTop(parentSash, { size }) {
   return newTopSash;
 }
 
-/**
- * @todo add pane with more Sash props e.g. minWidth, minHeight, etc.
- */
-function addPaneToBottom(parentSash, { size, minWidth, minHeight }) {
+function addPaneToBottom(parentSash, { size }) {
   const sizeParsed = parseSize(size);
   let newBottomSashHeight = parentSash.height / 2;
 
@@ -172,7 +169,10 @@ function addPaneToBottom(parentSash, { size, minWidth, minHeight }) {
   return newBottomSash;
 }
 
-export function addPane(parentSash, { position, size }) {
+/**
+ * @todo add pane with more Sash props e.g. minWidth, minHeight, etc.
+ */
+export function addPane(parentSash, { position, size, minWidth, minHeight }) {
   if (position === Position.Left) {
     return addPaneToLeft(parentSash, { size });
   }

@@ -3,6 +3,7 @@ import minimizeAction from './actions.minimize';
 import maximizeAction from './actions.maximize';
 import { getMetricsFromElement } from '../utils';
 import { getIntersectRect } from '../rect';
+import { Position } from '../position';
 
 export const BUILTIN_ACTIONS = [minimizeAction, maximizeAction, closeAction];
 
@@ -33,8 +34,25 @@ export default {
     });
 
     if (targetPaneEl) {
+      const newPosition = minimizedGlassEl.bwOriginalPosition;
+      const targetRect = getMetricsFromElement(targetPaneEl);
+      let newSize = 0;
+
+      if (newPosition === Position.Left || newPosition === Position.Right) {
+        newSize =
+          originalRect.width >= targetRect.width ? targetRect.width / 2 : originalRect.width;
+      }
+      else if (newPosition === Position.Top || newPosition === Position.Bottom) {
+        newSize =
+          originalRect.height >= targetRect.height ? targetRect.height / 2 : originalRect.height;
+      }
+      else {
+        throw new Error('[bwin] Invalid position when restoring glass');
+      }
+
       const newSashPane = this.addPane(targetPaneEl.getAttribute('sash-id'), {
-        position: minimizedGlassEl.bwOriginalPosition,
+        position: newPosition,
+        size: newSize,
       });
       newSashPane.domNode.append(minimizedGlassEl.bwGlassElement);
     }
