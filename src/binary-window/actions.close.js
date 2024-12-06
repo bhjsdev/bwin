@@ -1,4 +1,4 @@
-import { getSashIdFromPane } from '../frame/utils';
+import { getSashIdFromPane } from '../frame/frame-utils';
 
 export default {
   label: '',

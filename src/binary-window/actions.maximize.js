@@ -8,10 +8,10 @@ export default {
 
     if (paneEl.hasAttribute('maximized')) {
       paneEl.removeAttribute('maximized');
-      paneEl.style.left = paneEl.bwOriginalBoundingRect.left + 'px';
-      paneEl.style.top = paneEl.bwOriginalBoundingRect.top + 'px';
-      paneEl.style.width = paneEl.bwOriginalBoundingRect.width + 'px';
-      paneEl.style.height = paneEl.bwOriginalBoundingRect.height + 'px';
+      paneEl.style.left = `${paneEl.bwOriginalBoundingRect.left}px`;
+      paneEl.style.top = `${paneEl.bwOriginalBoundingRect.top}px`;
+      paneEl.style.width = `${paneEl.bwOriginalBoundingRect.width}px`;
+      paneEl.style.height = `${paneEl.bwOriginalBoundingRect.height}px`;
     }
     else {
       paneEl.setAttribute('maximized', '');
