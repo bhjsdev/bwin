@@ -36,8 +36,10 @@ frame.mount(document.querySelector('#container'));
 
 document.querySelector('#add-pane').addEventListener('click', () => {
   const parentId = document.querySelector('#sash-id').value.trim();
-  const position = document.querySelector('#sash-position').value.trim();
-  frame.addPane(parentId, position);
+  const position = document.querySelector('input[name="sash-position"]:checked').value;
+  const size = parseFloat(document.querySelector('#sash-size').value);
+
+  frame.addPane(parentId, { position, size });
 });
 
 document.querySelector('#remove-pane').addEventListener('click', () => {

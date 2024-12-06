@@ -104,10 +104,10 @@ export function swapChildNodes(parentNode1, parentNode2) {
 }
 
 /**
- * Parse a size string into a number, e.g. "100px" -> 100, "50%" -> 0.5
+ * Parse a size string into a number, e.g. "100px" to 100, "50%" to 0.5
  *
  * @param {string | number} size - The size string to parse
- * @returns {number}
+ * @returns {number} - The parsed size, e.g. 100 for "100px", 0.5 for "50%"
  */
 export function parseSize(size) {
   if (typeof size === 'number' && !isNaN(size)) {

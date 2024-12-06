@@ -1,7 +1,7 @@
 import { genBrightColor, genId, createDomNode } from '../utils.js';
 import { Position } from '../position.js';
 import { Sash } from '../sash.js';
-import { createPaneElement, addPaneByPosition, updatePaneElement } from './pane-utils.js';
+import { createPaneElement, addPane as addPaneUtil, updatePaneElement } from './pane-utils.js';
 
 export default {
   createPane(sash) {
@@ -45,13 +45,13 @@ export default {
    * @param {'top'|'right'|'bottom'|'left'} position - The position of the new pane relative to the target pane
    * @returns {Sash} - The newly created sash
    */
-  addPane(targetPaneSashId, position) {
+  addPane(targetPaneSashId, { position, size }) {
     if (!position) throw new Error('[bwin] Position is required when adding pane');
 
     const parentSash = this.rootSash.getById(targetPaneSashId);
     if (!parentSash) throw new Error('[bwin] Parent sash not found when adding pane');
 
-    const newPaneSash = addPaneByPosition(parentSash, position);
+    const newPaneSash = addPaneUtil(parentSash, { position, size });
     // Generate new ID for parent sash to create a new muntin
     parentSash.id = genId();
 
@@ -107,12 +107,12 @@ function __debug(parentEl) {
   debugEl.style.fontSize = '10px';
 
   const debugHtml = `
-id: ${parentEl.getAttribute('sash-id')}
+${parentEl.getAttribute('sash-id')}
+${parentEl.getAttribute('position')}
 top: ${parentEl.style.top}
 left: ${parentEl.style.left}
 width: ${parentEl.style.width}
 height: ${parentEl.style.height}
-position: ${parentEl.getAttribute('position')}
 `;
 
   debugEl.innerHTML = debugHtml.trim();

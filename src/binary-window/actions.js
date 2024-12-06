@@ -33,10 +33,9 @@ export default {
     });
 
     if (targetPaneEl) {
-      const newSashPane = this.addPane(
-        targetPaneEl.getAttribute('sash-id'),
-        minimizedGlassEl.bwOriginalPosition
-      );
+      const newSashPane = this.addPane(targetPaneEl.getAttribute('sash-id'), {
+        position: minimizedGlassEl.bwOriginalPosition,
+      });
       newSashPane.domNode.append(minimizedGlassEl.bwGlassElement);
     }
   },

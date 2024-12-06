@@ -22,7 +22,7 @@ export default {
     // Add the pane of glass next to the current pane, vertically or horizontally
     else {
       const oldSashId = getSashIdFromPane(this.activeDragGlassEl);
-      const newPaneSash = this.addPane(sash.id, dropArea);
+      const newPaneSash = this.addPane(sash.id, { position: dropArea });
       newPaneSash.domNode.append(this.activeDragGlassEl);
 
       this.removePane(oldSashId);

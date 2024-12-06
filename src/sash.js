@@ -1,14 +1,22 @@
 import { genId } from './utils';
 import { Position } from './position';
 
+let MIN_WIDTH = 10;
+let MIN_HEIGHT = 10;
+
+if (import.meta.env.PROD) {
+  MIN_WIDTH = 100;
+  MIN_HEIGHT = 100;
+}
+
 export const DEFAULTS = {
   left: 0,
   top: 0,
   width: 150,
   height: 150,
   // Initial min values, real min width/height is calculated based on children
-  minWidth: 100,
-  minHeight: 100,
+  minWidth: MIN_WIDTH,
+  minHeight: MIN_HEIGHT,
 };
 
 /**

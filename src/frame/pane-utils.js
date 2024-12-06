@@ -1,4 +1,4 @@
-import { moveChildNodes } from '../utils.js';
+import { moveChildNodes, parseSize } from '../utils.js';
 import { Position } from '../position.js';
 import { Sash } from '../sash.js';
 
@@ -25,11 +25,20 @@ export function updatePaneElement(sash) {
   return paneEl;
 }
 
-function addPaneToLeft(parentSash) {
+function addPaneToLeft(parentSash, { size }) {
+  const sizeParsed = parseSize(size);
+  let newLeftSashWidth = parentSash.width / 2;
+
+  if (sizeParsed) {
+    sizeParsed < 1
+      ? (newLeftSashWidth = parentSash.width * sizeParsed)
+      : (newLeftSashWidth = sizeParsed);
+  }
+
   const newLeftSash = new Sash({
     top: parentSash.top,
     left: parentSash.left,
-    width: parentSash.width / 2,
+    width: newLeftSashWidth,
     height: parentSash.height,
     position: Position.Left,
   });
@@ -37,7 +46,7 @@ function addPaneToLeft(parentSash) {
   const newRightSash = new Sash({
     top: parentSash.top,
     left: parentSash.left + newLeftSash.width,
-    width: parentSash.width / 2,
+    width: parentSash.width - newLeftSashWidth,
     height: parentSash.height,
     position: Position.Right,
   });
@@ -52,26 +61,35 @@ function addPaneToLeft(parentSash) {
   return newLeftSash;
 }
 
-function addPaneToRight(parentSash) {
+function addPaneToRight(parentSash, { size }) {
+  const sizeParsed = parseSize(size);
+  let newRightSashWidth = parentSash.width / 2;
+
+  if (sizeParsed) {
+    sizeParsed < 1
+      ? (newRightSashWidth = parentSash.width * sizeParsed)
+      : (newRightSashWidth = sizeParsed);
+  }
+
   const newLeftSash = new Sash({
-    top: parentSash.top,
     left: parentSash.left,
-    width: parentSash.width / 2,
+    top: parentSash.top,
+    width: parentSash.width - newRightSashWidth,
     height: parentSash.height,
     position: Position.Left,
+  });
+
+  const newRightSash = new Sash({
+    left: parentSash.left + newLeftSash.width,
+    top: parentSash.top,
+    width: newRightSashWidth,
+    height: parentSash.height,
+    position: Position.Right,
   });
 
   const newPaneEl = createPaneElement(newLeftSash);
   newLeftSash.domNode = newPaneEl;
   moveChildNodes(newPaneEl, parentSash.domNode);
-
-  const newRightSash = new Sash({
-    top: parentSash.top,
-    left: parentSash.left + newLeftSash.width,
-    width: parentSash.width / 2,
-    height: parentSash.height,
-    position: Position.Right,
-  });
 
   parentSash.addChild(newLeftSash);
   parentSash.addChild(newRightSash);
@@ -79,20 +97,29 @@ function addPaneToRight(parentSash) {
   return newRightSash;
 }
 
-function addPaneToTop(parentSash) {
+function addPaneToTop(parentSash, { size }) {
+  const sizeParsed = parseSize(size);
+  let newTopSashHeight = parentSash.height / 2;
+
+  if (sizeParsed) {
+    sizeParsed < 1
+      ? (newTopSashHeight = parentSash.height * sizeParsed)
+      : (newTopSashHeight = sizeParsed);
+  }
+
   const newTopSash = new Sash({
-    top: parentSash.top,
     left: parentSash.left,
+    top: parentSash.top,
     width: parentSash.width,
-    height: parentSash.height / 2,
+    height: newTopSashHeight,
     position: Position.Top,
   });
 
   const newBottomSash = new Sash({
-    top: parentSash.top + newTopSash.height,
     left: parentSash.left,
+    top: parentSash.top + newTopSash.height,
     width: parentSash.width,
-    height: parentSash.height / 2,
+    height: parentSash.height - newTopSashHeight,
     position: Position.Bottom,
   });
 
@@ -106,26 +133,38 @@ function addPaneToTop(parentSash) {
   return newTopSash;
 }
 
-function addPaneToBottom(parentSash) {
+/**
+ * @todo add pane with more Sash props e.g. minWidth, minHeight, etc.
+ */
+function addPaneToBottom(parentSash, { size, minWidth, minHeight }) {
+  const sizeParsed = parseSize(size);
+  let newBottomSashHeight = parentSash.height / 2;
+
+  if (sizeParsed) {
+    sizeParsed < 1
+      ? (newBottomSashHeight = parentSash.height * sizeParsed)
+      : (newBottomSashHeight = sizeParsed);
+  }
+
   const newTopSash = new Sash({
     top: parentSash.top,
     left: parentSash.left,
     width: parentSash.width,
-    height: parentSash.height / 2,
+    height: parentSash.height - newBottomSashHeight,
     position: Position.Top,
   });
-
-  const newPaneEl = createPaneElement(newTopSash);
-  newTopSash.domNode = newPaneEl;
-  moveChildNodes(newPaneEl, parentSash.domNode);
 
   const newBottomSash = new Sash({
     top: parentSash.top + newTopSash.height,
     left: parentSash.left,
     width: parentSash.width,
-    height: parentSash.height / 2,
+    height: newBottomSashHeight,
     position: Position.Bottom,
   });
+
+  const newPaneEl = createPaneElement(newTopSash);
+  newTopSash.domNode = newPaneEl;
+  moveChildNodes(newPaneEl, parentSash.domNode);
 
   parentSash.addChild(newTopSash);
   parentSash.addChild(newBottomSash);
@@ -133,17 +172,17 @@ function addPaneToBottom(parentSash) {
   return newBottomSash;
 }
 
-export function addPaneByPosition(parentSash, position) {
+export function addPane(parentSash, { position, size }) {
   if (position === Position.Left) {
-    return addPaneToLeft(parentSash);
+    return addPaneToLeft(parentSash, { size });
   }
   else if (position === Position.Right) {
-    return addPaneToRight(parentSash);
+    return addPaneToRight(parentSash, { size });
   }
   else if (position === Position.Top) {
-    return addPaneToTop(parentSash);
+    return addPaneToTop(parentSash, { size });
   }
   else if (position === Position.Bottom) {
-    return addPaneToBottom(parentSash);
+    return addPaneToBottom(parentSash, { size });
   }
 }
