@@ -1,3 +1,5 @@
+import { getMetricsFromElement } from '../utils';
+
 export default {
   label: '',
   className: 'bw-glass-action--maximize',
@@ -6,19 +8,14 @@ export default {
 
     if (paneEl.hasAttribute('maximized')) {
       paneEl.removeAttribute('maximized');
-      paneEl.style.left = paneEl.bwOriginalBoundingBox.left;
-      paneEl.style.top = paneEl.bwOriginalBoundingBox.top;
-      paneEl.style.width = paneEl.bwOriginalBoundingBox.width;
-      paneEl.style.height = paneEl.bwOriginalBoundingBox.height;
+      paneEl.style.left = paneEl.bwOriginalBoundingRect.left + 'px';
+      paneEl.style.top = paneEl.bwOriginalBoundingRect.top + 'px';
+      paneEl.style.width = paneEl.bwOriginalBoundingRect.width + 'px';
+      paneEl.style.height = paneEl.bwOriginalBoundingRect.height + 'px';
     }
     else {
       paneEl.setAttribute('maximized', '');
-      paneEl.bwOriginalBoundingBox = {
-        left: paneEl.style.left,
-        top: paneEl.style.top,
-        width: paneEl.style.width,
-        height: paneEl.style.height,
-      };
+      paneEl.bwOriginalBoundingRect = getMetricsFromElement(paneEl);
       paneEl.style.left = '0';
       paneEl.style.top = '0';
       paneEl.style.width = '100%';

@@ -1,6 +1,8 @@
 import closeAction from './actions.close';
 import minimizeAction from './actions.minimize';
 import maximizeAction from './actions.maximize';
+import { getMetricsFromElement } from '../utils';
+import { getIntersectRect } from '../rect';
 
 export const BUILTIN_ACTIONS = [minimizeAction, maximizeAction, closeAction];
 
@@ -10,30 +12,41 @@ export default {
     this.observeActionButtons();
   },
 
+  restoreGlass(minimizedGlassEl) {
+    const originalRect = minimizedGlassEl.bwOriginalBoundingRect;
+
+    let biggestIntersectArea = 0;
+    let targetPaneEl = null;
+
+    this.windowElement.querySelectorAll('bw-pane').forEach((paneEl) => {
+      const paneRect = getMetricsFromElement(paneEl);
+      const intersectRect = getIntersectRect(originalRect, paneRect);
+
+      if (intersectRect) {
+        const intersectArea = intersectRect.width * intersectRect.height;
+
+        if (intersectArea > biggestIntersectArea) {
+          biggestIntersectArea = intersectArea;
+          targetPaneEl = paneEl;
+        }
+      }
+    });
+
+    if (targetPaneEl) {
+      const newSashPane = this.addPane(
+        targetPaneEl.getAttribute('sash-id'),
+        minimizedGlassEl.bwOriginalPosition
+      );
+      newSashPane.domNode.append(minimizedGlassEl.bwGlassElement);
+    }
+  },
+
   handleMinimizedGlassClick() {
     this.sillElement.addEventListener('click', (event) => {
       if (!event.target.matches('.bw-minimized-glass')) return;
 
       const minimizedGlassEl = event.target;
-      const prevSiblingSash = this.rootSash.getById(minimizedGlassEl.bwPrevSiblingSashId);
-
-      if (prevSiblingSash && prevSiblingSash.children.length === 0) {
-        const newPaneSash = this.addPane(
-          minimizedGlassEl.bwPrevSiblingSashId,
-          minimizedGlassEl.bwPrevSelfPosition
-        );
-
-        newPaneSash.domNode.append(minimizedGlassEl.bwGlassElement);
-      }
-      else {
-        // Add the glass to a random pane. To be improved
-        const randomPaneEl = this.windowElement.querySelector('bw-pane');
-        const randomPaneSashId = randomPaneEl.getAttribute('sash-id');
-        const newSashPane = this.addPane(randomPaneSashId, 'right');
-
-        newSashPane.domNode.append(minimizedGlassEl.bwGlassElement);
-      }
-
+      this.restoreGlass(minimizedGlassEl);
       minimizedGlassEl.remove();
     });
   },

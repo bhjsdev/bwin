@@ -233,3 +233,12 @@ export function createDomNode(content) {
 
   return document.createTextNode(String(content));
 }
+
+export function getMetricsFromElement(element) {
+  const left = parseFloat(element.style.left) || 0;
+  const top = parseFloat(element.style.top) || 0;
+  const width = parseFloat(element.style.width) || 0;
+  const height = parseFloat(element.style.height) || 0;
+
+  return { left, top, width, height };
+}

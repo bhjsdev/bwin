@@ -1,4 +1,4 @@
-import { createDomNode } from '../utils';
+import { createDomNode, getMetricsFromElement } from '../utils';
 
 export default {
   label: '',
@@ -11,13 +11,14 @@ export default {
     sillEl.append(minimizedGlassEl);
 
     const paneEl = event.target.closest('bw-pane');
+    const glassEl = event.target.closest('bw-glass');
     const paneSashId = paneEl.getAttribute('sash-id');
     const panePosition = paneEl.getAttribute('position');
 
-    minimizedGlassEl.bwPrevSelfPosition = panePosition;
-    minimizedGlassEl.bwPrevSiblingSashId = binaryWindow.removePane(paneSashId);
-
-    const glassEl = event.target.closest('bw-glass');
     minimizedGlassEl.bwGlassElement = glassEl;
+    minimizedGlassEl.bwOriginalPosition = panePosition;
+    minimizedGlassEl.bwOriginalBoundingRect = getMetricsFromElement(paneEl);
+
+    binaryWindow.removePane(paneSashId);
   },
 };

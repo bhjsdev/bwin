@@ -2,8 +2,8 @@ import { genId } from './utils';
 import { Position } from './position';
 
 export const DEFAULTS = {
-  top: 0,
   left: 0,
+  top: 0,
   width: 150,
   height: 150,
   // Initial min values, real min width/height is calculated based on children
@@ -12,13 +12,14 @@ export const DEFAULTS = {
 };
 
 /**
- * @think
+ *
+ * @think-about
  *   1. When minWidth/minHeight is set larger than its owns width/height, what should happen?
  */
 export class Sash {
   constructor({
-    top = DEFAULTS.top,
     left = DEFAULTS.left,
+    top = DEFAULTS.top,
     width = DEFAULTS.width,
     height = DEFAULTS.height,
     minWidth = DEFAULTS.minWidth,
