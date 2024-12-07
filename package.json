@@ -2,7 +2,7 @@
   "name": "bwin",
   "description": "A tiling window manager for web browsers",
   "type": "module",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bhjsdev/bwin.git"
