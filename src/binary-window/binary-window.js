@@ -8,9 +8,8 @@ import actionsModule from './actions';
 export class BinaryWindow extends Frame {
   sillElement = null;
 
-  constructor() {
-    super(...arguments);
-
+  frame() {
+    super.frame(...arguments);
     const sillEl = createDomNode('<bw-sill />');
     this.windowElement.append(sillEl);
     this.sillElement = sillEl;
@@ -18,7 +17,6 @@ export class BinaryWindow extends Frame {
 
   enableFeatures() {
     super.enableFeatures();
-
     this.enableDrag();
     this.enableActions();
   }

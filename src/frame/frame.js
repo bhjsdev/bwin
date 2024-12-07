@@ -35,8 +35,14 @@ export class Frame {
     }
 
     this.fitContainer = config.fitContainer;
+  }
+
+  frame(containerEl) {
+    this.containerElement = containerEl;
+
     this.windowElement = this.createWindow();
     this.glaze();
+    this.containerElement.append(this.windowElement);
   }
 
   // Features can work independently to each other
@@ -47,8 +53,7 @@ export class Frame {
   }
 
   mount(containerEl) {
-    this.containerElement = containerEl;
-    this.containerElement.append(this.windowElement);
+    this.frame(containerEl);
     this.enableFeatures();
   }
 
