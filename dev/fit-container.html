@@ -7,10 +7,6 @@
     <script type="module" src="/fit-container.js"></script>
   </head>
   <style>
-    * {
-      /* outline: 1px solid red; */
-    }
-
     #outer-container {
       display: flex;
       flex-direction: column;
@@ -31,7 +27,10 @@
         <div>After</div>
         <h2>: Toggle fitContainer</h2>
         <div>Before</div>
-        <button id="toggle-fit-container">Disable Fit Container</button>
+        <div>
+          <button id="toggle-fit-container">Disable Fit Container</button>
+          <button id="fit">Fit</button>
+        </div>
         <div id="container2" style="height: 20%"></div>
         <div>After</div>
       </div>

@@ -62,3 +62,7 @@ document.querySelector('#toggle-fit-container').addEventListener('click', (event
   event.target.textContent = fit ? 'Disable Fit Container' : 'Enable Fit Container';
   frame.fitContainer = fit;
 });
+
+document.querySelector('#fit').addEventListener('click', (event) => {
+  frame.fit();
+});

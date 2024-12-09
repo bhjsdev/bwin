@@ -8,7 +8,7 @@ import fitContainerModule from './fit-container';
 import resizableModule from './resizable';
 import droppableModule from './droppable';
 
-const DEBUG = import.meta.env.VITE_DEFAULT_DEBUG == 'true' ? true : false;
+const DEBUG = import.meta.env.VITE_DEBUG == 'true' ? true : false;
 
 /**
  * @think-about:
