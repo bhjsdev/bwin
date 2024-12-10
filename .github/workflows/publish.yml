@@ -10,6 +10,7 @@ permissions:
 
 jobs:
   publish-and-bump:
+    name: Publish and bump package version
     runs-on: ubuntu-latest
 
     steps:
