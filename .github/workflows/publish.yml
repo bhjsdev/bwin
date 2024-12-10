@@ -5,9 +5,6 @@ on:
     tags:
       - 'v*.*.*'
 
-permissions:
-  contents: write
-
 jobs:
   publish-and-bump:
     runs-on: ubuntu-latest
@@ -36,5 +33,7 @@ jobs:
       - name: Bump to next dev version
         if: ${{ success() }}
         run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
           npm version prepatch --preid=dev
           git push origin HEAD:main --follow-tags
