@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Binary Window Demo</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bwin@0.1.10/dist/bwin.css" />
+    <script id="native-script" type="module">
+      // Use import { BinaryWindow } from 'bwin' in your project
+      import { BinaryWindow } from 'https://cdn.jsdelivr.net/npm/bwin@0.1.10/dist/bwin.min.js';
+
+      const settings = {
+        fitContainer: true,
+        children: [
+          {
+            position: 'left',
+            size: '30%',
+            title: 'Title',
+            content: Object.assign(document.createElement('i'), {
+              innerHTML: 'Content is a DOM element',
+            }),
+          },
+          {
+            position: 'right',
+            children: [
+              {
+                position: 'top',
+                size: '30%',
+                title: 'No action buttons',
+                actions: null,
+              },
+              {
+                position: 'bottom',
+                size: '70%',
+                children: [
+                  {
+                    position: 'left',
+                    size: '50%',
+                    draggable: false,
+                    content: 'Drag disabled',
+                  },
+                  {
+                    position: 'right',
+                    size: '50%',
+                    content: ' Drop disabled',
+                    droppable: false,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      };
+
+      const bwin = new BinaryWindow(settings);
+      bwin.mount(document.getElementById('container'));
+
+      // <div id="container" style="width: 800px; height: 400px"></div>
+    </script>
+  </head>
+  <body>
+    <div id="container" style="width: 800px; height: 400px"></div>
+    <div id="code-snippet"></div>
+    <script>
+      const htmlContent = marked.parse(document.getElementById('native-script').textContent);
+      document.getElementById('code-snippet').innerHTML = htmlContent;
+    </script>
+  </body>
+</html>
