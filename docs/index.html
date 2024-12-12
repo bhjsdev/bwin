@@ -7,7 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bwin@0.1.10/dist/bwin.css" />
     <script id="native-script" type="module">
-      // Use import { BinaryWindow } from 'bwin' in your project
+      // Use import { BinaryWindow } from 'bwin' and add `bwin.css` in your project
       import { BinaryWindow } from 'https://cdn.jsdelivr.net/npm/bwin@0.1.10/dist/bwin.min.js';
 
       const settings = {
@@ -37,13 +37,13 @@
                   {
                     position: 'left',
                     size: '50%',
-                    draggable: false,
                     content: 'Drag disabled',
+                    draggable: false,
                   },
                   {
                     position: 'right',
                     size: '50%',
-                    content: ' Drop disabled',
+                    content: 'Drop disabled',
                     droppable: false,
                   },
                 ],
