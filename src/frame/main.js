@@ -3,7 +3,7 @@ export default {
     const windowEl = document.createElement('bw-window');
     windowEl.style.width = `${this.rootSash.width}px`;
     windowEl.style.height = `${this.rootSash.height}px`;
-    windowEl.setAttribute('sash-id', this.rootSash.id);
+    windowEl.setAttribute('root-sash-id', this.rootSash.id);
     return windowEl;
   },
 
