@@ -18,7 +18,10 @@ bwin.mount(document.querySelector('#container'));
 document.querySelector('#add-glass').addEventListener('click', () => {
   const parentId = document.querySelector('#sash-id').value.trim();
   const position = document.querySelector('input[name="sash-position"]:checked').value;
-  bwin.addGlass(parentId, position, {
+
+  bwin.addPane(parentId, {
+    position,
+    size: 0.5,
     actions: [],
     title: '<mark>New Glass</mark>',
     content: '<b>New Glass Content</b>',
@@ -27,5 +30,5 @@ document.querySelector('#add-glass').addEventListener('click', () => {
 
 document.querySelector('#remove-glass').addEventListener('click', () => {
   const sashId = document.querySelector('#sash-id').value.trim();
-  bwin.removeGlass(sashId, true);
+  bwin.removePane(sashId);
 });

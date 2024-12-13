@@ -21,7 +21,7 @@ const files = [
   'bwin-content',
   'one-pane',
   'bwin-more',
-  'bwin-add-remove-glasses',
+  'bwin-add-remove-panes',
   'release-check',
   'bwin-drag-drop',
   'zombie-chrome-drag-bug',
