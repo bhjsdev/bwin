@@ -287,18 +287,20 @@ export class Sash {
       const leftChildMinWidth = leftChild.calcMinWidth();
       const rightChildMinWidth = rightChild.calcMinWidth();
 
-      if (newLeftChildWidth < leftChildMinWidth && newRightChildWidth > rightChildMinWidth) {
-        newLeftChildWidth = leftChildMinWidth;
-        newRightChildWidth = newTotalWidth - newLeftChildWidth;
-        newRightChildLeft = leftChild.left + newLeftChildWidth;
-      }
-      else if (newRightChildWidth < rightChildMinWidth && newLeftChildWidth > leftChildMinWidth) {
-        newRightChildWidth = rightChildMinWidth;
-        newLeftChildWidth = newTotalWidth - newRightChildWidth;
-        newRightChildLeft = leftChild.left + newLeftChildWidth;
-      }
-      else if (newLeftChildWidth < leftChildMinWidth && newRightChildWidth < rightChildMinWidth) {
-        // This happens when `calcMinWidth` is not checked in UI when resize
+      if (dist < 0) {
+        if (newLeftChildWidth < leftChildMinWidth && newRightChildWidth > rightChildMinWidth) {
+          newLeftChildWidth = leftChild.width;
+          newRightChildWidth = newTotalWidth - newLeftChildWidth;
+          newRightChildLeft = leftChild.left + newLeftChildWidth;
+        }
+        else if (
+          newRightChildWidth < rightChildMinWidth &&
+          newLeftChildWidth > leftChildMinWidth
+        ) {
+          newRightChildWidth = rightChild.width;
+          newLeftChildWidth = newTotalWidth - newRightChildWidth;
+          newRightChildLeft = leftChild.left + newLeftChildWidth;
+        }
       }
 
       leftChild.width = newLeftChildWidth;
@@ -331,27 +333,23 @@ export class Sash {
       let newBottomChildHeight = newTotalHeight - newTopChildHeight;
       let newBottomChildTop = bottomChild.top + topDist;
 
-      const topChildMinHeight = topChild.calcMinHeight();
-      const bottomChildMinHeight = bottomChild.calcMinHeight();
+      if (dist < 0) {
+        const topChildMinHeight = topChild.calcMinHeight();
+        const bottomChildMinHeight = bottomChild.calcMinHeight();
 
-      if (newTopChildHeight < topChildMinHeight && newBottomChildHeight > bottomChildMinHeight) {
-        newTopChildHeight = topChildMinHeight;
-        newBottomChildHeight = newTotalHeight - newTopChildHeight;
-        newBottomChildTop = topChild.top + newTopChildHeight;
-      }
-      else if (
-        newBottomChildHeight < bottomChildMinHeight &&
-        newTopChildHeight > topChildMinHeight
-      ) {
-        newBottomChildHeight = bottomChildMinHeight;
-        newTopChildHeight = newTotalHeight - newBottomChildHeight;
-        newBottomChildTop = topChild.top + newTopChildHeight;
-      }
-      else if (
-        newTopChildHeight < topChildMinHeight &&
-        newBottomChildHeight < bottomChildMinHeight
-      ) {
-        // This happens when `calcMinHeight` is not checked in UI when resize
+        if (newTopChildHeight < topChildMinHeight && newBottomChildHeight > bottomChildMinHeight) {
+          newTopChildHeight = topChild.height;
+          newBottomChildHeight = newTotalHeight - newTopChildHeight;
+          newBottomChildTop = topChild.top + newTopChildHeight;
+        }
+        else if (
+          newBottomChildHeight < bottomChildMinHeight &&
+          newTopChildHeight > topChildMinHeight
+        ) {
+          newBottomChildHeight = bottomChild.height;
+          newTopChildHeight = newTotalHeight - newBottomChildHeight;
+          newBottomChildTop = topChild.top + newTopChildHeight;
+        }
       }
 
       topChild.height = newTopChildHeight;

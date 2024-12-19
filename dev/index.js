@@ -2,8 +2,6 @@ import './index.css';
 
 const files = [
   'basic',
-  'resize-x',
-  'resize-y',
   'fit-container',
   'add-remove-pane',
   'config',
@@ -27,6 +25,7 @@ const files = [
   'zombie-chrome-drag-bug',
   'bwin-multiple-windows',
   'bwin-one-pane',
+  'resize-min-width-height',
 ].sort();
 
 const navEl = document.createElement('nav');
