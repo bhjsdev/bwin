@@ -2,8 +2,6 @@ import './index.css';
 
 const files = [
   'basic',
-  'resize-x',
-  'resize-y',
   'fit-container',
   'add-remove-pane',
   'config',
@@ -11,6 +9,7 @@ const files = [
   'config-array',
   'config-string',
   'config-simplest',
+  'config-sash',
   'droppable',
   'resizable',
   'min-width',
@@ -22,11 +21,11 @@ const files = [
   'one-pane',
   'bwin-more',
   'bwin-add-remove-panes',
-  'release-check',
   'bwin-drag-drop',
   'zombie-chrome-drag-bug',
   'bwin-multiple-windows',
   'bwin-one-pane',
+  'resize-min-width-height',
 ].sort();
 
 const navEl = document.createElement('nav');
@@ -44,7 +43,6 @@ function genLinkText(file) {
 navEl.innerHTML = `
   <menu class="_menu">
     <li><button id="_toggle-bg">Toggle BG</button></li>
-    <li><a href="/_release-check.html"><b>Release check</b></a></li>
     <li><a href="/_debug.html">Debug</a></li>
     ${files.map((file) => `<li><a href="/${file}.html">${genLinkText(file)}</a></li>`).join('')}
   </menu>

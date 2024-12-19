@@ -50,12 +50,8 @@ export default {
         const newLeftChildWidth = leftChild.width + distX;
         const newRightChildWidth = rightChild.width - distX;
 
-        if (
-          newLeftChildWidth <= leftChild.calcMinWidth() ||
-          newRightChildWidth <= rightChild.calcMinWidth()
-        ) {
-          return;
-        }
+        if (distX > 0 && newRightChildWidth <= rightChild.calcMinWidth()) return;
+        if (distX < 0 && newLeftChildWidth <= leftChild.calcMinWidth()) return;
 
         leftChild.width = newLeftChildWidth;
         rightChild.width = newRightChildWidth;
@@ -70,12 +66,8 @@ export default {
         const newTopChildHeight = topChild.height + distY;
         const newBottomChildHeight = bottomChild.height - distY;
 
-        if (
-          newTopChildHeight <= topChild.calcMinHeight() ||
-          newBottomChildHeight <= bottomChild.calcMinHeight()
-        ) {
-          return;
-        }
+        if (distY > 0 && newBottomChildHeight <= bottomChild.calcMinHeight()) return;
+        if (distY < 0 && newTopChildHeight <= topChild.calcMinHeight()) return;
 
         topChild.height = newTopChildHeight;
         bottomChild.height = newBottomChildHeight;
