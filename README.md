@@ -1,5 +1,5 @@
 # Binary Window
 
-A tiling window manager for web browsers.
+A lightweight window-tiling JavaScript library for the browser, featuring resizable panes, drag-and-drop, and more.
 
-[Demo](https://bhjsdev.github.io/bwin/)
+[Documentation](https://bhjsdev.github.io/bwin-docs/)
