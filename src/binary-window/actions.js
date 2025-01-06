@@ -36,15 +36,22 @@ export default {
     if (targetPaneEl) {
       const newPosition = minimizedGlassEl.bwOriginalPosition;
       const targetRect = getMetricsFromElement(targetPaneEl);
+      const targetPaneSashId = targetPaneEl.getAttribute('sash-id');
+      const targetPaneSash = this.rootSash.getById(targetPaneSashId);
+
       let newSize = 0;
 
       if (newPosition === Position.Left || newPosition === Position.Right) {
         newSize =
-          originalRect.width >= targetRect.width ? targetRect.width / 2 : originalRect.width;
+          targetRect.width - originalRect.width < targetPaneSash.minWidth
+            ? targetRect.width / 2
+            : originalRect.width;
       }
       else if (newPosition === Position.Top || newPosition === Position.Bottom) {
         newSize =
-          originalRect.height >= targetRect.height ? targetRect.height / 2 : originalRect.height;
+          targetRect.height - originalRect.height < targetPaneSash.minHeight
+            ? targetRect.height / 2
+            : originalRect.height;
       }
       else {
         throw new Error('[bwin] Invalid position when restoring glass');
