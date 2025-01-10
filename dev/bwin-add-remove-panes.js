@@ -18,11 +18,12 @@ const settings = {
 const bwin = new BinaryWindow(settings);
 bwin.mount(document.querySelector('#container'));
 
-document.querySelector('#add-glass').addEventListener('click', () => {
+document.querySelector('#add-pane').addEventListener('click', () => {
   const parentId = document.querySelector('#sash-id').value.trim();
   const position = document.querySelector('input[name="sash-position"]:checked').value;
 
   bwin.addPane(parentId, {
+    id: 'new-pane',
     position,
     size: 0.5,
     actions: [],
@@ -31,7 +32,7 @@ document.querySelector('#add-glass').addEventListener('click', () => {
   });
 });
 
-document.querySelector('#remove-glass').addEventListener('click', () => {
+document.querySelector('#remove-pane').addEventListener('click', () => {
   const sashId = document.querySelector('#sash-id').value.trim();
   bwin.removePane(sashId);
 });

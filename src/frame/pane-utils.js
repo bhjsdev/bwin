@@ -25,7 +25,7 @@ export function updatePaneElement(sash) {
   return paneEl;
 }
 
-function addPaneSashToLeft(targetPaneSash, { size }) {
+function addPaneSashToLeft(targetPaneSash, { size, id }) {
   const sizeParsed = parseSize(size);
   let newLeftSashWidth = targetPaneSash.width / 2;
 
@@ -36,6 +36,7 @@ function addPaneSashToLeft(targetPaneSash, { size }) {
   }
 
   const newLeftSash = new Sash({
+    id,
     top: targetPaneSash.top,
     left: targetPaneSash.left,
     width: newLeftSashWidth,
@@ -61,7 +62,7 @@ function addPaneSashToLeft(targetPaneSash, { size }) {
   return newLeftSash;
 }
 
-function addPaneSashToRight(targetPaneSash, { size }) {
+function addPaneSashToRight(targetPaneSash, { size, id }) {
   const sizeParsed = parseSize(size);
   let newRightSashWidth = targetPaneSash.width / 2;
 
@@ -80,6 +81,7 @@ function addPaneSashToRight(targetPaneSash, { size }) {
   });
 
   const newRightSash = new Sash({
+    id,
     left: targetPaneSash.left + newLeftSash.width,
     top: targetPaneSash.top,
     width: newRightSashWidth,
@@ -97,7 +99,7 @@ function addPaneSashToRight(targetPaneSash, { size }) {
   return newRightSash;
 }
 
-function addPaneSashToTop(targetPaneSash, { size }) {
+function addPaneSashToTop(targetPaneSash, { size, id }) {
   const sizeParsed = parseSize(size);
   let newTopSashHeight = targetPaneSash.height / 2;
 
@@ -108,6 +110,7 @@ function addPaneSashToTop(targetPaneSash, { size }) {
   }
 
   const newTopSash = new Sash({
+    id,
     left: targetPaneSash.left,
     top: targetPaneSash.top,
     width: targetPaneSash.width,
@@ -133,7 +136,7 @@ function addPaneSashToTop(targetPaneSash, { size }) {
   return newTopSash;
 }
 
-function addPaneSashToBottom(targetPaneSash, { size }) {
+function addPaneSashToBottom(targetPaneSash, { size, id }) {
   const sizeParsed = parseSize(size);
   let newBottomSashHeight = targetPaneSash.height / 2;
 
@@ -152,6 +155,7 @@ function addPaneSashToBottom(targetPaneSash, { size }) {
   });
 
   const newBottomSash = new Sash({
+    id,
     top: targetPaneSash.top + newTopSash.height,
     left: targetPaneSash.left,
     width: targetPaneSash.width,
@@ -172,17 +176,17 @@ function addPaneSashToBottom(targetPaneSash, { size }) {
 /**
  * @todo add pane with more Sash props e.g. minWidth, minHeight, etc.
  */
-export function addPaneSash(targetPaneSash, { position, size, minWidth, minHeight }) {
+export function addPaneSash(targetPaneSash, { position, size, id, minWidth, minHeight }) {
   if (position === Position.Left) {
-    return addPaneSashToLeft(targetPaneSash, { size });
+    return addPaneSashToLeft(targetPaneSash, { size, id });
   }
   else if (position === Position.Right) {
-    return addPaneSashToRight(targetPaneSash, { size });
+    return addPaneSashToRight(targetPaneSash, { size, id });
   }
   else if (position === Position.Top) {
-    return addPaneSashToTop(targetPaneSash, { size });
+    return addPaneSashToTop(targetPaneSash, { size, id });
   }
   else if (position === Position.Bottom) {
-    return addPaneSashToBottom(targetPaneSash, { size });
+    return addPaneSashToBottom(targetPaneSash, { size, id });
   }
 }
