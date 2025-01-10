@@ -1,7 +1,7 @@
 import { genBrightColor, genId, createDomNode } from '../utils.js';
 import { Position } from '../position.js';
 import { Sash } from '../sash.js';
-import { createPaneElement, addPane as addPaneUtil, updatePaneElement } from './pane-utils.js';
+import { createPaneElement, addPaneSash, updatePaneElement } from './pane-utils.js';
 
 export default {
   createPane(sash) {
@@ -48,12 +48,12 @@ export default {
   addPane(targetPaneSashId, { position, size }) {
     if (!position) throw new Error('[bwin] Position is required when adding pane');
 
-    const parentSash = this.rootSash.getById(targetPaneSashId);
-    if (!parentSash) throw new Error('[bwin] Parent sash not found when adding pane');
+    const targetPaneSash = this.rootSash.getById(targetPaneSashId);
+    if (!targetPaneSash) throw new Error('[bwin] Parent sash not found when adding pane');
 
-    const newPaneSash = addPaneUtil(parentSash, { position, size });
+    const newPaneSash = addPaneSash(targetPaneSash, { position, size });
     // Generate new ID for parent sash to create a new muntin
-    parentSash.id = genId();
+    targetPaneSash.id = genId();
 
     this.update();
 

@@ -25,146 +25,146 @@ export function updatePaneElement(sash) {
   return paneEl;
 }
 
-function addPaneToLeft(parentSash, { size }) {
+function addPaneSashToLeft(targetPaneSash, { size }) {
   const sizeParsed = parseSize(size);
-  let newLeftSashWidth = parentSash.width / 2;
+  let newLeftSashWidth = targetPaneSash.width / 2;
 
   if (sizeParsed) {
     sizeParsed < 1
-      ? (newLeftSashWidth = parentSash.width * sizeParsed)
+      ? (newLeftSashWidth = targetPaneSash.width * sizeParsed)
       : (newLeftSashWidth = sizeParsed);
   }
 
   const newLeftSash = new Sash({
-    top: parentSash.top,
-    left: parentSash.left,
+    top: targetPaneSash.top,
+    left: targetPaneSash.left,
     width: newLeftSashWidth,
-    height: parentSash.height,
+    height: targetPaneSash.height,
     position: Position.Left,
   });
 
   const newRightSash = new Sash({
-    top: parentSash.top,
-    left: parentSash.left + newLeftSash.width,
-    width: parentSash.width - newLeftSashWidth,
-    height: parentSash.height,
+    top: targetPaneSash.top,
+    left: targetPaneSash.left + newLeftSash.width,
+    width: targetPaneSash.width - newLeftSashWidth,
+    height: targetPaneSash.height,
     position: Position.Right,
   });
 
   const newPaneEl = createPaneElement(newRightSash);
   newRightSash.domNode = newPaneEl;
-  moveChildNodes(newPaneEl, parentSash.domNode);
+  moveChildNodes(newPaneEl, targetPaneSash.domNode);
 
-  parentSash.addChild(newLeftSash);
-  parentSash.addChild(newRightSash);
+  targetPaneSash.addChild(newLeftSash);
+  targetPaneSash.addChild(newRightSash);
 
   return newLeftSash;
 }
 
-function addPaneToRight(parentSash, { size }) {
+function addPaneSashToRight(targetPaneSash, { size }) {
   const sizeParsed = parseSize(size);
-  let newRightSashWidth = parentSash.width / 2;
+  let newRightSashWidth = targetPaneSash.width / 2;
 
   if (sizeParsed) {
     sizeParsed < 1
-      ? (newRightSashWidth = parentSash.width * sizeParsed)
+      ? (newRightSashWidth = targetPaneSash.width * sizeParsed)
       : (newRightSashWidth = sizeParsed);
   }
 
   const newLeftSash = new Sash({
-    left: parentSash.left,
-    top: parentSash.top,
-    width: parentSash.width - newRightSashWidth,
-    height: parentSash.height,
+    left: targetPaneSash.left,
+    top: targetPaneSash.top,
+    width: targetPaneSash.width - newRightSashWidth,
+    height: targetPaneSash.height,
     position: Position.Left,
   });
 
   const newRightSash = new Sash({
-    left: parentSash.left + newLeftSash.width,
-    top: parentSash.top,
+    left: targetPaneSash.left + newLeftSash.width,
+    top: targetPaneSash.top,
     width: newRightSashWidth,
-    height: parentSash.height,
+    height: targetPaneSash.height,
     position: Position.Right,
   });
 
   const newPaneEl = createPaneElement(newLeftSash);
   newLeftSash.domNode = newPaneEl;
-  moveChildNodes(newPaneEl, parentSash.domNode);
+  moveChildNodes(newPaneEl, targetPaneSash.domNode);
 
-  parentSash.addChild(newLeftSash);
-  parentSash.addChild(newRightSash);
+  targetPaneSash.addChild(newLeftSash);
+  targetPaneSash.addChild(newRightSash);
 
   return newRightSash;
 }
 
-function addPaneToTop(parentSash, { size }) {
+function addPaneSashToTop(targetPaneSash, { size }) {
   const sizeParsed = parseSize(size);
-  let newTopSashHeight = parentSash.height / 2;
+  let newTopSashHeight = targetPaneSash.height / 2;
 
   if (sizeParsed) {
     sizeParsed < 1
-      ? (newTopSashHeight = parentSash.height * sizeParsed)
+      ? (newTopSashHeight = targetPaneSash.height * sizeParsed)
       : (newTopSashHeight = sizeParsed);
   }
 
   const newTopSash = new Sash({
-    left: parentSash.left,
-    top: parentSash.top,
-    width: parentSash.width,
+    left: targetPaneSash.left,
+    top: targetPaneSash.top,
+    width: targetPaneSash.width,
     height: newTopSashHeight,
     position: Position.Top,
   });
 
   const newBottomSash = new Sash({
-    left: parentSash.left,
-    top: parentSash.top + newTopSash.height,
-    width: parentSash.width,
-    height: parentSash.height - newTopSashHeight,
+    left: targetPaneSash.left,
+    top: targetPaneSash.top + newTopSash.height,
+    width: targetPaneSash.width,
+    height: targetPaneSash.height - newTopSashHeight,
     position: Position.Bottom,
   });
 
   const newPaneEl = createPaneElement(newBottomSash);
   newBottomSash.domNode = newPaneEl;
-  moveChildNodes(newPaneEl, parentSash.domNode);
+  moveChildNodes(newPaneEl, targetPaneSash.domNode);
 
-  parentSash.addChild(newTopSash);
-  parentSash.addChild(newBottomSash);
+  targetPaneSash.addChild(newTopSash);
+  targetPaneSash.addChild(newBottomSash);
 
   return newTopSash;
 }
 
-function addPaneToBottom(parentSash, { size }) {
+function addPaneSashToBottom(targetPaneSash, { size }) {
   const sizeParsed = parseSize(size);
-  let newBottomSashHeight = parentSash.height / 2;
+  let newBottomSashHeight = targetPaneSash.height / 2;
 
   if (sizeParsed) {
     sizeParsed < 1
-      ? (newBottomSashHeight = parentSash.height * sizeParsed)
+      ? (newBottomSashHeight = targetPaneSash.height * sizeParsed)
       : (newBottomSashHeight = sizeParsed);
   }
 
   const newTopSash = new Sash({
-    top: parentSash.top,
-    left: parentSash.left,
-    width: parentSash.width,
-    height: parentSash.height - newBottomSashHeight,
+    top: targetPaneSash.top,
+    left: targetPaneSash.left,
+    width: targetPaneSash.width,
+    height: targetPaneSash.height - newBottomSashHeight,
     position: Position.Top,
   });
 
   const newBottomSash = new Sash({
-    top: parentSash.top + newTopSash.height,
-    left: parentSash.left,
-    width: parentSash.width,
+    top: targetPaneSash.top + newTopSash.height,
+    left: targetPaneSash.left,
+    width: targetPaneSash.width,
     height: newBottomSashHeight,
     position: Position.Bottom,
   });
 
   const newPaneEl = createPaneElement(newTopSash);
   newTopSash.domNode = newPaneEl;
-  moveChildNodes(newPaneEl, parentSash.domNode);
+  moveChildNodes(newPaneEl, targetPaneSash.domNode);
 
-  parentSash.addChild(newTopSash);
-  parentSash.addChild(newBottomSash);
+  targetPaneSash.addChild(newTopSash);
+  targetPaneSash.addChild(newBottomSash);
 
   return newBottomSash;
 }
@@ -172,17 +172,17 @@ function addPaneToBottom(parentSash, { size }) {
 /**
  * @todo add pane with more Sash props e.g. minWidth, minHeight, etc.
  */
-export function addPane(parentSash, { position, size, minWidth, minHeight }) {
+export function addPaneSash(targetPaneSash, { position, size, minWidth, minHeight }) {
   if (position === Position.Left) {
-    return addPaneToLeft(parentSash, { size });
+    return addPaneSashToLeft(targetPaneSash, { size });
   }
   else if (position === Position.Right) {
-    return addPaneToRight(parentSash, { size });
+    return addPaneSashToRight(targetPaneSash, { size });
   }
   else if (position === Position.Top) {
-    return addPaneToTop(parentSash, { size });
+    return addPaneSashToTop(targetPaneSash, { size });
   }
   else if (position === Position.Bottom) {
-    return addPaneToBottom(parentSash, { size });
+    return addPaneSashToBottom(targetPaneSash, { size });
   }
 }
