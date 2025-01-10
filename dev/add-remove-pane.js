@@ -1,4 +1,5 @@
-import { Sash, Position, Frame, SashConfig } from '../src';
+import { Frame } from '../src';
+import { genId } from '../src/utils';
 
 const settings = {
   width: 555,
@@ -39,7 +40,7 @@ document.querySelector('#add-pane').addEventListener('click', () => {
   const position = document.querySelector('input[name="sash-position"]:checked').value;
   const size = parseFloat(document.querySelector('#sash-size').value);
 
-  frame.addPane(parentId, { position, size });
+  frame.addPane(parentId, { position, size, id: 'new-pane-' + genId() });
 });
 
 document.querySelector('#remove-pane').addEventListener('click', () => {

@@ -1,4 +1,4 @@
-import { moveChildNodes, parseSize } from '../utils.js';
+import { parseSize, genId } from '../utils.js';
 import { Position } from '../position.js';
 import { Sash } from '../sash.js';
 
@@ -25,7 +25,7 @@ export function updatePaneElement(sash) {
   return paneEl;
 }
 
-function addPaneSashToLeft(targetPaneSash, { size }) {
+function addPaneSashToLeft(targetPaneSash, { size, id }) {
   const sizeParsed = parseSize(size);
   let newLeftSashWidth = targetPaneSash.width / 2;
 
@@ -36,6 +36,7 @@ function addPaneSashToLeft(targetPaneSash, { size }) {
   }
 
   const newLeftSash = new Sash({
+    id,
     top: targetPaneSash.top,
     left: targetPaneSash.left,
     width: newLeftSashWidth,
@@ -44,24 +45,25 @@ function addPaneSashToLeft(targetPaneSash, { size }) {
   });
 
   const newRightSash = new Sash({
+    id: targetPaneSash.id,
     top: targetPaneSash.top,
     left: targetPaneSash.left + newLeftSash.width,
     width: targetPaneSash.width - newLeftSashWidth,
     height: targetPaneSash.height,
     position: Position.Right,
+    domNode: targetPaneSash.domNode,
   });
-
-  const newPaneEl = createPaneElement(newRightSash);
-  newRightSash.domNode = newPaneEl;
-  moveChildNodes(newPaneEl, targetPaneSash.domNode);
 
   targetPaneSash.addChild(newLeftSash);
   targetPaneSash.addChild(newRightSash);
+  targetPaneSash.domNode = null;
+  // Generate a new ID for original target sash to be a new muntin during `update` call
+  targetPaneSash.id = genId();
 
   return newLeftSash;
 }
 
-function addPaneSashToRight(targetPaneSash, { size }) {
+function addPaneSashToRight(targetPaneSash, { size, id }) {
   const sizeParsed = parseSize(size);
   let newRightSashWidth = targetPaneSash.width / 2;
 
@@ -72,14 +74,17 @@ function addPaneSashToRight(targetPaneSash, { size }) {
   }
 
   const newLeftSash = new Sash({
+    id: targetPaneSash.id,
     left: targetPaneSash.left,
     top: targetPaneSash.top,
     width: targetPaneSash.width - newRightSashWidth,
     height: targetPaneSash.height,
     position: Position.Left,
+    domNode: targetPaneSash.domNode,
   });
 
   const newRightSash = new Sash({
+    id,
     left: targetPaneSash.left + newLeftSash.width,
     top: targetPaneSash.top,
     width: newRightSashWidth,
@@ -87,17 +92,15 @@ function addPaneSashToRight(targetPaneSash, { size }) {
     position: Position.Right,
   });
 
-  const newPaneEl = createPaneElement(newLeftSash);
-  newLeftSash.domNode = newPaneEl;
-  moveChildNodes(newPaneEl, targetPaneSash.domNode);
-
   targetPaneSash.addChild(newLeftSash);
   targetPaneSash.addChild(newRightSash);
+  targetPaneSash.domNode = null;
+  targetPaneSash.id = genId();
 
   return newRightSash;
 }
 
-function addPaneSashToTop(targetPaneSash, { size }) {
+function addPaneSashToTop(targetPaneSash, { size, id }) {
   const sizeParsed = parseSize(size);
   let newTopSashHeight = targetPaneSash.height / 2;
 
@@ -108,6 +111,7 @@ function addPaneSashToTop(targetPaneSash, { size }) {
   }
 
   const newTopSash = new Sash({
+    id,
     left: targetPaneSash.left,
     top: targetPaneSash.top,
     width: targetPaneSash.width,
@@ -116,24 +120,24 @@ function addPaneSashToTop(targetPaneSash, { size }) {
   });
 
   const newBottomSash = new Sash({
+    id: targetPaneSash.id,
     left: targetPaneSash.left,
     top: targetPaneSash.top + newTopSash.height,
     width: targetPaneSash.width,
     height: targetPaneSash.height - newTopSashHeight,
     position: Position.Bottom,
+    domNode: targetPaneSash.domNode,
   });
-
-  const newPaneEl = createPaneElement(newBottomSash);
-  newBottomSash.domNode = newPaneEl;
-  moveChildNodes(newPaneEl, targetPaneSash.domNode);
 
   targetPaneSash.addChild(newTopSash);
   targetPaneSash.addChild(newBottomSash);
+  targetPaneSash.domNode = null;
+  targetPaneSash.id = genId();
 
   return newTopSash;
 }
 
-function addPaneSashToBottom(targetPaneSash, { size }) {
+function addPaneSashToBottom(targetPaneSash, { size, id }) {
   const sizeParsed = parseSize(size);
   let newBottomSashHeight = targetPaneSash.height / 2;
 
@@ -144,14 +148,17 @@ function addPaneSashToBottom(targetPaneSash, { size }) {
   }
 
   const newTopSash = new Sash({
+    id: targetPaneSash.id,
     top: targetPaneSash.top,
     left: targetPaneSash.left,
     width: targetPaneSash.width,
     height: targetPaneSash.height - newBottomSashHeight,
     position: Position.Top,
+    domNode: targetPaneSash.domNode,
   });
 
   const newBottomSash = new Sash({
+    id,
     top: targetPaneSash.top + newTopSash.height,
     left: targetPaneSash.left,
     width: targetPaneSash.width,
@@ -159,12 +166,10 @@ function addPaneSashToBottom(targetPaneSash, { size }) {
     position: Position.Bottom,
   });
 
-  const newPaneEl = createPaneElement(newTopSash);
-  newTopSash.domNode = newPaneEl;
-  moveChildNodes(newPaneEl, targetPaneSash.domNode);
-
   targetPaneSash.addChild(newTopSash);
   targetPaneSash.addChild(newBottomSash);
+  targetPaneSash.domNode = null;
+  targetPaneSash.id = genId();
 
   return newBottomSash;
 }
@@ -172,17 +177,17 @@ function addPaneSashToBottom(targetPaneSash, { size }) {
 /**
  * @todo add pane with more Sash props e.g. minWidth, minHeight, etc.
  */
-export function addPaneSash(targetPaneSash, { position, size, minWidth, minHeight }) {
+export function addPaneSash(targetPaneSash, { position, size, id, minWidth, minHeight }) {
   if (position === Position.Left) {
-    return addPaneSashToLeft(targetPaneSash, { size });
+    return addPaneSashToLeft(targetPaneSash, { size, id });
   }
   else if (position === Position.Right) {
-    return addPaneSashToRight(targetPaneSash, { size });
+    return addPaneSashToRight(targetPaneSash, { size, id });
   }
   else if (position === Position.Top) {
-    return addPaneSashToTop(targetPaneSash, { size });
+    return addPaneSashToTop(targetPaneSash, { size, id });
   }
   else if (position === Position.Bottom) {
-    return addPaneSashToBottom(targetPaneSash, { size });
+    return addPaneSashToBottom(targetPaneSash, { size, id });
   }
 }

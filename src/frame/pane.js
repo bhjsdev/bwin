@@ -45,15 +45,13 @@ export default {
    * @param {'top'|'right'|'bottom'|'left'} position - The position of the new pane relative to the target pane
    * @returns {Sash} - The newly created sash
    */
-  addPane(targetPaneSashId, { position, size }) {
+  addPane(targetPaneSashId, { position, size, id }) {
     if (!position) throw new Error('[bwin] Position is required when adding pane');
 
     const targetPaneSash = this.rootSash.getById(targetPaneSashId);
     if (!targetPaneSash) throw new Error('[bwin] Parent sash not found when adding pane');
 
-    const newPaneSash = addPaneSash(targetPaneSash, { position, size });
-    // Generate new ID for parent sash to create a new muntin
-    targetPaneSash.id = genId();
+    const newPaneSash = addPaneSash(targetPaneSash, { position, size, id });
 
     this.update();
 
