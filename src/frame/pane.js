@@ -71,15 +71,15 @@ export default {
 
     const siblingSash = parentSash.getChildSiblingById(sashId);
 
-    // The muntin of old ID will be removed in `this.update`
-    parentSash.id = genId();
-
     if (siblingSash.children.length === 0) {
+      parentSash.id = siblingSash.id;
       parentSash.domNode = siblingSash.domNode;
-      parentSash.domNode.setAttribute('sash-id', parentSash.id);
+      parentSash.domNode.setAttribute('sash-id', siblingSash.id);
       parentSash.children = [];
     }
     else {
+      // The muntin with the old ID will be removed during `this.update`
+      parentSash.id = genId();
       parentSash.children = siblingSash.children;
 
       if (siblingSash.position === Position.Left) {
