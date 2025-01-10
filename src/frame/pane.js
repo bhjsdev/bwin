@@ -52,8 +52,6 @@ export default {
     if (!targetPaneSash) throw new Error('[bwin] Parent sash not found when adding pane');
 
     const newPaneSash = addPaneSash(targetPaneSash, { position, size, id });
-    // Generate new ID for parent sash to create a new muntin
-    targetPaneSash.id = genId();
 
     this.update();
 
