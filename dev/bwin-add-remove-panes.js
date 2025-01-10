@@ -4,10 +4,13 @@ const settings = {
   width: 600,
   height: 400,
   children: [
-    { size: 0.4, children: [{ position: 'top', size: 0.3 }] },
+    {
+      size: 0.4,
+      children: [{ position: 'top', size: 0.3, id: 'top-left' }, { id: 'bottom-left' }],
+    },
     [
       { size: 0.4, position: 'top' },
-      { size: 0.6, position: 'bottom', children: [0.5, 0.5] },
+      { size: 0.6, position: 'bottom', children: [0.5, { size: 0.5, id: 'bottom-right' }] },
     ],
   ],
 };
