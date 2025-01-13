@@ -1,7 +1,8 @@
-import { genBrightColor, genId, createDomNode } from '../utils.js';
+import { genBrightColor, genId, createDomNode, swapChildNodes } from '../utils.js';
 import { Position } from '../position.js';
 import { Sash } from '../sash.js';
 import { createPaneElement, addPaneSash, updatePaneElement } from './pane-utils.js';
+import { getSashIdFromPane } from '../frame/frame-utils';
 
 export default {
   createPane(sash) {
@@ -97,6 +98,23 @@ export default {
     }
 
     this.update();
+  },
+
+  swapPanes(sourcePaneEl, targetPaneEl) {
+    const sourcePaneSashId = getSashIdFromPane(sourcePaneEl);
+    const targetPaneSashId = getSashIdFromPane(targetPaneEl);
+
+    const sourcePaneCanDrop = sourcePaneEl.getAttribute('can-drop') !== 'false';
+    const targetPaneCanDrop = targetPaneEl.getAttribute('can-drop') !== 'false';
+
+    this.rootSash.swapIds(sourcePaneSashId, targetPaneSashId);
+    swapChildNodes(sourcePaneEl, this.activeDropPaneEl);
+
+    sourcePaneEl.setAttribute('sash-id', targetPaneSashId);
+    targetPaneEl.setAttribute('sash-id', sourcePaneSashId);
+
+    sourcePaneEl.setAttribute('can-drop', targetPaneCanDrop);
+    targetPaneEl.setAttribute('can-drop', sourcePaneCanDrop);
   },
 };
 
