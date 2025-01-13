@@ -185,6 +185,19 @@ export class Sash {
     return null;
   }
 
+  swapIds(id1, id2) {
+    const sash1 = this.getById(id1);
+    const sash2 = this.getById(id2);
+
+    if (!sash1 || !sash2) {
+      throw new Error('[bwin] Sash not found when swapping IDs');
+    }
+
+    const tempId = sash1.id;
+    sash1.id = sash2.id;
+    sash2.id = tempId;
+  }
+
   // Get all ids of self and descendants
   getAllIds() {
     const ids = [this.id];

@@ -12,20 +12,17 @@ export default {
     // Swap the content of the two panes
     if (dropArea === 'center') {
       const sourcePaneEl = this.activeDragGlassEl.closest('bw-pane');
-      const activeDropPaneCanDrop = this.activeDropPaneEl.getAttribute('can-drop') !== 'false';
-
-      swapChildNodes(sourcePaneEl, this.activeDropPaneEl);
-      sourcePaneEl.setAttribute('can-drop', activeDropPaneCanDrop);
+      this.swapPanes(sourcePaneEl, this.activeDropPaneEl);
 
       return;
     }
     // Add the pane of glass next to the current pane, vertically or horizontally
     else {
       const oldSashId = getSashIdFromPane(this.activeDragGlassEl);
-      const newPaneSash = this.addPane(sash.id, { position: dropArea });
-      newPaneSash.domNode.append(this.activeDragGlassEl);
-
       this.removePane(oldSashId);
+
+      const newPaneSash = this.addPane(sash.id, { position: dropArea, id: oldSashId });
+      newPaneSash.domNode.append(this.activeDragGlassEl);
     }
   },
 
