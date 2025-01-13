@@ -18,6 +18,7 @@ export default {
     minimizedGlassEl.bwGlassElement = glassEl;
     minimizedGlassEl.bwOriginalPosition = panePosition;
     minimizedGlassEl.bwOriginalBoundingRect = getMetricsFromElement(paneEl);
+    minimizedGlassEl.bwOriginalSashId = paneSashId;
 
     binaryWindow.removePane(paneSashId);
   },

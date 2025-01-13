@@ -57,7 +57,9 @@ export default {
         throw new Error('[bwin] Invalid position when restoring glass');
       }
 
+      const originalSashId = minimizedGlassEl.bwOriginalSashId;
       const newSashPane = this.addPane(targetPaneEl.getAttribute('sash-id'), {
+        id: originalSashId,
         position: newPosition,
         size: newSize,
       });

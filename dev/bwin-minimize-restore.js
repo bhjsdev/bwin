@@ -1,5 +1,4 @@
 import { BinaryWindow } from '../src';
-import fitContainer from '../src/frame/fit-container';
 
 const settings = {
   fitContainer: true,
@@ -13,6 +12,7 @@ const settings = {
       children: [
         {
           position: 'top',
+          id: 'top-right',
           size: 0.5,
         },
       ],
