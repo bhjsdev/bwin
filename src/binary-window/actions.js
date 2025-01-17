@@ -97,6 +97,11 @@ export default {
     }
   },
 
+  getMinimizedGlassElementBySashId(sashId) {
+    const els = this.windowElement.querySelectorAll(`.bw-minimized-glass`);
+    return Array.from(els).find((el) => el.bwOriginalSashId === sashId);
+  },
+
   observeActionButtons() {
     this.updateDisabledStateOfActionButtons();
 

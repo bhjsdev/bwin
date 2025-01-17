@@ -39,16 +39,31 @@ export class BinaryWindow extends Frame {
   /**
    * Add a pane with glass into the target pane.
    *
-   * @param {string} targetPaneId - The Sash ID of the target pane
+   * @param {string} targetPaneSashId - The Sash ID of the target pane
    * @param {Object} props - The pane and glass properties grouped together
    * @returns {Sash} - The newly created Sash
    */
-  addPane(targetPaneId, props) {
+  addPane(targetPaneSashId, props) {
     const { position, size, id, ...glassProps } = props;
-    const paneSash = super.addPane(targetPaneId, { position, size, id });
+    const paneSash = super.addPane(targetPaneSashId, { position, size, id });
     const glass = new Glass({ ...glassProps, sash: paneSash, binaryWindow: this });
     paneSash.domNode.append(glass.domNode);
     return paneSash;
+  }
+
+  removePane(paneSashId) {
+    const paneEl = this.windowElement.querySelector(`[sash-id="${paneSashId}"]`);
+
+    if (paneEl) {
+      super.removePane(paneSashId);
+      return;
+    }
+
+    // Remove minimized glass element if pane is minimized
+    const minimizedGlassEl = this.getMinimizedGlassElementBySashId(paneSashId);
+    if (minimizedGlassEl) {
+      minimizedGlassEl.remove();
+    }
   }
 }
 
