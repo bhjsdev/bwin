@@ -27,6 +27,8 @@ const files = [
   'bwin-one-pane',
   'resize-min-width-height',
   'bwin-minimize-restore',
+  'resize-strategy',
+  'resize-strategy-2',
 ].sort();
 
 const navEl = document.createElement('nav');
