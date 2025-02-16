@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script type="module" src="./index.js"></script>
+    <script type="module" src="./resize-strategy.js"></script>
+  </head>
+  <body>
+    <main>
+      <h2>Resize strategy</h2>
+      <h3>Right pane has children</h3>
+      <section id="container-1" style="height: 50px; position: relative"></section>
+      <h3>Left pane has children</h3>
+      <section id="container-2" style="height: 50px; position: relative"></section>
+      <div style="display: flex; justify-content: space-between">
+        <div>
+          <h3>Top pane has children</h3>
+          <section
+            id="container-3"
+            style="height: 300px; width: 100px; position: relative"
+          ></section>
+        </div>
+        <div>
+          <h3>Bottom pane has children</h3>
+          <section
+            id="container-4"
+            style="height: 300px; width: 100px; position: relative"
+          ></section>
+        </div>
+      </div>
+      <h3>More panes example</h3>
+      <section id="container-5" style="height: 300px; position: relative"></section>
+    </main>
+  </body>
+</html>

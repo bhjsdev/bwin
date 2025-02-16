@@ -12,6 +12,8 @@ export const DEFAULTS = {
   // Initial min values, real min width/height is calculated based on children
   minWidth: MIN_WIDTH,
   minHeight: MIN_HEIGHT,
+  // `classic` | `natural`, `natural` means only one child is updating its size
+  resizeStrategy: 'classic',
 };
 
 /**
@@ -27,6 +29,8 @@ export class Sash {
     height = DEFAULTS.height,
     minWidth = DEFAULTS.minWidth,
     minHeight = DEFAULTS.minHeight,
+    resizeStrategy = DEFAULTS.resizeStrategy,
+    parent = null,
     domNode = null,
     store = {},
     position,
@@ -39,6 +43,7 @@ export class Sash {
     }
     this.position = position;
     this.domNode = domNode;
+    this.parent = parent;
 
     this._top = top;
     this._left = left;
@@ -48,7 +53,7 @@ export class Sash {
     this.children = [];
     this.minWidth = minWidth;
     this.minHeight = minHeight;
-
+    this.resizeStrategy = resizeStrategy;
     // Store non-core props from `ConfigNode` e.g. content, title, tabs, actions, etc
     this.store = store;
   }
@@ -293,14 +298,32 @@ export class Sash {
       const leftDist = dist * (leftChild.width / totalWidth);
 
       const newTotalWidth = totalWidth + dist;
-      let newLeftChildWidth = leftChild.width + leftDist;
-      let newRightChildWidth = newTotalWidth - newLeftChildWidth;
-      let newRightChildLeft = rightChild.left + leftDist;
 
-      const leftChildMinWidth = leftChild.calcMinWidth();
-      const rightChildMinWidth = rightChild.calcMinWidth();
+      let newLeftChildWidth;
+      let newRightChildWidth;
+      let newRightChildLeft;
+
+      if (this.resizeStrategy === 'natural' && this.position === Position.Left) {
+        newLeftChildWidth = leftChild.width;
+        newRightChildWidth = rightChild.width + dist;
+        newRightChildLeft = rightChild.left;
+      }
+      else if (this.resizeStrategy === 'natural' && this.position === Position.Right) {
+        newLeftChildWidth = leftChild.width + dist;
+        newRightChildWidth = rightChild.width;
+        newRightChildLeft = leftChild.left + newLeftChildWidth;
+      }
+      else {
+        // fallback to classic resize strategy
+        newLeftChildWidth = leftChild.width + leftDist;
+        newRightChildWidth = newTotalWidth - newLeftChildWidth;
+        newRightChildLeft = rightChild.left + leftDist;
+      }
 
       if (dist < 0) {
+        const leftChildMinWidth = leftChild.calcMinWidth();
+        const rightChildMinWidth = rightChild.calcMinWidth();
+
         if (newLeftChildWidth < leftChildMinWidth && newRightChildWidth > rightChildMinWidth) {
           newLeftChildWidth = leftChild.width;
           newRightChildWidth = newTotalWidth - newLeftChildWidth;
@@ -342,9 +365,27 @@ export class Sash {
       const topDist = dist * (topChild.height / totalHeight);
 
       const newTotalHeight = totalHeight + dist;
-      let newTopChildHeight = topChild.height + topDist;
-      let newBottomChildHeight = newTotalHeight - newTopChildHeight;
-      let newBottomChildTop = bottomChild.top + topDist;
+
+      let newTopChildHeight;
+      let newBottomChildHeight;
+      let newBottomChildTop;
+
+      if (this.resizeStrategy === 'natural' && this.position === Position.Top) {
+        newTopChildHeight = topChild.height;
+        newBottomChildHeight = bottomChild.height + dist;
+        newBottomChildTop = bottomChild.top;
+      }
+      else if (this.resizeStrategy === 'natural' && this.position === Position.Bottom) {
+        newTopChildHeight = topChild.height + dist;
+        newBottomChildHeight = bottomChild.height;
+        newBottomChildTop = topChild.top + newTopChildHeight;
+      }
+      else {
+        // fallback to classic resize strategy
+        newTopChildHeight = topChild.height + topDist;
+        newBottomChildHeight = newTotalHeight - newTopChildHeight;
+        newBottomChildTop = bottomChild.top + topDist;
+      }
 
       if (dist < 0) {
         const topChildMinHeight = topChild.calcMinHeight();

@@ -31,7 +31,7 @@ export class Frame {
     }
     else {
       config = new ConfigRoot(settings);
-      this.rootSash = config.buildSashTree();
+      this.rootSash = config.buildSashTree({ resizeStrategy: config.resizeStrategy });
     }
 
     this.fitContainer = config.fitContainer;

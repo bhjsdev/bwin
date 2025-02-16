@@ -22,6 +22,7 @@ export class ConfigNode {
     minHeight,
     position,
     size,
+    resizeStrategy,
     ...rest
   }) {
     this.parentRect = parentRect;
@@ -32,6 +33,7 @@ export class ConfigNode {
     this.minHeight = minHeight;
     this.position = this.getPosition(position);
     this.size = this.getSize(size);
+    this.resizeStrategy = resizeStrategy;
     this.nonCoreData = rest;
 
     this.setBounds();
@@ -145,7 +147,7 @@ export class ConfigNode {
     }
   }
 
-  createSash() {
+  createSash({ resizeStrategy } = {}) {
     return new Sash({
       left: this.left,
       top: this.top,
@@ -155,6 +157,7 @@ export class ConfigNode {
       id: this.id,
       minWidth: this.minWidth,
       minHeight: this.minHeight,
+      resizeStrategy: resizeStrategy || this.resizeStrategy,
       store: this.nonCoreData,
     });
   }
@@ -216,8 +219,8 @@ export class ConfigNode {
     });
   }
 
-  buildSashTree() {
-    const sash = this.createSash();
+  buildSashTree({ resizeStrategy } = {}) {
+    const sash = this.createSash({ resizeStrategy });
 
     if (!Array.isArray(this.children) || this.children.length === 0) {
       return sash;
@@ -250,8 +253,14 @@ export class ConfigNode {
     }
 
     if (primaryChildConfigNode && secondaryChildConfigNode) {
-      sash.children.push(primaryChildConfigNode.buildSashTree());
-      sash.children.push(secondaryChildConfigNode.buildSashTree());
+      const primaryChildSash = primaryChildConfigNode.buildSashTree({ resizeStrategy });
+      const secondaryChildSash = secondaryChildConfigNode.buildSashTree({ resizeStrategy });
+
+      primaryChildSash.parent = sash;
+      secondaryChildSash.parent = sash;
+
+      sash.children.push(primaryChildSash);
+      sash.children.push(secondaryChildSash);
     }
 
     return sash;

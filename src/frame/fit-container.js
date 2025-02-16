@@ -10,11 +10,13 @@ export default {
 
   enableFitContainer() {
     const resizeObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        if (entry.target === this.containerElement && this.fitContainer) {
-          this.fit();
+      requestAnimationFrame(() => {
+        for (const entry of entries) {
+          if (entry.target === this.containerElement && this.fitContainer) {
+            this.fit();
+          }
         }
-      }
+      });
     });
 
     resizeObserver.observe(this.containerElement);
