@@ -31,12 +31,12 @@ export function getIntersectRect(rect1, rect2) {
   const intersectLeft = Math.max(rect1.left, rect2.left);
   const intersectTop = Math.max(rect1.top, rect2.top);
   const intersectRight = Math.min(rect1Right, rect2Right);
-  const Bottom = Math.min(rect1Bottom, rect2Bottom);
+  const intersectBottom = Math.min(rect1Bottom, rect2Bottom);
 
   return {
     left: intersectLeft,
     top: intersectTop,
     width: intersectRight - intersectLeft,
-    height: Bottom - intersectTop,
+    height: intersectBottom - intersectTop,
   };
 }
