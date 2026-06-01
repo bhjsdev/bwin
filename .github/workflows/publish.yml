@@ -6,12 +6,13 @@ on:
       - 'v*.*.*'
 
 permissions:
-  contents: write
+  contents: read
   id-token: write
 
 jobs:
-  publish-and-bump:
+  publish:
     runs-on: ubuntu-latest
+    environment: PUBLISH
 
     steps:
       - name: Check out repository
@@ -34,14 +35,9 @@ jobs:
         run: pnpm build
 
       - name: Publish to npm
-        run: pnpm publish --no-git-checks --access public
-
-      - name: Bump to next dev version
-        if: ${{ success() && !contains(github.ref_name, '-dev.') }}
         run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
-          git fetch origin main
-          git checkout main
-          pnpm version prepatch --preid=dev
-          git push origin main --follow-tags
+          if [[ "${{ github.ref_name }}" == *-dev.* ]]; then
+            pnpm publish --no-git-checks --access public --tag dev
+          else
+            pnpm publish --no-git-checks --access public --tag latest
+          fi
