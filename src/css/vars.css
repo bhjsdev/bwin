@@ -1,4 +1,4 @@
-:root {
+bw-window {
   --bw-font-family: system-ui;
   --bw-font-size: 14px;
   --bw-drop-area-bg-color: hsl(0, 0%, 0%, 0.05);
@@ -14,4 +14,33 @@
   --bw-glass-header-bg-color: hsl(0, 0%, 97%);
 
   --bw-sill-gap: 6px;
+}
+
+bw-window[theme='dark'] {
+  /* Render buttons, scrollbars, and other native UI elements in dark mode */
+  color-scheme: dark;
+
+  --bw-glass-border-color: hsl(0 0% 40%);
+  --bw-glass-border-color-disabled: hsl(0 0% 30%);
+  --bw-glass-header-bg-color: hsl(0 0% 18%);
+  --bw-glass-bg-color-disabled: hsl(0 0% 16%);
+  --bw-drop-area-bg-color: hsl(0 0% 100% / 0.1);
+
+  bw-pane,
+  bw-muntin {
+    background-color: hsl(0 0% 14%);
+  }
+
+  bw-glass {
+    background-color: hsl(0 0% 16%);
+    color: hsl(0 0% 90%);
+  }
+
+  .bw-glass-tab:hover,
+  .bw-glass-action:hover,
+  .bw-minimized-glass:hover {
+    background-color: hsl(0 0% 26%);
+  }
+
+  
 }

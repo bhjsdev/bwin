@@ -35,12 +35,13 @@ export class Frame {
     }
 
     this.fitContainer = config.fitContainer;
+    this.theme = config.theme;
   }
 
   frame(containerEl) {
     this.containerElement = containerEl;
 
-    this.windowElement = this.createWindow();
+    this.windowElement = this.createWindow({ theme: this.theme });
     this.glaze();
     this.containerElement.append(this.windowElement);
   }

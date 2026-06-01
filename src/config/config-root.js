@@ -8,6 +8,7 @@ const DEFAULTS = {
 
 export const FEAT_DEFAULTS = {
   fitContainer: false,
+  theme: '',
 };
 
 export class ConfigRoot extends ConfigNode {
@@ -18,6 +19,7 @@ export class ConfigRoot extends ConfigNode {
       width = DEFAULTS.width,
       height = DEFAULTS.height,
       fitContainer = FEAT_DEFAULTS.fitContainer,
+      theme = FEAT_DEFAULTS.theme,
       ...rest
     } = {
       ...DEFAULTS,
@@ -34,5 +36,6 @@ export class ConfigRoot extends ConfigNode {
     });
 
     this.fitContainer = fitContainer;
+    this.theme = theme;
   }
 }
