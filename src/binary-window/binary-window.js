@@ -51,6 +51,22 @@ export class BinaryWindow extends Frame {
     return paneSash;
   }
 
+  /**
+   * Set the window theme.
+   *
+   * @param {string} theme - The theme name, set as the `theme` attribute on the `bw-window` element
+   */
+  setTheme(theme) {
+    if (!theme) {
+      this.theme = '';
+      this.windowElement.removeAttribute('theme');
+      return;
+    }
+
+    this.theme = theme;
+    this.windowElement.setAttribute('theme', theme);
+  }
+
   removePane(paneSashId) {
     const paneEl = this.windowElement.querySelector(`[sash-id="${paneSashId}"]`);
 
