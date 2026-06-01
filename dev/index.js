@@ -1,44 +1,24 @@
 import './index.css';
 
-const files = [
-  'basic',
-  'fit-container',
-  'add-remove-pane',
-  'config',
-  'config-2',
-  'config-array',
-  'config-string',
-  'config-simplest',
-  'config-sash',
-  'droppable',
-  'resizable',
-  'min-width',
-  'min-width-top-bottom',
-  'min-height',
-  'min-height-left-right',
-  'dom-node',
-  'bwin-content',
-  'one-pane',
-  'bwin-more',
-  'bwin-add-remove-panes',
-  'bwin-drag-drop',
-  'zombie-chrome-drag-bug',
-  'bwin-multiple-windows',
-  'bwin-one-pane',
-  'resize-min-width-height',
-  'bwin-minimize-restore',
-  'resize-strategy',
-  'resize-strategy-2',
-].sort();
+// Auto-discover example pages from `features/`. `import.meta.glob` is resolved
+// by Vite at request time, so adding/removing a *.html there shows up in the
+// menu after a browser refresh — no list to maintain.
+const files = Object.keys(import.meta.glob('./features/*.html'))
+  .map((path) => path.slice('./features/'.length, -'.html'.length)) // './features/basic.html' -> 'basic'
+  .sort();
 
-// First entry is the default shown when there is no hash
-const DEFAULT_FILE = files[0];
+// Default shown when there is no hash — first real example, skipping the
+// underscore-prefixed utility pages (_debug, _release-check) that sort first.
+const DEFAULT_FILE = files.find((name) => !name.startsWith('_')) ?? files[0];
 
 const navEl = document.querySelector('nav');
 const iframeEl = document.querySelector('#_frame');
 
 function genLinkText(file) {
-  const text = file.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+  const text = file
+    .replace(/^_+/, '') // '_debug' -> 'debug'
+    .replace(/-/g, ' ')
+    .replace(/\b\w/g, (c) => c.toUpperCase());
 
   if (text.startsWith('Bwin')) {
     return text.replace('Bwin', '[bwin] ');
@@ -55,7 +35,7 @@ navEl.querySelector('._menu').insertAdjacentHTML(
 function route() {
   const name = location.hash.slice(1) || DEFAULT_FILE;
 
-  iframeEl.src = `./${name}.html`;
+  iframeEl.src = `./features/${name}.html`;
 
   navEl.querySelectorAll('a').forEach((a) => {
     a.classList.toggle('active', a.getAttribute('href') === `#${name}`);
@@ -66,10 +46,12 @@ window.addEventListener('hashchange', route);
 route();
 
 navEl.querySelector('#_toggle-bg').addEventListener('click', () => {
-  const bgColor = 'lavender';
+  const bgColor = 'hsl(0, 0%, 80%)';
   const bodyEl = iframeEl.contentDocument?.body;
 
   if (!bodyEl) return;
 
-  bodyEl.style.backgroundColor = bodyEl.style.backgroundColor === bgColor ? '' : bgColor;
+  // Compare against '' rather than bgColor: the CSSOM re-serializes colors on
+  // read (e.g. hsl() -> rgb()), so equality with the original string fails.
+  bodyEl.style.backgroundColor = bodyEl.style.backgroundColor ? '' : bgColor;
 });
