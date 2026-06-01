@@ -48,3 +48,9 @@ document.querySelector('#toggle-theme').addEventListener('click', () => {
   const isDark = bwin.windowElement.getAttribute('theme') === 'dark';
   bwin.windowElement.setAttribute('theme', isDark ? 'light' : 'dark');
 });
+
+document.querySelector('#set-theme-form').addEventListener('submit', (event) => {
+  event.preventDefault();
+  const theme = document.querySelector('#theme-input').value.trim();
+  bwin.setTheme(theme);
+});
