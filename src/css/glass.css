@@ -151,14 +151,14 @@ bw-glass-action-container {
 
 .bw-glass-action--maximize {
   &::before {
-    /* 🗖 🗗 ◫ □ ☐ */
+    /* 🗖 🗗 ◫ □ ☐ ⇱ ▣ ◱ */
     content: '☐';
   }
 }
 
 bw-pane[maximized] .bw-glass-action--maximize {
   &::before {
-    content: '□';
+    content: '◱';
   }
 }
 
