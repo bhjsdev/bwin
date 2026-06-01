@@ -4,7 +4,7 @@ A lightweight window-tiling JavaScript library for the browser, featuring resiza
 
 [![A bwin tiling layout with resizable panes showing charts and a data table](docs/screenshot.png)](https://bhjsdev.github.io/bwin-docs/)
 
-[Documentation](https://bhjsdev.github.io/bwin-docs/)
+[Documentation](https://bhjsdev.github.io/bwin-docs/general/overview)
 
 ## Development
 
