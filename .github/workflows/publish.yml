@@ -5,14 +5,13 @@ on:
     tags:
       - 'v*.*.*'
 
-permissions:
-  contents: read
-  id-token: write
-
 jobs:
   publish:
     runs-on: ubuntu-latest
     environment: PUBLISH
+    permissions:
+      contents: read
+      id-token: write
 
     steps:
       - name: Check out repository
@@ -41,3 +40,60 @@ jobs:
           else
             pnpm publish --no-git-checks --access public --tag latest
           fi
+
+  # After any release, open and self-merge a PR that bumps main to the next dev
+  # version (0.3.0 -> 0.3.1-dev.0, or 0.3.1-dev.0 -> 0.3.1-dev.1). main is
+  # protected (PR required, no bypass actors), so the bump cannot be pushed
+  # directly — it goes through a PR that GITHUB_TOKEN merges.
+  bump:
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Open and merge dev-bump PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # 0.3.0 -> 0.3.1-dev.0, or 0.3.1-dev.0 -> 0.3.1-dev.1
+          # (package.json only; no tag, no publish)
+          next="$(npm version prerelease --preid=dev --no-git-tag-version)"
+          branch="chore/dev-bump-${next#v}"
+
+          git checkout -b "$branch"
+          git commit -am "$next"
+          git push origin "$branch"
+
+          gh pr create --base main --head "$branch" \
+            --title "chore: bump to $next" \
+            --body "Automated dev version bump after releasing ${{ github.ref_name }}."
+
+          # Retry: mergeability may be UNKNOWN for a moment right after creation.
+          for i in 1 2 3 4 5; do
+            if gh pr merge "$branch" --squash --delete-branch; then
+              exit 0
+            fi
+            echo "Merge not ready yet (attempt $i); retrying in 5s..."
+            sleep 5
+          done
+          echo "::error::Failed to merge dev-bump PR for $next"
+          exit 1
