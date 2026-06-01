@@ -37,9 +37,11 @@ jobs:
         run: pnpm publish --no-git-checks --access public
 
       - name: Bump to next dev version
-        if: ${{ success() }}
+        if: ${{ success() && !contains(github.ref_name, '-dev.') }}
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
+          git fetch origin main
+          git checkout main
           pnpm version prepatch --preid=dev
-          git push origin HEAD:main --follow-tags
+          git push origin main --follow-tags
