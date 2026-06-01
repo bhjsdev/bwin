@@ -1,21 +1,21 @@
 name: Publish to npm
 
 on:
-  push:
-    tags:
-      - 'v*.*.*'
+  workflow_dispatch:
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     environment: PUBLISH
     permissions:
-      contents: read
+      contents: write
       id-token: write
 
     steps:
       - name: Check out repository
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: Set up pnpm
         uses: pnpm/action-setup@v6
@@ -27,6 +27,19 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           cache: 'pnpm'
 
+      - name: Determine version and check for existing tag
+        id: version
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          tag="v$version"
+          git fetch --tags --force
+          if git rev-parse -q --verify "refs/tags/$tag" >/dev/null; then
+            echo "::error::Tag $tag already exists — bump the version in package.json before publishing."
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
@@ -35,65 +48,26 @@ jobs:
 
       - name: Publish to npm
         run: |
-          if [[ "${{ github.ref_name }}" == *-dev.* ]]; then
+          if [[ "${{ steps.version.outputs.tag }}" == *-dev.* ]]; then
             pnpm publish --no-git-checks --access public --tag dev
           else
             pnpm publish --no-git-checks --access public --tag latest
           fi
 
-  # After any release, open and self-merge a PR that bumps main to the next dev
-  # version (0.3.0 -> 0.3.1-dev.0, or 0.3.1-dev.0 -> 0.3.1-dev.1). main is
-  # protected (PR required, no bypass actors), so the bump cannot be pushed
-  # directly — it goes through a PR that GITHUB_TOKEN merges.
-  bump:
-    needs: publish
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-
-    steps:
-      - name: Check out main
-        uses: actions/checkout@v6
-        with:
-          ref: main
-          fetch-depth: 0
-
-      - name: Set up pnpm
-        uses: pnpm/action-setup@v6
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: '24'
-
-      - name: Open and merge dev-bump PR
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create and push tag
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag "${{ steps.version.outputs.tag }}"
+          git push origin "${{ steps.version.outputs.tag }}"
 
-          # 0.3.0 -> 0.3.1-dev.0, or 0.3.1-dev.0 -> 0.3.1-dev.1
-          # (package.json only; no tag, no publish)
-          next="$(npm version prerelease --preid=dev --no-git-tag-version)"
-          branch="chore/dev-bump-${next#v}"
-
-          git checkout -b "$branch"
-          git commit -am "$next"
-          git push origin "$branch"
-
-          gh pr create --base main --head "$branch" \
-            --title "chore: bump to $next" \
-            --body "Automated dev version bump after releasing ${{ github.ref_name }}."
-
-          # Retry: mergeability may be UNKNOWN for a moment right after creation.
-          for i in 1 2 3 4 5; do
-            if gh pr merge "$branch" --squash --delete-branch; then
-              exit 0
-            fi
-            echo "Merge not ready yet (attempt $i); retrying in 5s..."
-            sleep 5
-          done
-          echo "::error::Failed to merge dev-bump PR for $next"
-          exit 1
+      # Release notes only for real releases, not -dev.* prereleases.
+      - name: Create release notes
+        if: ${{ !contains(steps.version.outputs.tag, '-dev.') }}
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: ${{ steps.version.outputs.tag }}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
