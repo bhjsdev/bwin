@@ -31,7 +31,11 @@ const files = [
   'resize-strategy-2',
 ].sort();
 
-const navEl = document.createElement('nav');
+// First entry is the default shown when there is no hash
+const DEFAULT_FILE = files[0];
+
+const navEl = document.querySelector('nav');
+const iframeEl = document.querySelector('#_frame');
 
 function genLinkText(file) {
   const text = file.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
@@ -43,18 +47,29 @@ function genLinkText(file) {
   return text;
 }
 
-navEl.innerHTML = `
-  <menu class="_menu">
-    <li><button id="_toggle-bg">Toggle BG</button></li>
-    <li><a href="/_debug.html">Debug</a></li>
-    ${files.map((file) => `<li><a href="/${file}.html">${genLinkText(file)}</a></li>`).join('')}
-  </menu>
-`;
+navEl.querySelector('._menu').insertAdjacentHTML(
+  'beforeend',
+  files.map((file) => `<li><a href="#${file}">${genLinkText(file)}</a></li>`).join('')
+);
+
+function route() {
+  const name = location.hash.slice(1) || DEFAULT_FILE;
+
+  iframeEl.src = `./${name}.html`;
+
+  navEl.querySelectorAll('a').forEach((a) => {
+    a.classList.toggle('active', a.getAttribute('href') === `#${name}`);
+  });
+}
+
+window.addEventListener('hashchange', route);
+route();
 
 navEl.querySelector('#_toggle-bg').addEventListener('click', () => {
-  const mainBgColor = 'lavender';
-  const mainEl = document.querySelector('main');
-  mainEl.style.backgroundColor = mainEl.style.backgroundColor === mainBgColor ? '' : mainBgColor;
-});
+  const bgColor = 'lavender';
+  const bodyEl = iframeEl.contentDocument?.body;
 
-document.body.prepend(navEl);
+  if (!bodyEl) return;
+
+  bodyEl.style.backgroundColor = bodyEl.style.backgroundColor === bgColor ? '' : bgColor;
+});
