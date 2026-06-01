@@ -2,7 +2,6 @@ body {
   margin: 0;
   padding: 0;
   display: flex;
-  background-color: hsl(0, 0%, 90%);
 }
 
 ._menu {
@@ -12,6 +11,7 @@ body {
   height: 100vh;
   list-style: none;
   overflow-y: auto;
+  background-color: hsl(0, 0%, 90%);
 
   li {
     margin: 2px;
@@ -36,10 +36,6 @@ body {
   }
 }
 
-main {
+#_frame {
   flex-grow: 1;
-  background-color: white;
-  padding: 0 10px;
-  overflow-y: auto;
-  max-height: 100vh;
 }
