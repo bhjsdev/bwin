@@ -1,48 +1,31 @@
 # Releasing
 
-Publishing is triggered by pushing a git tag. A formal tag (`vX.Y.Z`) publishes to npm
-under `latest`; a dev tag (`vX.Y.Z-dev.N`) publishes under `dev`.
+Publishing is triggered manually via the **Publish to npm** workflow
+(`workflow_dispatch`). It reads the version from `package.json`: `X.Y.Z` publishes
+under `latest`, `X.Y.Z-dev.N` under `dev`. The workflow creates and pushes the matching
+`vX.Y.Z` git tag itself — don't tag by hand.
 
 ## Steps
 
-### 1. Open a release PR
-
-Set the version in `package.json` — either a formal release (e.g. `0.3.2`) or a dev
-release (e.g. `0.3.3-dev.0`).
-
-### 2. Tag the release commit
-
-Once the PR is merged, switch to `main` and create the tag against the release commit:
-
-```bash
-git checkout main && git pull
-git tag v0.3.2 <commit>      # tag the release commit
-```
-
-### 3. Push the tag
-
-Pushing the tag triggers the publish workflow:
-
-```bash
-git push origin v0.3.2
-```
-
-### 4. Done — version auto-bumps
-
-Once publishing completes, the workflow automatically bumps `main` to the next dev
-version via a self-merging PR. Nothing further to do.
+1. **Bump the version** in `package.json` via a PR. Either edit it manually, or run an
+   `npm version` command with `--no-git-tag-version` (the flag updates `package.json`
+   without committing or tagging — the workflow handles the tag):
+   - Formal release: `npm version X.Y.Z --no-git-tag-version`
+   - Dev prerelease: `npm version prerelease --preid=dev --no-git-tag-version`
+     (e.g. `0.3.3-dev.0` → `0.3.3-dev.1`)
+2. **Merge the PR** into `main`.
+3. **Run the workflow** — *Publish to npm* in the Actions tab, or
+   `gh workflow run publish.yml`. It pauses on the `PUBLISH` environment for approval,
+   then verifies the tag doesn't exist, builds, publishes, pushes the tag, and (for
+   formal releases only) generates release notes.
 
 ## Reviewer's job
 
-The publish workflow is gated by the **`PUBLISH`** environment, so it pauses for an
-approval before anything is published to npm. Before approving, the reviewer verifies
-that the pushed tag matches the content about to be published:
+The `PUBLISH` environment gates the run for approval. Before approving, confirm:
 
-- The tag points at the intended commit on `main` (the merged release commit).
-- The tag name matches `version` in that commit's `package.json` — e.g. tag `v0.3.2`
-  ⇄ `"version": "0.3.2"`. `pnpm publish` ships whatever `package.json` says regardless
-  of the tag name, so a mismatch publishes the wrong version.
-- Formal vs dev is correct: a `vX.Y.Z` tag goes to `latest`, a `vX.Y.Z-dev.N` tag goes
-  to `dev`.
+- `main` is at the intended commit and its `package.json` `version` is correct —
+  `pnpm publish` ships whatever `package.json` says.
+- That version's tag doesn't already exist (the workflow also checks this).
+- Formal vs dev is right: `X.Y.Z` → `latest`, `X.Y.Z-dev.N` → `dev`.
 
-Approve the run only when these line up; otherwise reject it, fix the tag, and re-push.
+Otherwise reject, fix the version in `package.json`, and re-run.

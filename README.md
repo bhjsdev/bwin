@@ -1,10 +1,13 @@
 # Binary Window
 
+[![Publish to npm](https://github.com/bhjsdev/bwin/actions/workflows/publish.yml/badge.svg)](https://github.com/bhjsdev/bwin/actions/workflows/publish.yml)
+[![npm version](https://img.shields.io/npm/v/bwin)](https://www.npmjs.com/package/bwin)
+
 A lightweight window-tiling JavaScript library for the browser, featuring resizable panes, drag-and-drop, and more.
 
 [![A bwin tiling layout with resizable panes showing charts and a data table](docs/screenshot.png)](https://bhjsdev.github.io/bwin-docs/)
 
-[Documentation](https://bhjsdev.github.io/bwin-docs/general/overview)
+[Documentation](https://bhjsdev.github.io/bwin-docs/javascript/get-started)
 
 ## Development
 
