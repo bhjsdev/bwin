@@ -5,7 +5,7 @@
 
 A lightweight window-tiling JavaScript library for the browser, featuring resizable panes, drag-and-drop, and more.
 
-[![A bwin tiling layout with resizable panes showing charts and a data table](docs/screenshot.png)](https://bhjsdev.github.io/bwin-docs/)
+[![A bwin tiling layout with resizable panes showing charts and a data table](docs/screenshot.png)](https://bhjsdev.github.io/bwin-docs?theme=light)
 
 [Documentation](https://bhjsdev.github.io/bwin-docs/javascript/get-started)
 
