@@ -46,7 +46,7 @@ window.addEventListener('hashchange', route);
 route();
 
 navEl.querySelector('#_toggle-bg').addEventListener('click', () => {
-  const bgColor = 'hsl(0, 0%, 10%)';
+  const bgColor = 'hsl(0 0 90)';
   const bodyEl = iframeEl.contentDocument?.body;
 
   if (!bodyEl) return;
