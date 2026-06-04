@@ -4,6 +4,7 @@ import { createDomNode } from '../utils';
 import draggableModule from './draggable';
 import trimModule from './trim';
 import actionsModule from './actions';
+import floatPaneModule from './float-pane';
 
 export class BinaryWindow extends Frame {
   sillElement = null;
@@ -83,4 +84,4 @@ export class BinaryWindow extends Frame {
   }
 }
 
-BinaryWindow.assemble(draggableModule, trimModule, actionsModule);
+BinaryWindow.assemble(draggableModule, trimModule, actionsModule, floatPaneModule);

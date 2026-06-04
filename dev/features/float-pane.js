@@ -35,11 +35,11 @@ const settings = {
   width: 444,
   height: 333,
   children: [
-    { position: 'left', size: '40%', content: parentElem },
+    { position: 'left', size: '40%' },
     {
       children: [
         { position: 'top', size: '30%' },
-        { position: 'bottom', size: '70%' },
+        { position: 'bottom', size: '70%', content: parentElem },
       ],
     },
   ],
@@ -47,3 +47,9 @@ const settings = {
 
 const bwin = new BinaryWindow(settings);
 bwin.mount(document.querySelector('#container'));
+
+const addFloatPaneButton = document.querySelector('#add-float-pane');
+addFloatPaneButton.addEventListener('click', () => {
+  const floatPaneEl = bwin.createFloatPane();
+  bwin.windowElement.append(floatPaneEl);
+});
