@@ -5,8 +5,14 @@ export default {
   activeDragGlassEl: null,
   activeDragGlassPaneCanDrop: false,
 
+  // Only handles drag from panes, not from float panes
+  activeDragGlassExists() {
+    return this.activeDragGlassEl && this.activeDragGlassEl.parentElement.matches('bw-pane');
+  },
+
   onPaneDrop(event, sash) {
-    if (!this.activeDragGlassEl) return;
+    if (!this.activeDragGlassExists()) return;
+    
     const dropArea = this.activeDropPaneEl.getAttribute('drop-area');
 
     // Swap the content of the two panes
@@ -48,7 +54,7 @@ export default {
     });
 
     document.addEventListener('mouseup', () => {
-      if (this.activeDragGlassEl) {
+      if (this.activeDragGlassExists()) {
         this.activeDragGlassEl.removeAttribute('draggable');
         this.activeDragGlassEl = null;
       }
@@ -58,7 +64,8 @@ export default {
       if (
         !(event.target instanceof HTMLElement) ||
         !event.target.matches('bw-glass') ||
-        !this.activeDragGlassEl
+        // Only handles drag from panes, not from float panes
+        !this.activeDragGlassExists()
       ) {
         return;
       }
@@ -67,12 +74,13 @@ export default {
 
       const paneEl = this.activeDragGlassEl.closest('bw-pane');
       // Save original `can-drop` attribute for later carry-over
+      // Because after drop, a new pane is created and it needs to know if original pane can be dropped or not
       this.activeDragGlassPaneCanDrop = paneEl.getAttribute('can-drop') !== 'false';
       paneEl.setAttribute('can-drop', false);
     });
 
     this.windowElement.addEventListener('dragend', () => {
-      if (this.activeDragGlassEl) {
+      if (this.activeDragGlassExists()) {
         this.activeDragGlassEl.removeAttribute('draggable');
         // Carry over `can-drop` attribute
         this.activeDragGlassEl

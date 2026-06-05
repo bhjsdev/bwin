@@ -16,7 +16,8 @@ export function createFloatPaneElement({ width, height, offset, position, id }) 
   floatPaneEl.style.backgroundColor = 'pink';
   floatPaneEl.style.opacity = '0.95';
 
-  floatPaneEl.setAttribute('sash-id', id || genId());
+  // Generate an ID like "AB-123-F" to diff from Sash IDs
+  floatPaneEl.setAttribute('id', id || genId() + '-F');
   floatPaneEl.setAttribute('active', 'true');
 
   return floatPaneEl;

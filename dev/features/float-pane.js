@@ -51,7 +51,6 @@ bwin.mount(document.querySelector('#container'));
 const addFloatPaneButton = document.querySelector('#add-float-pane');
 addFloatPaneButton.addEventListener('click', () => {
   const floatPaneEl = bwin.addFloatPane();
-  bwin.windowElement.append(floatPaneEl);
 });
 
 addFloatPaneButton.click();

@@ -17,6 +17,8 @@ export default {
     const floatPaneEl = createFloatPaneElement({ position, width, height, offset, id });
 
     floatPaneEl.append(glass.domNode);
+    this.windowElement.append(floatPaneEl);
+
     floatPaneManager.add(floatPaneEl);
 
     return floatPaneEl;
