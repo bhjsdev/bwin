@@ -1,5 +1,8 @@
 import { getCursorPosition } from '../position';
 
+
+// TODO: consider moving this to `binary-window`
+//       because it works closely with `draggable` and `float-pane`
 export default {
   activeDropPaneEl: null,
 

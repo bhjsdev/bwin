@@ -26,6 +26,7 @@ export default {
     }
   },
 
+  // TODO: handle float-pane drag
   enableDrag() {
     // Identify which "glass" element to be dragged
     // Prevent drag from being triggered by child elements, e.g. action buttons
@@ -66,6 +67,9 @@ export default {
       event.dataTransfer.effectAllowed = 'move';
 
       const paneEl = this.activeDragGlassEl.closest('bw-pane');
+      // TODO: handle float pane drag and drop
+      if (!paneEl) return;
+
       // Save original `can-drop` attribute for later carry-over
       this.activeDragGlassPaneCanDrop = paneEl.getAttribute('can-drop') !== 'false';
       paneEl.setAttribute('can-drop', false);
@@ -74,10 +78,13 @@ export default {
     this.windowElement.addEventListener('dragend', () => {
       if (this.activeDragGlassEl) {
         this.activeDragGlassEl.removeAttribute('draggable');
+
+        const paneEl = this.activeDragGlassEl.closest('bw-pane');
+        // TODO: handle float pane drag and drop
+        if (!paneEl) return;
+
         // Carry over `can-drop` attribute
-        this.activeDragGlassEl
-          .closest('bw-pane')
-          .setAttribute('can-drop', this.activeDragGlassPaneCanDrop);
+        paneEl.setAttribute('can-drop', this.activeDragGlassPaneCanDrop);
         this.activeDragGlassEl = null;
       }
     });
