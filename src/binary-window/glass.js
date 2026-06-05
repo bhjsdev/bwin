@@ -1,24 +1,16 @@
 import { createDomNode } from '../utils';
 import { BUILTIN_ACTIONS } from './actions';
 
-const DEFAULTS = {
-  title: null,
-  content: null,
-  tabs: [],
-  actions: undefined,
-  draggable: true,
-};
-
 export class Glass {
   domNode;
 
   constructor({
-    title = DEFAULTS.title,
-    content = DEFAULTS.content,
-    tabs = DEFAULTS.tabs,
-    actions = DEFAULTS.actions,
-    draggable = DEFAULTS.draggable,
-    sash,
+    title = null,
+    content = null,
+    tabs = [],
+    actions = undefined,
+    draggable = true,
+    sash = null,
     binaryWindow,
   }) {
     this.title = title;
