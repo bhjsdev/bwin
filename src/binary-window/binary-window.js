@@ -1,9 +1,8 @@
 import { Frame } from '../frame/frame';
-import { Glass } from './glass';
+import glassModule, { Glass } from './glass';
 import { createDomNode } from '../utils';
 import draggableModule from './draggable';
 import trimModule from './trim';
-import actionsModule from './actions';
 import detachedGlassModule from './detached-glass';
 
 export class BinaryWindow extends Frame {
@@ -87,4 +86,4 @@ export class BinaryWindow extends Frame {
   }
 }
 
-BinaryWindow.assemble(draggableModule, trimModule, actionsModule, detachedGlassModule);
+BinaryWindow.assemble(draggableModule, trimModule, glassModule, detachedGlassModule);

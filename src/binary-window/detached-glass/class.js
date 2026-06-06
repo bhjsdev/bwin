@@ -1,6 +1,7 @@
 import { Glass } from '../glass';
 import { genId } from '@/utils.js';
 import { genStylesByPosition } from './utils';
+import { DETACHED_GLASS_ACTIONS } from './close';
 
 export class DetachedGlass extends Glass {
   constructor(options) {
@@ -10,10 +11,11 @@ export class DetachedGlass extends Glass {
       height = 200,
       offset = -20,
       id,
+      actions = DETACHED_GLASS_ACTIONS,
       ...glassOptions
     } = options;
 
-    super(glassOptions);
+    super({ ...glassOptions, actions });
 
     this.domNode.setAttribute('id', id || genId() + '-F');
     this.domNode.setAttribute('detached', '');

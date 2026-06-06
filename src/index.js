@@ -7,7 +7,8 @@ import './css/sill.css';
 
 export { Frame } from './frame/frame';
 export { BinaryWindow } from './binary-window/binary-window';
-export { BUILTIN_ACTIONS } from './binary-window/actions';
+export { BUILTIN_ACTIONS } from './binary-window/glass';
+export { DETACHED_GLASS_ACTIONS } from './binary-window/detached-glass';
 export { Sash } from './sash';
 export { SashConfig } from './config/sash-config';
 export { ConfigRoot } from './config/config-root';

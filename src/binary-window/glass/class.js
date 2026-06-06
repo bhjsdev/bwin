@@ -1,5 +1,5 @@
-import { createDomNode } from '../utils';
-import { BUILTIN_ACTIONS } from './actions';
+import { createDomNode } from '@/utils';
+import { BUILTIN_ACTIONS } from './module';
 
 export class Glass {
   domNode;
@@ -8,7 +8,7 @@ export class Glass {
     title = null,
     content = null,
     tabs = [],
-    actions = undefined,
+    actions = BUILTIN_ACTIONS,
     draggable = true,
     sash = null,
     binaryWindow,
@@ -61,12 +61,7 @@ export class Glass {
 
   createActions() {
     const containerEl = document.createElement('bw-glass-action-container');
-    const actions =
-      this.actions === undefined
-        ? BUILTIN_ACTIONS
-        : Array.isArray(this.actions)
-          ? this.actions
-          : [];
+    const actions = Array.isArray(this.actions) ? this.actions : [];
 
     for (const action of actions) {
       const label = action?.label ?? action;
