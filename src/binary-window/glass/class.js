@@ -1,5 +1,7 @@
 import { createDomNode } from '@/utils';
-import { BUILTIN_ACTIONS } from './module';
+import closeAction from './close';
+import minimizeAction from './minimize';
+import maximizeAction from './maximize';
 
 export class Glass {
   domNode;
@@ -8,7 +10,7 @@ export class Glass {
     title = null,
     content = null,
     tabs = [],
-    actions = BUILTIN_ACTIONS,
+    actions = [minimizeAction, maximizeAction, closeAction],
     draggable = true,
     sash = null,
     binaryWindow,

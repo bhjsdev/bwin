@@ -12,4 +12,3 @@ export const closeAction = {
   },
 };
 
-export const BUILTIN_ACTIONS_2 = [closeAction];
