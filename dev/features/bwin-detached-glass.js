@@ -1,4 +1,4 @@
-import { BinaryWindow } from '../../src';
+import { BinaryWindow, BUILTIN_ACTIONS, BUILTIN_ACTIONS_2 } from '../../src';
 
 const elem = document.createElement('div');
 const zIndex = 100;
@@ -34,8 +34,12 @@ parentElem.appendChild(elem2);
 const settings = {
   width: 444,
   height: 333,
+  actions: [
+    [BUILTIN_ACTIONS[0], BUILTIN_ACTIONS[2]],
+    ['XXX', BUILTIN_ACTIONS_2[0]],
+  ],
   children: [
-    { position: 'left', size: '40%' },
+    { position: 'left', size: '40%', actions: [] },
     {
       children: [
         { position: 'top', size: '30%' },

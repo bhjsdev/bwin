@@ -8,6 +8,13 @@ import detachedGlassModule from './detached-glass';
 export class BinaryWindow extends Frame {
   sillElement = null;
 
+  constructor(settings) {
+    super(settings);
+
+    this.theme = settings.theme || '';
+    this.actions = BinaryWindow.normActions(settings.actions);
+  }
+
   frame() {
     super.frame(...arguments);
     const sillEl = createDomNode('<bw-sill />');
@@ -25,7 +32,8 @@ export class BinaryWindow extends Frame {
   }
 
   onPaneCreate(paneEl, sash) {
-    const glass = new Glass({ ...sash.store, sash, binaryWindow: this });
+    const glassActions = this.actions[0];
+    const glass = new Glass({ actions: glassActions, ...sash.store, sash, binaryWindow: this });
 
     paneEl.innerHTML = '';
     paneEl.append(glass.domNode);
@@ -83,6 +91,13 @@ export class BinaryWindow extends Frame {
     if (minimizedGlassEl) {
       minimizedGlassEl.remove();
     }
+  }
+
+  // Returns [glassActions, detachedGlassActions]
+  static normActions(actions) {
+    if (!Array.isArray(actions)) return [[], []];
+    if (!actions.some(Array.isArray)) return [actions, []];
+    return actions;
   }
 }
 

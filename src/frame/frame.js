@@ -35,7 +35,6 @@ export class Frame {
     }
 
     this.fitContainer = config.fitContainer;
-    this.theme = config.theme;
   }
 
   frame(containerEl) {

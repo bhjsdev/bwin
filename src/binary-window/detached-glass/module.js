@@ -50,7 +50,7 @@ export default {
   moveStartTop: 0,
 
   addDetachedGlass(options = {}) {
-    const glass = new DetachedGlass(options);
+    const glass = new DetachedGlass({ actions: this.actions[1], ...options });
     this.windowElement.append(glass.domNode);
     detachedGlassManager.add(glass.domNode);
     bringToFront(glass.domNode);
