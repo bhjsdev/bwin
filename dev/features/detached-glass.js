@@ -48,9 +48,8 @@ const settings = {
 const bwin = new BinaryWindow(settings);
 bwin.mount(document.querySelector('#container'));
 
-const addDetachedGlassButton = document.querySelector('#add-detached-glass');
-addDetachedGlassButton.addEventListener('click', () => {
-  bwin.addDetachedGlass( );
+document.querySelectorAll('button[data-position]').forEach((button) => {
+  button.addEventListener('click', () => {
+    bwin.addDetachedGlass({ position: button.dataset.position, title: button.dataset.position });
+  });
 });
-
-addDetachedGlassButton.click();

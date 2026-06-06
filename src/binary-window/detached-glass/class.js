@@ -24,7 +24,7 @@ export class DetachedGlass extends Glass {
     this.domNode.style.height = `${height}px`;
 
     const { top, left, right, bottom } = genStylesByPosition(position, offset);
-    
+
     this.domNode.style.top = top;
     this.domNode.style.left = left;
     this.domNode.style.right = right;
