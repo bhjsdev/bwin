@@ -9,11 +9,13 @@ const MIN_HEIGHT = 60;
 let topZIndex = 1;
 
 function bringToFront(glassEl) {
+  // Already front-most (it owns the [active] marker) → nothing to raise.
+  if (glassEl.hasAttribute('active')) return;
+
   topZIndex += 1;
   glassEl.style.zIndex = topZIndex;
 
-  // Mark this glass as the active (focused) one, clearing the rest — like
-  // focusing an OS window. Drives the stronger drop-shadow in CSS.
+  // Only the front-most glass keeps [active]; it drives the stronger shadow in CSS.
   glassEl.parentElement
     ?.querySelectorAll(':scope > bw-glass[detached][active]')
     .forEach((el) => el !== glassEl && el.removeAttribute('active'));
@@ -57,9 +59,8 @@ export default {
   },
 
   enableDetachedGlassActivate() {
-    // Clicking anywhere in a detached glass focuses it and brings it to front,
-    // like an OS window. Runs for move/resize grabs too (they bubble here),
-    // so focus handling lives in one place.
+    // Clicking anywhere in a detached glass brings it to front. Move/resize
+    // grabs bubble here too, so focus handling lives in one place.
     this.windowElement.addEventListener('pointerdown', (event) => {
       if (event.button !== 0) return;
 
@@ -69,15 +70,10 @@ export default {
   },
 
   enableDetachedGlassMove() {
-    // Drag the header to move the glass freely, like an OS window.
-    // Same conventions as resize: delegated pointer events on windowElement,
-    // setPointerCapture so the drag survives the pointer leaving the header,
-    // and geometry normalized to window-relative left/top.
     this.windowElement.addEventListener('pointerdown', (event) => {
       if (event.button !== 0) return;
 
-      // Start a move from anywhere in the header (incl. the title text),
-      // but not from its interactive controls (action buttons, tabs).
+      // Move from anywhere in the header (incl. title text), but not its buttons.
       const headerEl = event.target.closest('bw-glass-header');
       if (!headerEl || event.target.closest('button')) return;
       if (headerEl.getAttribute('can-drag') === 'false') return;
@@ -86,6 +82,7 @@ export default {
       if (!glassEl) return;
 
       event.preventDefault();
+      // setPointerCapture keeps move events flowing when the pointer leaves the header.
       headerEl.setPointerCapture(event.pointerId);
 
       this.activeMoveGlassEl = glassEl;
@@ -124,12 +121,7 @@ export default {
   },
 
   enableDetachedGlassResize() {
-    // Create resize handles only while a detached glass is hovered, and
-    // remove them on leave — so idle glasses cost no extra DOM nodes.
-    // Delegated on `windowElement`: a constant 5 listeners regardless of
-    // how many detached glasses exist. `closest` on target/relatedTarget
-    // gives enter/leave semantics for the whole glass subtree (handles
-    // included), so moving onto a handle does not count as leaving.
+    // Handles exist only while a glass is hovered, so idle glasses cost no extra DOM.
     this.windowElement.addEventListener('pointerover', (event) => {
       const glassEl = event.target.closest?.('bw-glass[detached]');
       if (glassEl) addResizeHandles(glassEl);
@@ -139,20 +131,16 @@ export default {
       const glassEl = event.target.closest?.('bw-glass[detached]');
       if (!glassEl) return;
 
-      // Still inside the same glass subtree → not a real leave.
+      // Moving within the same glass subtree (e.g. onto a handle) is not a leave.
       const toGlassEl = event.relatedTarget?.closest?.('bw-glass[detached]');
       if (toGlassEl === glassEl) return;
 
-      // Keep handles while this glass is being resized; cleaned up on pointerup.
+      // Keep handles while resizing; pointerup cleans them up.
       if (glassEl === this.activeResizeGlassEl) return;
 
       removeResizeHandles(glassEl);
     });
 
-    // Identify which detached glass and which edge/corner to resize.
-    // Pointer events give a single code path for mouse/touch/pen, and
-    // `setPointerCapture` keeps move events flowing even when the pointer
-    // leaves the handle or the window, so no document-level listeners.
     this.windowElement.addEventListener('pointerdown', (event) => {
       if (event.button !== 0 || event.target.tagName !== 'BW-GLASS-RESIZE-HANDLE') return;
 
@@ -167,8 +155,8 @@ export default {
       this.resizeStartX = event.pageX;
       this.resizeStartY = event.pageY;
 
-      // Normalize corner-anchored geometry (top/right/bottom/left + offset)
-      // into plain left/top/width/height so every edge resizes with the same math.
+      // Normalize corner-anchored geometry to window-relative left/top/width/height
+      // so every edge resizes with the same math.
       const windowRect = this.windowElement.getBoundingClientRect();
       const glassRect = glassEl.getBoundingClientRect();
       this.resizeStartRect = {
@@ -227,8 +215,7 @@ export default {
       this.activeResizeDir = '';
       this.resizeStartRect = null;
 
-      // If the drag ended with the pointer outside the glass, the guarded
-      // pointerout never removed the handles — drop them now.
+      // pointerout was suppressed during the resize; drop handles if no longer hovered.
       if (!glassEl.matches(':hover')) removeResizeHandles(glassEl);
     });
   },

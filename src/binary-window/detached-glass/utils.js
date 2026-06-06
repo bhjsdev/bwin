@@ -22,8 +22,7 @@ export function genStylesByPosition({ position, offset, width, height }) {
     case 'bottom-right':
       return { bottom: `${offset}px`, right: `${offset}px`, left: 'auto', top: 'auto' };
     case 'center':
-      // Offset by half the glass size so it is centered, not just top-left at center.
-      // Use calc() rather than a transform to keep left/top in sync with drag/resize math.
+      // calc() rather than a translate transform, so left/top stay in sync with drag/resize math.
       return {
         top: `calc(50% - ${height / 2}px)`,
         left: `calc(50% - ${width / 2}px)`,
