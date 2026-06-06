@@ -12,4 +12,4 @@ export const closeAction = {
   },
 };
 
-export const DETACHED_GLASS_ACTIONS = [closeAction];
+export const BUILTIN_ACTIONS_2 = [closeAction];
