@@ -48,9 +48,9 @@ const settings = {
 const bwin = new BinaryWindow(settings);
 bwin.mount(document.querySelector('#container'));
 
-const addFloatPaneButton = document.querySelector('#add-float-pane');
-addFloatPaneButton.addEventListener('click', () => {
-  const floatPaneEl = bwin.addFloatPane();
+const addDetachedGlassButton = document.querySelector('#add-detached-glass');
+addDetachedGlassButton.addEventListener('click', () => {
+  const glass = bwin.addDetachedGlass();
 });
 
-addFloatPaneButton.click();
+addDetachedGlassButton.click();
