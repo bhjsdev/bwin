@@ -1,9 +1,9 @@
 import closeAction from './close';
 import minimizeAction from './minimize';
 import maximizeAction from './maximize';
-import { getMetricsFromElement } from '../../utils';
-import { getIntersectRect } from '../../rect';
-import { Position } from '../../position';
+import { getMetricsFromElement } from '@/utils';
+import { getIntersectRect } from '@/rect';
+import { Position } from '@/position';
 
 export const BUILTIN_ACTIONS = [minimizeAction, maximizeAction, closeAction];
 
