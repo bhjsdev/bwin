@@ -1,4 +1,4 @@
-import { createDomNode, getMetricsFromElement } from '../utils';
+import { createDomNode, getMetricsFromElement } from '../../utils';
 
 export default {
   label: '',

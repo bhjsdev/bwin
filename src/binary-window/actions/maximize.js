@@ -1,4 +1,4 @@
-import { getMetricsFromElement } from '../utils';
+import { getMetricsFromElement } from '../../utils';
 
 export default {
   label: '',
