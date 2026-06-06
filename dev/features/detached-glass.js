@@ -53,3 +53,5 @@ document.querySelectorAll('button[data-position]').forEach((button) => {
     bwin.addDetachedGlass({ position: button.dataset.position, title: button.dataset.position });
   });
 });
+
+document.querySelector('button[data-position="center"]').click();

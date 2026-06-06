@@ -5,6 +5,21 @@ import { createResizeHandles } from './utils';
 const MIN_WIDTH = 100;
 const MIN_HEIGHT = 60;
 
+// Rising counter so the most recently grabbed glass stacks on top, like an OS window.
+let topZIndex = 1;
+
+function bringToFront(glassEl) {
+  topZIndex += 1;
+  glassEl.style.zIndex = topZIndex;
+
+  // Mark this glass as the active (focused) one, clearing the rest — like
+  // focusing an OS window. Drives the stronger drop-shadow in CSS.
+  glassEl.parentElement
+    ?.querySelectorAll(':scope > bw-glass[detached][active]')
+    .forEach((el) => el !== glassEl && el.removeAttribute('active'));
+  glassEl.setAttribute('active', '');
+}
+
 function hasResizeHandles(glassEl) {
   return Boolean(glassEl.querySelector(':scope > bw-glass-resize-handle'));
 }
@@ -26,12 +41,86 @@ export default {
   resizeStartY: 0,
   resizeStartRect: null,
 
+  activeMoveGlassEl: null,
+  moveStartX: 0,
+  moveStartY: 0,
+  moveStartLeft: 0,
+  moveStartTop: 0,
+
   addDetachedGlass(options = {}) {
     const glass = new DetachedGlass(options);
     this.windowElement.append(glass.domNode);
     detachedGlassManager.add(glass.domNode);
+    bringToFront(glass.domNode);
 
     return glass;
+  },
+
+  enableDetachedGlassActivate() {
+    // Clicking anywhere in a detached glass focuses it and brings it to front,
+    // like an OS window. Runs for move/resize grabs too (they bubble here),
+    // so focus handling lives in one place.
+    this.windowElement.addEventListener('pointerdown', (event) => {
+      if (event.button !== 0) return;
+
+      const glassEl = event.target.closest?.('bw-glass[detached]');
+      if (glassEl) bringToFront(glassEl);
+    });
+  },
+
+  enableDetachedGlassMove() {
+    // Drag the header to move the glass freely, like an OS window.
+    // Same conventions as resize: delegated pointer events on windowElement,
+    // setPointerCapture so the drag survives the pointer leaving the header,
+    // and geometry normalized to window-relative left/top.
+    this.windowElement.addEventListener('pointerdown', (event) => {
+      if (event.button !== 0) return;
+
+      // Start a move from anywhere in the header (incl. the title text),
+      // but not from its interactive controls (action buttons, tabs).
+      const headerEl = event.target.closest('bw-glass-header');
+      if (!headerEl || event.target.closest('button')) return;
+      if (headerEl.getAttribute('can-drag') === 'false') return;
+
+      const glassEl = headerEl.closest('bw-glass[detached]');
+      if (!glassEl) return;
+
+      event.preventDefault();
+      headerEl.setPointerCapture(event.pointerId);
+
+      this.activeMoveGlassEl = glassEl;
+      this.moveStartX = event.pageX;
+      this.moveStartY = event.pageY;
+
+      // Normalize corner-anchored geometry to window-relative left/top.
+      const windowRect = this.windowElement.getBoundingClientRect();
+      const glassRect = glassEl.getBoundingClientRect();
+      this.moveStartLeft = glassRect.left - windowRect.left;
+      this.moveStartTop = glassRect.top - windowRect.top;
+    });
+
+    this.windowElement.addEventListener('pointermove', (event) => {
+      if (!this.activeMoveGlassEl) return;
+
+      const left = this.moveStartLeft + (event.pageX - this.moveStartX);
+      const top = this.moveStartTop + (event.pageY - this.moveStartY);
+
+      const glassEl = this.activeMoveGlassEl;
+      glassEl.style.right = 'auto';
+      glassEl.style.bottom = 'auto';
+      glassEl.style.left = `${left}px`;
+      glassEl.style.top = `${top}px`;
+    });
+
+    this.windowElement.addEventListener('pointerup', (event) => {
+      if (!this.activeMoveGlassEl) return;
+
+      if (event.target.hasPointerCapture?.(event.pointerId)) {
+        event.target.releasePointerCapture(event.pointerId);
+      }
+
+      this.activeMoveGlassEl = null;
+    });
   },
 
   enableDetachedGlassResize() {

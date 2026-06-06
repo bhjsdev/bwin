@@ -1,71 +1,86 @@
+bw-glass[detached] {
+  box-shadow: var(--bw-detached-glass-shadow);
+
+  /* The focused glass (front-most) casts a more pronounced shadow */
+  &[active] {
+    box-shadow: var(--bw-detached-glass-shadow-active);
+  }
+}
+
+bw-glass[detached] > bw-glass-header[can-drag='true'] {
+  cursor: grab;
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
 bw-glass-resize-handle {
-  /* Thickness of the grab zone, straddling the glass border */
-  --bw-resize-handle-size: 8px;
   position: absolute;
   z-index: 2;
   touch-action: none;
 
   &[resize-dir='n'] {
-    top: calc(var(--bw-resize-handle-size) / -2);
+    top: calc(var(--bw-detached-glass-resize-handle-size) / -2);
     left: 0;
     right: 0;
-    height: var(--bw-resize-handle-size);
+    height: var(--bw-detached-glass-resize-handle-size);
     cursor: ns-resize;
   }
 
   &[resize-dir='s'] {
-    bottom: calc(var(--bw-resize-handle-size) / -2);
+    bottom: calc(var(--bw-detached-glass-resize-handle-size) / -2);
     left: 0;
     right: 0;
-    height: var(--bw-resize-handle-size);
+    height: var(--bw-detached-glass-resize-handle-size);
     cursor: ns-resize;
   }
 
   &[resize-dir='e'] {
     top: 0;
     bottom: 0;
-    right: calc(var(--bw-resize-handle-size) / -2);
-    width: var(--bw-resize-handle-size);
+    right: calc(var(--bw-detached-glass-resize-handle-size) / -2);
+    width: var(--bw-detached-glass-resize-handle-size);
     cursor: ew-resize;
   }
 
   &[resize-dir='w'] {
     top: 0;
     bottom: 0;
-    left: calc(var(--bw-resize-handle-size) / -2);
-    width: var(--bw-resize-handle-size);
+    left: calc(var(--bw-detached-glass-resize-handle-size) / -2);
+    width: var(--bw-detached-glass-resize-handle-size);
     cursor: ew-resize;
   }
 
   &[resize-dir='ne'] {
-    top: calc(var(--bw-resize-handle-size) / -2);
-    right: calc(var(--bw-resize-handle-size) / -2);
-    width: var(--bw-resize-handle-size);
-    height: var(--bw-resize-handle-size);
+    top: calc(var(--bw-detached-glass-resize-handle-size) / -2);
+    right: calc(var(--bw-detached-glass-resize-handle-size) / -2);
+    width: var(--bw-detached-glass-resize-handle-size);
+    height: var(--bw-detached-glass-resize-handle-size);
     cursor: nesw-resize;
   }
 
   &[resize-dir='nw'] {
-    top: calc(var(--bw-resize-handle-size) / -2);
-    left: calc(var(--bw-resize-handle-size) / -2);
-    width: var(--bw-resize-handle-size);
-    height: var(--bw-resize-handle-size);
+    top: calc(var(--bw-detached-glass-resize-handle-size) / -2);
+    left: calc(var(--bw-detached-glass-resize-handle-size) / -2);
+    width: var(--bw-detached-glass-resize-handle-size);
+    height: var(--bw-detached-glass-resize-handle-size);
     cursor: nwse-resize;
   }
 
   &[resize-dir='se'] {
-    bottom: calc(var(--bw-resize-handle-size) / -2);
-    right: calc(var(--bw-resize-handle-size) / -2);
-    width: var(--bw-resize-handle-size);
-    height: var(--bw-resize-handle-size);
+    bottom: calc(var(--bw-detached-glass-resize-handle-size) / -2);
+    right: calc(var(--bw-detached-glass-resize-handle-size) / -2);
+    width: var(--bw-detached-glass-resize-handle-size);
+    height: var(--bw-detached-glass-resize-handle-size);
     cursor: nwse-resize;
   }
 
   &[resize-dir='sw'] {
-    bottom: calc(var(--bw-resize-handle-size) / -2);
-    left: calc(var(--bw-resize-handle-size) / -2);
-    width: var(--bw-resize-handle-size);
-    height: var(--bw-resize-handle-size);
+    bottom: calc(var(--bw-detached-glass-resize-handle-size) / -2);
+    left: calc(var(--bw-detached-glass-resize-handle-size) / -2);
+    width: var(--bw-detached-glass-resize-handle-size);
+    height: var(--bw-detached-glass-resize-handle-size);
     cursor: nesw-resize;
   }
 }

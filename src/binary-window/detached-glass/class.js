@@ -17,13 +17,12 @@ export class DetachedGlass extends Glass {
 
     this.domNode.setAttribute('id', id || genId() + '-F');
     this.domNode.setAttribute('detached', '');
-    this.domNode.setAttribute('active', '');
 
     this.domNode.style.position = 'absolute';
     this.domNode.style.width = `${width}px`;
     this.domNode.style.height = `${height}px`;
 
-    const { top, left, right, bottom } = genStylesByPosition(position, offset);
+    const { top, left, right, bottom } = genStylesByPosition({ position, offset, width, height });
 
     this.domNode.style.top = top;
     this.domNode.style.left = left;
