@@ -50,7 +50,7 @@ bwin.mount(document.querySelector('#container'));
 
 const addDetachedGlassButton = document.querySelector('#add-detached-glass');
 addDetachedGlassButton.addEventListener('click', () => {
-  const glass = bwin.addDetachedGlass();
+  bwin.addDetachedGlass( );
 });
 
 addDetachedGlassButton.click();
