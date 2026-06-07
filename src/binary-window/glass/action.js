@@ -76,6 +76,7 @@ export default {
     this.updateDisabledState('.bw-glass-action--close');
     this.updateDisabledState('.bw-glass-action--minimize');
     this.updateDisabledState('.bw-glass-action--maximize');
+    this.updateDisabledState('.bw-glass-action--detach');
   },
 
   updateDisabledState(cssSelector) {

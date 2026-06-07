@@ -39,10 +39,15 @@ const settings = {
   //   ['A1', ...BUILTIN_ACTIONS_2],
   // ],
   children: [
-    { position: 'left', size: '40%', actions: [], content: createGlassContent('left'), title: 'Left pane' },
+    { position: 'left', size: '40%', content: createGlassContent('left'), title: 'Left pane' },
     {
       children: [
-        { position: 'top', size: '30%', content: createGlassContent('top-right'), title: 'Top-right pane' },
+        {
+          position: 'top',
+          size: '30%',
+          content: createGlassContent('top-right'),
+          title: 'Top-right pane',
+        },
         { position: 'bottom', size: '70%', content: parentElem, title: 'Bottom pane' },
       ],
     },
@@ -108,6 +113,6 @@ document.querySelectorAll('button[data-position]').forEach((button) => {
 // No options → exercises the DetachedGlass constructor defaults.
 document.querySelector('#add-default').addEventListener('click', () => {
   bwin.addDetachedGlass({ content: createGlassContent('default') });
-})
+});
 
 // document.querySelector('#add-default').click();
