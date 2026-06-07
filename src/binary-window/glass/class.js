@@ -92,4 +92,8 @@ export class Glass {
   get headerElement() {
     return this.domNode.querySelector('bw-glass-header');
   }
+
+  get titleElement() {
+    return this.domNode.querySelector('bw-glass-title');
+  }
 }

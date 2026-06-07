@@ -39,11 +39,11 @@ const settings = {
   //   ['A1', ...BUILTIN_ACTIONS_2],
   // ],
   children: [
-    { position: 'left', size: '40%', actions: [], content: createGlassContent('left') },
+    { position: 'left', size: '40%', actions: [], content: createGlassContent('left'), title: 'Left pane' },
     {
       children: [
-        { position: 'top', size: '30%', content: createGlassContent('top-right') },
-        { position: 'bottom', size: '70%', content: parentElem },
+        { position: 'top', size: '30%', content: createGlassContent('top-right'), title: 'Top-right pane' },
+        { position: 'bottom', size: '70%', content: parentElem, title: 'Bottom pane' },
       ],
     },
   ],
