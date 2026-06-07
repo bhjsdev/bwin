@@ -76,4 +76,33 @@ document.querySelector('#add-default').addEventListener('click', () => {
   bwin.addDetachedGlass();
 });
 
-document.querySelector('button[data-position="center"]').click();
+// A heavy backdrop-filter layer + many shadowed boxes: the whole region must
+// re-blur whenever anything beneath repaints. left/top dragging repaints every
+// frame (janky); a composited transform does not (smooth) — compare by dragging.
+const lagLayer = document.createElement('div');
+Object.assign(lagLayer.style, {
+  position: 'absolute',
+  inset: '0',
+  pointerEvents: 'none',
+  backdropFilter: 'blur(8px)',
+});
+
+for (let i = 0; i < 400; i++) {
+  const box = document.createElement('div');
+  Object.assign(box.style, {
+    position: 'absolute',
+    left: `${(i * 37) % 90}%`,
+    top: `${(i * 53) % 90}%`,
+    width: '60px',
+    height: '60px',
+    borderRadius: '50%',
+    background: `hsl(${(i * 17) % 360} 80% 60% / 0.5)`,
+    boxShadow: '0 0 40px 20px rgba(0,0,0,0.25)',
+    filter: 'blur(2px)',
+  });
+  lagLayer.appendChild(box);
+}
+
+document.querySelector('#add-lag-layer').addEventListener('click', () => {
+  bwin.addDetachedGlass({content: lagLayer.cloneNode(true)});
+});
