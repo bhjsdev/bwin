@@ -52,6 +52,39 @@ const settings = {
 const bwin = new BinaryWindow(settings);
 bwin.mount(document.querySelector('#container'));
 
+// Distinguishable, interactive content so the glass body is visible while dragging.
+function createGlassContent(label) {
+  const wrapEl = document.createElement('div');
+  wrapEl.style.padding = '8px';
+  wrapEl.style.fontFamily = 'sans-serif';
+  wrapEl.style.fontSize = '12px';
+
+  const headingEl = document.createElement('h3');
+  headingEl.textContent = `Content: ${label}`;
+  headingEl.style.margin = '0 0 8px';
+  wrapEl.appendChild(headingEl);
+
+  const inputEl = document.createElement('input');
+  inputEl.type = 'text';
+  inputEl.placeholder = 'type here…';
+  inputEl.style.width = '100%';
+  inputEl.style.boxSizing = 'border-box';
+  inputEl.style.marginBottom = '8px';
+  wrapEl.appendChild(inputEl);
+
+  const listEl = document.createElement('ul');
+  listEl.style.margin = '0';
+  listEl.style.paddingLeft = '18px';
+  for (let i = 1; i <= 8; i += 1) {
+    const itemEl = document.createElement('li');
+    itemEl.textContent = `${label} — row ${i}`;
+    listEl.appendChild(itemEl);
+  }
+  wrapEl.appendChild(listEl);
+
+  return wrapEl;
+}
+
 const offsetInput = document.querySelector('#offset');
 const offsetXInput = document.querySelector('#offsetX');
 const offsetYInput = document.querySelector('#offsetY');
@@ -67,13 +100,14 @@ document.querySelectorAll('button[data-position]').forEach((button) => {
       offset: Number(offsetInput.value),
       offsetX: toOffset(offsetXInput),
       offsetY: toOffset(offsetYInput),
+      content: createGlassContent(button.dataset.position),
     });
   });
 });
 
 // No options → exercises the DetachedGlass constructor defaults.
 document.querySelector('#add-default').addEventListener('click', () => {
-  bwin.addDetachedGlass();
+  bwin.addDetachedGlass({ content: createGlassContent('default') });
 })
 
 document.querySelector('#add-default').click();
