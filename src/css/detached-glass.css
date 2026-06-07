@@ -8,10 +8,8 @@ bw-glass[detached] {
 }
 
 bw-glass[detached] > bw-glass-header[can-drag='true'] {
-  cursor: grab;
-
   &:active {
-    cursor: grabbing;
+    cursor: move;
   }
 }
 
