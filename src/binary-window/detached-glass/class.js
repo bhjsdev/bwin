@@ -1,8 +1,8 @@
 import { Glass } from '../glass';
 import { genId } from '@/utils.js';
 import { genStylesByPosition } from './utils';
-import { closeAction } from './close';
-import { minimizeAction } from './minimize';
+import closeAction from './action.close';
+import minimizeAction from './action.minimize';
 
 export class DetachedGlass extends Glass {
   constructor(options) {

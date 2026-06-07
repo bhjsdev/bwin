@@ -1,11 +1,11 @@
-import { default as addModule } from './add';
-import { default as activateModule } from './activate';
-import { default as moveModule } from './move';
-import { default as dragModule } from './drag';
-import { default as resizeModule } from './resize';
-import { default as restoreModule } from './restore';
-import { closeAction } from './close';
-import { minimizeAction } from './minimize';
+import addModule from './add';
+import activateModule from './activate';
+import moveModule from './move';
+import dragModule from './drag';
+import resizeModule from './resize';
+import restoreModule from './restore';
+import closeAction from './action.close';
+import minimizeAction from './action.minimize';
 
 export { DetachedGlass } from './class';
 

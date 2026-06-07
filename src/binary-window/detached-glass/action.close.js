@@ -1,6 +1,6 @@
 import { detachedGlassManager } from './manager';
 
-export const closeAction = {
+export default {
   label: '',
   className: 'bw-glass-action--close',
   onClick: (event) => {

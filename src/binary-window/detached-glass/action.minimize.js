@@ -1,6 +1,6 @@
 import { createDomNode } from '@/utils';
 
-export const minimizeAction = {
+export default {
   label: '',
   className: 'bw-glass-action--minimize',
   onClick: (event, binaryWindow) => {
