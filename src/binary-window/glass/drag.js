@@ -1,10 +1,10 @@
-import { getSashIdFromPane } from '../frame/frame-utils';
+import { getSashIdFromPane } from '@/frame/frame-utils';
 
 export default {
   activeDragGlassEl: null,
   activeDragGlassPaneCanDrop: false,
 
-  onPaneDrop(event, sash) {
+  onPaneDrop(_event, sash) {
     if (!this.activeDragGlassEl) return;
 
     const dropArea = this.activeDropPaneEl.getAttribute('drop-area');
@@ -26,7 +26,7 @@ export default {
     }
   },
 
-  enableDrag() {
+  enableGlassDrag() {
     // Identify which "glass" element to be dragged
     // Prevent drag from being triggered by child elements, e.g. action buttons
     // It is possible to use `preventDefault` on `mousedown` if `event.target` is a child element

@@ -1,7 +1,6 @@
 import { Frame } from '../frame/frame';
 import glassModule, { Glass } from './glass';
 import { createDomNode } from '../utils';
-import draggableModule from './draggable';
 import trimModule from './trim';
 import detachedGlassModule from './detached-glass';
 
@@ -24,10 +23,8 @@ export class BinaryWindow extends Frame {
 
   enableFeatures() {
     super.enableFeatures();
-    this.enableDrag();
-    this.enableActions();
+    this.enableGlassFeature();
     this.enableDetachedGlassFeatures();
-
   }
 
   onPaneCreate(paneEl, sash) {
@@ -100,4 +97,4 @@ export class BinaryWindow extends Frame {
   }
 }
 
-BinaryWindow.assemble(draggableModule, trimModule, glassModule, detachedGlassModule);
+BinaryWindow.assemble(glassModule, detachedGlassModule, trimModule);
