@@ -3,6 +3,7 @@
 ## Git rules
 
 - **Never `git commit` or `git push` unless explicitly asked in that same message.** Approval doesn't carry over — ask each time.
+- Keep commit messages short. Don't add a `Co-Authored-By` trailer.
 
 ## Testing
 
