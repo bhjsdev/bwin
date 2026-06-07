@@ -6,7 +6,7 @@ import { closeAction } from './close';
 export class DetachedGlass extends Glass {
   constructor(options) {
     const {
-      position = 'top-right',
+      position,
       width = 200,
       height = 200,
       offset = 0,

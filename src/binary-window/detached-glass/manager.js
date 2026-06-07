@@ -3,16 +3,21 @@ class DetachedGlassManager {
     this.glasses = [];
   }
 
-  add(glass) {
-    this.glasses.push(glass);
+  addGlass(glassEl) {
+    this.glasses.push(glassEl);
   }
 
-  remove(id) {
-    const index = this.glasses.findIndex((g) => g.id === id);
+  // The front-most glass owns the [active] marker (set in bringToFront).
+  getActiveGlass() {
+    return this.glasses.find((glassEl) => glassEl.hasAttribute('active')) ?? null;
+  }
+
+  removeGlass(id) {
+    const index = this.glasses.findIndex((glassEl) => glassEl.id === id);
 
     if (index !== -1) {
-      const [removed] = this.glasses.splice(index, 1);
-      return removed;
+      const [removedGlassEl] = this.glasses.splice(index, 1);
+      return removedGlassEl;
     }
 
     return null;

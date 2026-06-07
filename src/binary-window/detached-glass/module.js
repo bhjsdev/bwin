@@ -5,6 +5,9 @@ import { createResizeHandles } from './utils';
 const MIN_WIDTH = 100;
 const MIN_HEIGHT = 60;
 
+// Cascade offset down-right, sized so the glass behind keeps its title and buttons visible.
+const CASCADE_OFFSET = 25;
+
 // Rising counter so the most recently grabbed glass stacks on top, like an OS window.
 let topZIndex = 1;
 
@@ -50,12 +53,30 @@ export default {
   moveStartTop: 0,
 
   addDetachedGlass(options = {}) {
-    const glass = new DetachedGlass({ actions: this.actions[1], ...options });
+    // An explicit position wins; otherwise cascade from the active glass.
+    const placement = options.position ? {} : this.cascadeFromActiveGlass();
+
+    const glass = new DetachedGlass({ actions: this.actions[1], ...placement, ...options });
     this.windowElement.append(glass.domNode);
-    detachedGlassManager.add(glass.domNode);
+    detachedGlassManager.addGlass(glass.domNode);
     bringToFront(glass.domNode);
 
     return glass;
+  },
+
+  cascadeFromActiveGlass() {
+    const activeGlassEl = detachedGlassManager.getActiveGlass();
+    if (!activeGlassEl) return { position: 'center' };
+
+    // Anchor the new glass from the top-left, cascaded down-right of the active one.
+    const windowRect = this.windowElement.getBoundingClientRect();
+    const activeRect = activeGlassEl.getBoundingClientRect();
+
+    return {
+      position: 'top-left',
+      offsetX: activeRect.left - windowRect.left + CASCADE_OFFSET,
+      offsetY: activeRect.top - windowRect.top + CASCADE_OFFSET,
+    };
   },
 
   enableDetachedGlassActivate() {

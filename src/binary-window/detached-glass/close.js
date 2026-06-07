@@ -7,7 +7,7 @@ export const closeAction = {
     const glassEl = event.target.closest('bw-glass[detached]');
     if (!glassEl) return;
 
-    detachedGlassManager.remove(glassEl.id);
+    detachedGlassManager.removeGlass(glassEl.id);
     glassEl.remove();
   },
 };

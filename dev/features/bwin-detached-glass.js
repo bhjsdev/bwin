@@ -71,4 +71,9 @@ document.querySelectorAll('button[data-position]').forEach((button) => {
   });
 });
 
+// No options → exercises the DetachedGlass constructor defaults.
+document.querySelector('#add-default').addEventListener('click', () => {
+  bwin.addDetachedGlass();
+});
+
 document.querySelector('button[data-position="center"]').click();
