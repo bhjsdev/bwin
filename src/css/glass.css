@@ -145,9 +145,15 @@ bw-glass-action-container {
   }
 }
 
-.bw-glass-action--close {
+.bw-glass-action--minimize {
   &::before {
-    content: '✕';
+    content: '−';
+  }
+}
+
+.bw-glass-action--detach {
+  &::before {
+    content: '▣';
   }
 }
 
@@ -158,15 +164,15 @@ bw-glass-action-container {
   }
 }
 
-bw-pane[maximized] .bw-glass-action--maximize {
+.bw-glass-action--close {
   &::before {
-    content: '◱';
+    content: '✕';
   }
 }
 
-.bw-glass-action--minimize {
+bw-pane[maximized] .bw-glass-action--maximize {
   &::before {
-    content: '−';
+    content: '◱';
   }
 }
 

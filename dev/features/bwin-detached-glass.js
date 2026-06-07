@@ -110,4 +110,4 @@ document.querySelector('#add-default').addEventListener('click', () => {
   bwin.addDetachedGlass({ content: createGlassContent('default') });
 })
 
-document.querySelector('#add-default').click();
+// document.querySelector('#add-default').click();

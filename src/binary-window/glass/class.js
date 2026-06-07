@@ -1,7 +1,7 @@
 import { createDomNode } from '@/utils';
-import closeAction from './close';
-import minimizeAction from './minimize';
-import maximizeAction from './maximize';
+import closeAction from './action.close';
+import minimizeAction from './action.minimize';
+import maximizeAction from './action.maximize';
 
 export class Glass {
   domNode;
