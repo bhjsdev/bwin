@@ -3,6 +3,8 @@ import glassModule, { Glass } from './glass';
 import { createDomNode } from '../utils';
 import trimModule from './trim';
 import detachedGlassModule from './detached-glass';
+import { BUILTIN_ACTIONS } from './glass';
+import { BUILTIN_ACTIONS_2 } from './detached-glass';
 
 export class BinaryWindow extends Frame {
   sillElement = null;
@@ -91,9 +93,28 @@ export class BinaryWindow extends Frame {
 
   // Returns [glassActions, detachedGlassActions]
   static normActions(actions) {
-    if (!Array.isArray(actions)) return [[], []];
+    if (actions === undefined) return [BUILTIN_ACTIONS, BUILTIN_ACTIONS_2];
+    if (!actions || !Array.isArray(actions) || actions.length === 0) return [[], []];
+
+    // [glassActions]
+    if (actions.length === 1 && Array.isArray(actions[0])) return [actions[0], []];
+
+    // [action1, action2, ...]
     if (!actions.some(Array.isArray)) return [actions, []];
-    return actions;
+
+    // [undefined, detachedGlassActions]
+    if (actions.length >= 2 && !Array.isArray(actions[0]) && Array.isArray(actions[1]))
+      return [[], actions[1]];
+
+    // [glassActions, undefined]
+    if (actions.length >= 2 && Array.isArray(actions[0]) && !Array.isArray(actions[1]))
+      return [actions[0], []];
+
+    // [glassActions, detachedGlassActions]
+    if (actions.length >= 2 && Array.isArray(actions[0]) && Array.isArray(actions[1]))
+      return actions;
+
+    throw new Error(`[bwin] Invalid actions format`);
   }
 }
 

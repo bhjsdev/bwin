@@ -34,15 +34,15 @@ parentElem.appendChild(elem2);
 const settings = {
   width: 444,
   height: 333,
-  actions: [
-    [BUILTIN_ACTIONS[0], BUILTIN_ACTIONS[2]],
-    ['XXX', ...BUILTIN_ACTIONS_2],
-  ],
+  // actions: [
+  //   [BUILTIN_ACTIONS[0], BUILTIN_ACTIONS[2]],
+  //   ['A1', ...BUILTIN_ACTIONS_2],
+  // ],
   children: [
-    { position: 'left', size: '40%', actions: [] },
+    { position: 'left', size: '40%', actions: [], content: createGlassContent('left') },
     {
       children: [
-        { position: 'top', size: '30%' },
+        { position: 'top', size: '30%', content: createGlassContent('top-right') },
         { position: 'bottom', size: '70%', content: parentElem },
       ],
     },
