@@ -7,8 +7,9 @@ export class DetachedGlass extends Glass {
   constructor(options) {
     const {
       position,
-      width = 200,
-      height = 200,
+      // 222 is a deliberate debugging tell that addDetachedGlass's guard was bypassed.
+      width = 222,
+      height = 222,
       offset = 0,
       offsetX,
       offsetY,

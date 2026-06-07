@@ -2,8 +2,11 @@ import { DetachedGlass } from './class';
 import { detachedGlassManager } from './manager';
 import { createResizeHandles } from './utils';
 
-const MIN_WIDTH = 100;
-const MIN_HEIGHT = 60;
+const DEFAULT_GLASS_WIDTH = 200;
+const DEFAULT_GLASS_HEIGHT = 200;
+
+const MIN_RESIZE_WIDTH = 100;
+const MIN_RESIZE_HEIGHT = 60;
 
 // Cascade offset down-right, sized so the glass behind keeps its title and buttons visible.
 const CASCADE_OFFSET = 25;
@@ -53,10 +56,25 @@ export default {
   moveStartTop: 0,
 
   addDetachedGlass(options = {}) {
-    // An explicit position wins; otherwise cascade from the active glass.
-    const placement = options.position ? {} : this.cascadeFromActiveGlass();
+    // Guard size here so the constructor never falls back to its 222 debug default.
+    const width = options.width ?? DEFAULT_GLASS_WIDTH;
+    const height = options.height ?? DEFAULT_GLASS_HEIGHT;
 
-    const glass = new DetachedGlass({ actions: this.actions[1], ...placement, ...options });
+    // An explicit position wins; otherwise cascade from the active glass.
+    const { position, offsetX, offsetY } = options.position
+      ? {}
+      : this.getCascadedPlacement({ width, height });
+
+    const glass = new DetachedGlass({
+      actions: this.actions[1],
+      // Placement first so caller options can override it; size last so it always wins.
+      position,
+      offsetX,
+      offsetY,
+      ...options,
+      width,
+      height,
+    });
     this.windowElement.append(glass.domNode);
     detachedGlassManager.addGlass(glass.domNode);
     bringToFront(glass.domNode);
@@ -64,19 +82,22 @@ export default {
     return glass;
   },
 
-  cascadeFromActiveGlass() {
+  getCascadedPlacement({ width, height }) {
     const activeGlassEl = detachedGlassManager.getActiveGlass();
     if (!activeGlassEl) return { position: 'center' };
 
-    // Anchor the new glass from the top-left, cascaded down-right of the active one.
+    // Cascade down-right of the active glass, anchored from the top-left.
     const windowRect = this.windowElement.getBoundingClientRect();
     const activeRect = activeGlassEl.getBoundingClientRect();
 
-    return {
-      position: 'top-left',
-      offsetX: activeRect.left - windowRect.left + CASCADE_OFFSET,
-      offsetY: activeRect.top - windowRect.top + CASCADE_OFFSET,
-    };
+    let offsetX = activeRect.left - windowRect.left + CASCADE_OFFSET;
+    let offsetY = activeRect.top - windowRect.top + CASCADE_OFFSET;
+
+    // Wrap back to the top-left inset once a step would run off the right/bottom edge.
+    if (offsetX + width > windowRect.width) offsetX = CASCADE_OFFSET;
+    if (offsetY + height > windowRect.height) offsetY = CASCADE_OFFSET;
+
+    return { position: 'top-left', offsetX, offsetY };
   },
 
   enableDetachedGlassActivate() {
@@ -199,18 +220,18 @@ export default {
       let { left, top, width, height } = start;
 
       if (dir.includes('e')) {
-        width = Math.max(MIN_WIDTH, start.width + distX);
+        width = Math.max(MIN_RESIZE_WIDTH, start.width + distX);
       }
       else if (dir.includes('w')) {
-        width = Math.max(MIN_WIDTH, start.width - distX);
+        width = Math.max(MIN_RESIZE_WIDTH, start.width - distX);
         left = start.left + (start.width - width);
       }
 
       if (dir.includes('s')) {
-        height = Math.max(MIN_HEIGHT, start.height + distY);
+        height = Math.max(MIN_RESIZE_HEIGHT, start.height + distY);
       }
       else if (dir.includes('n')) {
-        height = Math.max(MIN_HEIGHT, start.height - distY);
+        height = Math.max(MIN_RESIZE_HEIGHT, start.height - distY);
         top = start.top + (start.height - height);
       }
 
