@@ -9,23 +9,26 @@ export function createResizeHandles() {
   });
 }
 
-// `offset` nudges the glass from the anchored corner/edge; it has no effect on
-// a centered glass, which is positioned purely from its own size.
-export function genStylesByPosition({ position, offset, width, height }) {
+// `offset` nudges the glass from the anchored corner/edge. `offsetX`/`offsetY`
+// override it per-axis; when only one is given, `offset` fills the other axis.
+export function genStylesByPosition({ position, offset, offsetX, offsetY, width, height }) {
+  const x = offsetX ?? offset;
+  const y = offsetY ?? offset;
+
   switch (position) {
     case 'top-left':
-      return { top: `${offset}px`, left: `${offset}px`, right: 'auto', bottom: 'auto' };
+      return { top: `${y}px`, left: `${x}px`, right: 'auto', bottom: 'auto' };
     case 'top-right':
-      return { top: `${offset}px`, right: `${offset}px`, left: 'auto', bottom: 'auto' };
+      return { top: `${y}px`, right: `${x}px`, left: 'auto', bottom: 'auto' };
     case 'bottom-left':
-      return { bottom: `${offset}px`, left: `${offset}px`, right: 'auto', top: 'auto' };
+      return { bottom: `${y}px`, left: `${x}px`, right: 'auto', top: 'auto' };
     case 'bottom-right':
-      return { bottom: `${offset}px`, right: `${offset}px`, left: 'auto', top: 'auto' };
+      return { bottom: `${y}px`, right: `${x}px`, left: 'auto', top: 'auto' };
     case 'center':
       // calc() rather than a translate transform, so left/top stay in sync with drag/resize math.
       return {
-        top: `calc(50% - ${height / 2}px)`,
-        left: `calc(50% - ${width / 2}px)`,
+        top: `calc(50% - ${height / 2}px + ${y}px)`,
+        left: `calc(50% - ${width / 2}px + ${x}px)`,
         right: 'auto',
         bottom: 'auto',
       };

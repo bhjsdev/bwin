@@ -10,11 +10,16 @@
   <body>
     <main>
       <h2>BinaryWindow - detached glass</h2>
-      <button data-position="top-left">Add top-left</button>
+      <label>offset <input type="number" id="offset" value="0" /></label>
+      <label>offsetX <input type="number" id="offsetX" /></label>
+      <label>offsetY <input type="number" id="offsetY" /></label>
+      <div>
+        <button data-position="top-left">Add top-left</button>
       <button data-position="top-right">Add top-right</button>
       <button data-position="bottom-left">Add bottom-left</button>
       <button data-position="bottom-right">Add bottom-right</button>
-      <button data-position="center">Add center</button>
+        <button data-position="center">Add center</button>
+      </div>
       <section id="container"></section>
     </main>
   </body>

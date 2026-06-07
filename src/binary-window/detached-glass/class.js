@@ -9,7 +9,9 @@ export class DetachedGlass extends Glass {
       position = 'top-right',
       width = 200,
       height = 200,
-      offset = -20,
+      offset = 0,
+      offsetX,
+      offsetY,
       id,
       actions = [closeAction],
       ...glassOptions
@@ -24,7 +26,14 @@ export class DetachedGlass extends Glass {
     this.domNode.style.width = `${width}px`;
     this.domNode.style.height = `${height}px`;
 
-    const { top, left, right, bottom } = genStylesByPosition({ position, offset, width, height });
+    const { top, left, right, bottom } = genStylesByPosition({
+      position,
+      offset,
+      offsetX,
+      offsetY,
+      width,
+      height,
+    });
 
     this.domNode.style.top = top;
     this.domNode.style.left = left;
