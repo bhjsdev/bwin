@@ -9,6 +9,7 @@ bw-sill {
   padding-inline: var(--bw-glass-clearance);
 }
 
+.bw-minimized-detached-glass,
 .bw-minimized-glass {
   display: block;
   flex-basis: 10%;

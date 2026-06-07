@@ -26,9 +26,8 @@ export class BinaryWindow extends Frame {
     super.enableFeatures();
     this.enableDrag();
     this.enableActions();
-    this.enableDetachedGlassActivate();
-    this.enableDetachedGlassResize();
-    this.enableDetachedGlassMove();
+    this.enableDetachedGlassFeatures();
+
   }
 
   onPaneCreate(paneEl, sash) {

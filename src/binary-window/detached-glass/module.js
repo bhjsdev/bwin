@@ -55,6 +55,13 @@ export default {
   moveStartLeft: 0,
   moveStartTop: 0,
 
+  enableDetachedGlassFeatures() {
+    this.enableDetachedGlassActivate();
+    this.enableDetachedGlassResize();
+    this.enableDetachedGlassMove();
+    this.handleMinimizedDetachedGlassClick();
+  },
+
   addDetachedGlass(options = {}) {
     // Guard size here so the constructor never falls back to its 222 debug default.
     const width = options.width ?? DEFAULT_GLASS_WIDTH;
@@ -67,6 +74,7 @@ export default {
 
     const glass = new DetachedGlass({
       actions: this.actions[1],
+      binaryWindow: this,
       // Placement first so caller options can override it; size last so it always wins.
       position,
       offsetX,
@@ -75,6 +83,7 @@ export default {
       width,
       height,
     });
+
     this.windowElement.append(glass.domNode);
     detachedGlassManager.addGlass(glass.domNode);
     bringToFront(glass.domNode);
@@ -98,6 +107,22 @@ export default {
     if (offsetY + height > windowRect.height) offsetY = CASCADE_OFFSET;
 
     return { position: 'top-left', offsetX, offsetY };
+  },
+
+  // Restore a minimized detached glass: un-hide it, drop its sill button, raise it.
+  // Keyed on bwDetachedGlassElement so it ignores tiled glasses' sill buttons.
+  handleMinimizedDetachedGlassClick() {
+    this.sillElement.addEventListener('click', (event) => {
+      const minimizedDetachedGlassEl = event.target;
+      if (!minimizedDetachedGlassEl.matches('.bw-minimized-detached-glass')) return;
+
+      const detachedGlassEl = minimizedDetachedGlassEl.bwDetachedGlassElement;
+      if (!detachedGlassEl) return;
+
+      detachedGlassEl.style.display = '';
+      minimizedDetachedGlassEl.remove();
+      bringToFront(detachedGlassEl);
+    });
   },
 
   enableDetachedGlassActivate() {

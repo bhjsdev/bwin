@@ -97,6 +97,8 @@ export default {
     return Array.from(els).find((el) => el.bwOriginalSashId === sashId);
   },
 
+  // Re-sync action button disabled state whenever panes are added/removed,
+  // so the last remaining pane can't be closed/minimized/maximized.
   observeActionButtons() {
     this.updateDisabledStateOfActionButtons();
 

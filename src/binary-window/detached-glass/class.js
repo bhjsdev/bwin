@@ -2,6 +2,7 @@ import { Glass } from '../glass';
 import { genId } from '@/utils.js';
 import { genStylesByPosition } from './utils';
 import { closeAction } from './close';
+import { minimizeAction } from './minimize';
 
 export class DetachedGlass extends Glass {
   constructor(options) {
@@ -14,7 +15,7 @@ export class DetachedGlass extends Glass {
       offsetX,
       offsetY,
       id,
-      actions = [closeAction],
+      actions = [minimizeAction, closeAction],
       ...glassOptions
     } = options;
 
