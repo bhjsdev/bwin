@@ -1,5 +1,4 @@
 import { createDomNode } from '@/utils';
-import { detachedGlassManager } from './manager';
 
 export const minimizeAction = {
   label: '',
