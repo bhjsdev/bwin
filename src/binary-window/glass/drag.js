@@ -42,9 +42,6 @@ export default {
 
       const headerEl = event.target;
 
-      // Only handles drag from panes, not from detached glasses
-      if (!headerEl.closest('bw-pane')) return;
-
       const glassEl = headerEl.closest('bw-glass');
       glassEl.setAttribute('draggable', true);
 
