@@ -18,6 +18,10 @@
 - Only comment when it adds something the code doesn't already say.
 - Keep comments under 2 lines (each line max 100 chars). If a comment genuinely needs to be longer, prefix it with `RATIONAL:`.
 
+## Debug sentinel values
+
+- Repeating-digit literals like `222` and `333` in default/fallback paths are intentional debug sentinels, not magic numbers. If such a value surfaces in a lower-level API or the rendered output, a guard upstream was bypassed and a real value leaked. Don't "tidy" them into named constants or replace them.
+
 ## Dev feature examples (`dev/features/`)
 
 - Put interactive testing items (buttons, inputs, forms, selects, etc.) into the `.html` file, not the `.js` file. The paired `.js` queries them with `document.querySelector(...)` and wires up behavior with `addEventListener`. See `add-remove-pane.html` / `add-remove-pane.js` for the pattern.
