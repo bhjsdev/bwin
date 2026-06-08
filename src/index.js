@@ -7,9 +7,13 @@ import './css/sill.css';
 
 export { Frame } from './frame/frame';
 export { BinaryWindow } from './binary-window/binary-window';
-export { BUILTIN_ACTIONS } from './binary-window/glass';
-export { BUILTIN_ACTIONS_2 } from './binary-window/detached-glass';
+export { DEFAULT_GLASS_ACTIONS } from './binary-window/glass';
+export { DEFAULT_DETACHED_GLASS_ACTIONS } from './binary-window/detached-glass';
 export { Sash } from './sash';
 export { SashConfig } from './config/sash-config';
 export { ConfigRoot } from './config/config-root';
 export { Position } from './position';
+
+// @deprecated - backwards compatibility only
+export { BUILTIN_ACTIONS } from './binary-window/glass';
+

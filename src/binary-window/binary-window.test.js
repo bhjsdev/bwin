@@ -1,11 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import { BinaryWindow } from './binary-window';
-import { BUILTIN_ACTIONS } from './glass';
-import { BUILTIN_ACTIONS_2 } from './detached-glass';
+import { DEFAULT_GLASS_ACTIONS } from './glass';
+import { DEFAULT_DETACHED_GLASS_ACTIONS } from './detached-glass';
 
 describe('BinaryWindow.normActions', () => {
   it('returns the builtin actions when actions is undefined', () => {
-    expect(BinaryWindow.normActions(undefined)).toEqual([BUILTIN_ACTIONS, BUILTIN_ACTIONS_2]);
+    expect(BinaryWindow.normActions(undefined)).toEqual([DEFAULT_GLASS_ACTIONS, DEFAULT_DETACHED_GLASS_ACTIONS]);
   });
 
   it('returns [[], []] when actions is null, empty, or not an array', () => {

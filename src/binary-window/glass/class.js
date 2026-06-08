@@ -1,8 +1,9 @@
 import { createDomNode } from '@/utils';
 import closeAction from './action.close';
 import minimizeAction from './action.minimize';
-import maximizeAction from './action.maximize';
+import detachAction from './action.detach';
 
+export const DEFAULT_GLASS_ACTIONS = [minimizeAction, detachAction, closeAction];
 export class Glass {
   domNode;
 
@@ -10,7 +11,7 @@ export class Glass {
     title = null,
     content = null,
     tabs = [],
-    actions = [minimizeAction, maximizeAction, closeAction],
+    actions = DEFAULT_GLASS_ACTIONS,
     draggable = true,
     sash = null,
     binaryWindow,

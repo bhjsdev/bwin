@@ -1,10 +1,8 @@
 import { Frame } from '../frame/frame';
-import glassModule, { Glass } from './glass';
+import glassModule, { Glass, DEFAULT_GLASS_ACTIONS } from './glass';
 import { createDomNode } from '../utils';
 import trimModule from './trim';
-import detachedGlassModule from './detached-glass';
-import { BUILTIN_ACTIONS } from './glass';
-import { BUILTIN_ACTIONS_2 } from './detached-glass';
+import detachedGlassModule, { DEFAULT_DETACHED_GLASS_ACTIONS } from './detached-glass';
 
 export class BinaryWindow extends Frame {
   sillElement = null;
@@ -93,7 +91,7 @@ export class BinaryWindow extends Frame {
 
   // Returns [glassActions, detachedGlassActions]
   static normActions(actions) {
-    if (actions === undefined) return [BUILTIN_ACTIONS, BUILTIN_ACTIONS_2];
+    if (actions === undefined) return [DEFAULT_GLASS_ACTIONS, DEFAULT_DETACHED_GLASS_ACTIONS];
     if (!actions || !Array.isArray(actions) || actions.length === 0) return [[], []];
 
     // [glassActions]

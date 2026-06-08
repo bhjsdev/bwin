@@ -4,12 +4,8 @@ import moveModule from './move';
 import dragModule from './drag';
 import resizeModule from './resize';
 import restoreModule from './restore';
-import closeAction from './action.close';
-import minimizeAction from './action.minimize';
 
-export { DetachedGlass } from './class';
-
-export const BUILTIN_ACTIONS_2 = [minimizeAction, closeAction];
+export { DetachedGlass, DEFAULT_DETACHED_GLASS_ACTIONS } from './class';
 
 export default {
   enableDetachedGlassFeatures() {
