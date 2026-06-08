@@ -219,6 +219,7 @@ export class Sash {
       throw new Error('[bwin] Maximum 2 children allowed');
     }
 
+    sash.parent = this;
     this.children.push(sash);
   }
 

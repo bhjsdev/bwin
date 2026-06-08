@@ -2,8 +2,6 @@ export default {
   label: '',
   className: 'bw-glass-action--attach',
   onClick: (event, binaryWindow) => {
-    console.log('Attach action clicked', { event, binaryWindow });
-
     const detachedGlassEl = event.target.closest('bw-glass[detached]');
     const originalPosition = detachedGlassEl.bwOriginalPosition;
     const originalSiblingSashId = detachedGlassEl.bwOriginalSiblingSashId;
