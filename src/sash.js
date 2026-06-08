@@ -242,6 +242,13 @@ export class Sash {
     return this.children.find((child) => child.id !== childId);
   }
 
+  // Leaf (pane) with the biggest area among self and descendants
+  getLargestLeaf() {
+    return this.getAllLeafDescendants().reduce((largest, leaf) =>
+      leaf.width * leaf.height > largest.width * largest.height ? leaf : largest
+    );
+  }
+
   // Fraction of the parent this sash occupies along the split axis, e.g. 0.3
   getRelativeSize() {
     if (!this.parent) {

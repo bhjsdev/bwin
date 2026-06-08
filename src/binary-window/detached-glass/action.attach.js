@@ -7,16 +7,28 @@ export default {
     const originalSiblingSashId = detachedGlassEl.bwOriginalSiblingSashId;
     const originalRelativeSize = detachedGlassEl.bwOriginalRelativeSize;
 
-    if (originalSiblingSashId) {
-      // Original sibling now becomes the parent after detaching
-      binaryWindow.addPane(originalSiblingSashId, {
-        position: originalPosition,
-        size: originalRelativeSize,
-        content: detachedGlassEl.querySelector('bw-glass-content'),
-        title: detachedGlassEl.querySelector('bw-glass-title')?.textContent || '',
-      });
+    const originalSiblingSash = binaryWindow.rootSash.getById(originalSiblingSashId);
 
-      binaryWindow.removeDetachedGlass(detachedGlassEl.id);
+    let targetSashId = originalSiblingSashId;
+    let position = originalPosition;
+    let size = originalRelativeSize;
+
+    // The sibling we split off from may be gone; fall back to the largest pane,
+    // splitting along its longer side (right if flat, bottom if tall).
+    if (!originalSiblingSash) {
+      const largestLeafSash = binaryWindow.rootSash.getLargestLeaf();
+      targetSashId = largestLeafSash.id;
+      position = largestLeafSash.width > largestLeafSash.height ? 'right' : 'bottom';
+      size = 0.5;
     }
+
+    binaryWindow.addPane(targetSashId, {
+      position,
+      size,
+      content: detachedGlassEl.querySelector('bw-glass-content'),
+      title: detachedGlassEl.querySelector('bw-glass-title')?.textContent || '',
+    });
+
+    binaryWindow.removeDetachedGlass(detachedGlassEl.id);
   },
 };

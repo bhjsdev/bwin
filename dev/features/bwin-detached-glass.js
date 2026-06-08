@@ -1,4 +1,9 @@
-import { BinaryWindow, DEFAULT_GLASS_ACTIONS, BUILTIN_ACTIONS, DEFAULT_DETACHED_GLASS_ACTIONS } from '../../src';
+import {
+  BinaryWindow,
+  DEFAULT_GLASS_ACTIONS,
+  BUILTIN_ACTIONS,
+  DEFAULT_DETACHED_GLASS_ACTIONS,
+} from '../../src';
 
 const elem = document.createElement('div');
 const zIndex = 100;
@@ -26,19 +31,32 @@ elem2.style.zIndex = zIndex + 1;
 
 const parentElem = document.createElement('div');
 parentElem.style.position = 'relative';
-parentElem.style.width = '100%';
-parentElem.style.height = '100%';
 parentElem.appendChild(elem);
 parentElem.appendChild(elem2);
 
 const settings = {
-  width: 444,
-  height: 333,
-  actions: [
-    BUILTIN_ACTIONS,
-  ],
+  width: 999,
+  height: 444,
+  actions: [BUILTIN_ACTIONS],
   children: [
-    { position: 'left', size: '40%', content: createGlassContent('left'), title: 'Left pane' },
+    {
+      position: 'left',
+      size: '40%',
+      children: [
+        {
+          position: 'top',
+          size: '50%',
+          content: createGlassContent('top-left'),
+          title: 'Top-left pane',
+        },
+        {
+          position: 'bottom',
+          size: '50%',
+          content: createGlassContent('bottom-left'),
+          title: 'Bottom-left pane',
+        },
+      ],
+    },
     {
       children: [
         {
