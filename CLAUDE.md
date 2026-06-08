@@ -1,29 +1,31 @@
 # CLAUDE.md
 
-## Git rules
+## Git
 
-- **Never `git commit` or `git push` unless explicitly asked in that same message.** Approval doesn't carry over — ask each time.
-- When asked to commit, also print the commit message in the reply.
+- **Don't `git commit` or `git push` unless the same message explicitly asks for it.** Approval doesn't carry over — ask each time.
+- When committing, print the commit message in your reply.
+- Type commits that only touch `dev/` as plain `chore:` — never `feat:`/`fix:`, no `(dev)` scope. It's test scaffolding, not library source (see [Dev pages](#dev-pages-dev)).
 
 ## Testing
 
-- Don't run tests or build after completing a feature or fixing a bug unless asked.
+- Don't run tests or builds after finishing a feature or fix unless asked.
 
-## Naming conventions
+## Naming
 
-- Variables holding a DOM element get an `El` suffix, and keep the noun specific rather than generic — `activeGlassEl`, not `activeEl`. Accessor methods that return an element are named `get<Noun>` to match (e.g. `getActiveGlass`).
-- Constants name the context they apply to, not just the quantity — `MIN_RESIZE_WIDTH`, not `MIN_WIDTH`, so they don't get confused with unrelated values like creation-time defaults.
-- When naming functions, variables, etc., prefer established terms from the relevant domain/library and match their conventional meaning — don't pick a name whose well-known meaning differs from what the code does. (e.g. in the DOM, jQuery's `unwrap` removes the wrapper in-place, so `extractChildNodes` is clearer for moving children into a fragment.)
+- Suffix DOM-element variables with `El`, and keep the noun specific: `activeGlassEl`, not `activeEl`. Name element accessors `get<Noun>` to match (e.g. `getActiveGlass`).
+- Name constants for the context they apply to, not just the quantity: `MIN_RESIZE_WIDTH`, not `MIN_WIDTH` — so they aren't confused with unrelated values like creation-time defaults.
+- Prefer established domain/library terms and match their conventional meaning. Don't pick a name whose well-known meaning differs from what the code does — e.g. jQuery's `unwrap` removes the wrapper in place, so `extractChildNodes` is clearer for moving children into a fragment.
 
 ## Comments
 
-- Only comment when it adds something the code doesn't already say.
-- Keep comments under 2 lines (each line max 100 chars). If a comment genuinely needs to be longer, prefix it with `RATIONAL:`.
+- Comment only when it adds something the code doesn't already say.
+- Keep comments to 2 lines max, 100 chars per line. If one genuinely needs more, prefix it with `RATIONAL:`.
 
 ## Debug sentinel values
 
-- Repeating-digit literals like `222` and `333` in default/fallback paths are intentional debug sentinels, not magic numbers. If such a value surfaces in a lower-level API or the rendered output, a guard upstream was bypassed and a real value leaked. Don't "tidy" them into named constants or replace them.
+- Leave repeating-digit literals like `222` and `333` in default/fallback paths alone — they're intentional debug sentinels, not magic numbers. Don't rename them to constants or replace them. If one surfaces in a lower-level API or the rendered output, a guard upstream was bypassed and a real value leaked — investigate that instead.
 
-## Dev feature examples (`dev/features/`)
+## Dev pages (`dev/`)
 
-- Put interactive testing items (buttons, inputs, forms, selects, etc.) into the `.html` file, not the `.js` file. The paired `.js` queries them with `document.querySelector(...)` and wires up behavior with `addEventListener`. See `add-remove-pane.html` / `add-remove-pane.js` for the pattern.
+- Treat `dev/` as test scaffolding for manually exercising features/bugs, not shippable library source.
+- Put interactive testing items (buttons, inputs, forms, selects, etc.) in the `.html` file, not the `.js`. The paired `.js` queries them with `document.querySelector(...)` and wires up behavior with `addEventListener`. See `dev/features/add-remove-pane.html` / `add-remove-pane.js` for the pattern.
