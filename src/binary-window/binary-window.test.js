@@ -15,17 +15,17 @@ describe('BinaryWindow.normActions', () => {
     expect(BinaryWindow.normActions([])).toEqual([[], []]);
   });
 
-  it('returns [glassActions, []] for a single grouped array', () => {
+  it('returns [glassActions, DEFAULT_DETACHED_GLASS_ACTIONS] for a single grouped array', () => {
     const a = { label: 'A' };
 
-    expect(BinaryWindow.normActions([[a]])).toEqual([[a], []]);
+    expect(BinaryWindow.normActions([[a]])).toEqual([[a], DEFAULT_DETACHED_GLASS_ACTIONS]);
   });
 
-  it('returns [actions, []] when actions is a flat array', () => {
+  it('returns [actions, DEFAULT_DETACHED_GLASS_ACTIONS] when actions is a flat array', () => {
     const a = { label: 'A' };
     const b = { label: 'B' };
 
-    expect(BinaryWindow.normActions([a, b])).toEqual([[a, b], []]);
+    expect(BinaryWindow.normActions([a, b])).toEqual([[a, b], DEFAULT_DETACHED_GLASS_ACTIONS]);
   });
 
   it('returns [[], detachedGlassActions] when first group is absent', () => {
