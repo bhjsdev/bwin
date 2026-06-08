@@ -45,13 +45,16 @@ function route() {
 window.addEventListener('hashchange', route);
 route();
 
-navEl.querySelector('#_toggle-bg').addEventListener('click', () => {
-  const bgColor = 'hsl(0 0 90)';
-  const bodyEl = iframeEl.contentDocument?.body;
+navEl.querySelector('#_toggle-theme').addEventListener('click', () => {
+  const windowEls = iframeEl.contentDocument?.querySelectorAll('bw-window');
 
-  if (!bodyEl) return;
+  if (!windowEls?.length) return;
 
-  // Compare against '' rather than bgColor: the CSSOM re-serializes colors on
-  // read (e.g. hsl() -> rgb()), so equality with the original string fails.
-  bodyEl.style.backgroundColor = bodyEl.style.backgroundColor ? '' : bgColor;
+  windowEls.forEach((windowEl) => {
+    if (windowEl.getAttribute('theme') === 'dark') {
+      windowEl.removeAttribute('theme');
+    } else {
+      windowEl.setAttribute('theme', 'dark');
+    }
+  });
 });
