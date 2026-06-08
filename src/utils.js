@@ -234,6 +234,18 @@ export function createDomNode(content) {
   return document.createTextNode(String(content));
 }
 
+/**
+ * Move a node's child nodes out into a fragment, leaving the node empty
+ *
+ * @param {Node} node - The node whose children are moved
+ * @returns {DocumentFragment} - A fragment holding the moved child nodes
+ */
+export function extractChildNodes(node) {
+  const frag = document.createDocumentFragment();
+  frag.append(...node.childNodes);
+  return frag;
+}
+
 export function getMetricsFromElement(element) {
   const left = parseFloat(element.style.left) || 0;
   const top = parseFloat(element.style.top) || 0;

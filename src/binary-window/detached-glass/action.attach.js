@@ -1,3 +1,5 @@
+import { extractChildNodes } from '@/utils';
+
 export default {
   label: '',
   className: 'bw-glass-action--attach',
@@ -22,10 +24,13 @@ export default {
       size = 0.5;
     }
 
+    // Pass the inner nodes, not the bw-glass-content wrapper — Glass adds its own.
+    const contentEl = detachedGlassEl.querySelector('bw-glass-content');
+
     binaryWindow.addPane(targetSashId, {
       position,
       size,
-      content: detachedGlassEl.querySelector('bw-glass-content'),
+      content: extractChildNodes(contentEl),
       title: detachedGlassEl.querySelector('bw-glass-title')?.textContent || '',
     });
 
