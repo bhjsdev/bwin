@@ -7,6 +7,23 @@ const DEFAULT_GLASS_HEIGHT = 200;
 // Cascade offset down-right, sized so the glass behind keeps its title and buttons visible.
 const CASCADE_OFFSET = 25;
 
+// Cascade down-right of the active glass; wrap back to the inset at the window edges.
+function getCascadedPlacement(windowEl, { width, height }) {
+  const activeGlassEl = detachedGlassManager.getActiveGlass();
+  if (!activeGlassEl) return { position: 'center' };
+
+  const windowRect = windowEl.getBoundingClientRect();
+  const activeRect = activeGlassEl.getBoundingClientRect();
+
+  let offsetX = activeRect.left - windowRect.left + CASCADE_OFFSET;
+  let offsetY = activeRect.top - windowRect.top + CASCADE_OFFSET;
+
+  if (offsetX + width > windowRect.width) offsetX = CASCADE_OFFSET;
+  if (offsetY + height > windowRect.height) offsetY = CASCADE_OFFSET;
+
+  return { position: 'top-left', offsetX, offsetY };
+}
+
 export default {
   addDetachedGlass(options = {}) {
     // Guard size here so the constructor never falls back to its 222 debug default.
@@ -16,7 +33,7 @@ export default {
     // An explicit position wins; otherwise cascade from the active glass.
     const { position, offsetX, offsetY } = options.position
       ? {}
-      : this.getCascadedPlacement({ width, height });
+      : getCascadedPlacement(this.windowElement, { width, height });
 
     const glass = new DetachedGlass({
       actions: this.actions[1],
@@ -41,23 +58,5 @@ export default {
     const removedGlassEl = detachedGlassManager.removeGlassById(detachedGlassId);
     removedGlassEl?.remove();
     return removedGlassEl;
-  },
-
-  getCascadedPlacement({ width, height }) {
-    const activeGlassEl = detachedGlassManager.getActiveGlass();
-    if (!activeGlassEl) return { position: 'center' };
-
-    // Cascade down-right of the active glass, anchored from the top-left.
-    const windowRect = this.windowElement.getBoundingClientRect();
-    const activeRect = activeGlassEl.getBoundingClientRect();
-
-    let offsetX = activeRect.left - windowRect.left + CASCADE_OFFSET;
-    let offsetY = activeRect.top - windowRect.top + CASCADE_OFFSET;
-
-    // Wrap back to the top-left inset once a step would run off the right/bottom edge.
-    if (offsetX + width > windowRect.width) offsetX = CASCADE_OFFSET;
-    if (offsetY + height > windowRect.height) offsetY = CASCADE_OFFSET;
-
-    return { position: 'top-left', offsetX, offsetY };
   },
 };

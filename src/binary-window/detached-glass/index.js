@@ -1,4 +1,4 @@
-import addModule from './add';
+import crudModule from './crud';
 import activateModule from './activate';
 import moveModule from './move';
 import dragModule from './drag';
@@ -18,7 +18,7 @@ export default {
     this.handleMinimizedDetachedGlassClick();
   },
 
-  ...addModule,
+  ...crudModule,
   ...activateModule,
   ...moveModule,
   ...dragModule,
