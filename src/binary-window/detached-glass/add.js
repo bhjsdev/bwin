@@ -31,10 +31,16 @@ export default {
     });
 
     this.windowElement.append(glass.domNode);
-    detachedGlassManager.addGlass(glass.domNode);
+    detachedGlassManager.addGlassByElement(glass.domNode);
     detachedGlassManager.bringToFront(glass.domNode);
 
     return glass;
+  },
+
+  removeDetachedGlass(detachedGlassId) {
+    const removedGlassEl = detachedGlassManager.removeGlassById(detachedGlassId);
+    removedGlassEl?.remove();
+    return removedGlassEl;
   },
 
   getCascadedPlacement({ width, height }) {

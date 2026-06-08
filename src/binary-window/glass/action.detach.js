@@ -16,9 +16,13 @@ export default {
     const detachedGlass = binaryWindow.addDetachedGlass({ position: 'center', width, height });
 
     const paneSashId = paneEl.getAttribute('sash-id');
-    detachedGlass.domNode.bwOriginalPosition = paneSashId;
-    detachedGlass.domNode.bwOriginalSashId = paneEl.getAttribute('position');
+    const paneSash = binaryWindow.rootSash.getById(paneSashId);
+    const siblingSashId = paneSash.parent.getChildSiblingById(paneSashId).id;
 
+    detachedGlass.domNode.bwOriginalSiblingSashId = siblingSashId;
+    detachedGlass.domNode.bwOriginalPosition = paneEl.getAttribute('position');
+    detachedGlass.domNode.bwOriginalRelativeSize = paneSash.getRelativeSize();
+    
     detachedGlass.contentElement.replaceWith(glassContentEl);
 
     if (detachedGlass.titleElement) {

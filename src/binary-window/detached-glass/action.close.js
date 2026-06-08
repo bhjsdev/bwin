@@ -7,7 +7,7 @@ export default {
     const glassEl = event.target.closest('bw-glass[detached]');
     if (!glassEl) return;
 
-    detachedGlassManager.removeGlass(glassEl.id);
+    detachedGlassManager.removeGlassById(glassEl.id);
     glassEl.remove();
   },
 };

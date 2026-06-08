@@ -241,6 +241,19 @@ export class Sash {
     return this.children.find((child) => child.id !== childId);
   }
 
+  // Fraction of the parent this sash occupies along the split axis, e.g. 0.3
+  getRelativeSize() {
+    if (!this.parent) {
+      return 1;
+    }
+
+    if (this.position === Position.Left || this.position === Position.Right) {
+      return this.width / this.parent.width;
+    }
+
+    return this.height / this.parent.height;
+  }
+
   get top() {
     return this._top;
   }

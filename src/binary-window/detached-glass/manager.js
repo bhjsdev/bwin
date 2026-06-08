@@ -5,7 +5,7 @@ class DetachedGlassManager {
     this.topZIndex = 1;
   }
 
-  addGlass(glassEl) {
+  addGlassByElement(glassEl) {
     this.glasses.push(glassEl);
   }
 
@@ -28,7 +28,7 @@ class DetachedGlassManager {
     glassEl.setAttribute('active', '');
   }
 
-  removeGlass(id) {
+  removeGlassById(id) {
     const index = this.glasses.findIndex((glassEl) => glassEl.id === id);
 
     if (index !== -1) {
