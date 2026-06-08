@@ -13,6 +13,7 @@
 
 - Variables holding a DOM element get an `El` suffix, and keep the noun specific rather than generic — `activeGlassEl`, not `activeEl`. Accessor methods that return an element are named `get<Noun>` to match (e.g. `getActiveGlass`).
 - Constants name the context they apply to, not just the quantity — `MIN_RESIZE_WIDTH`, not `MIN_WIDTH`, so they don't get confused with unrelated values like creation-time defaults.
+- When naming functions, variables, etc., prefer established terms from the relevant domain/library and match their conventional meaning — don't pick a name whose well-known meaning differs from what the code does. (e.g. in the DOM, jQuery's `unwrap` removes the wrapper in-place, so `extractChildNodes` is clearer for moving children into a fragment.)
 
 ## Comments
 
