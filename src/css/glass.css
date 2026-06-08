@@ -149,7 +149,7 @@ bw-glass-action-container {
   Action Icon Resources: 
   https://shapecatcher.com
   https://www.compart.com/en/unicode/category/So
-  🗖 🗗 ◫ □ ☐ ⇱ ▣ ◱ ⿴ ⍇ ⤢ 
+  🗖 🗗 ◫ □ ☐ ⊞ ⇱ ▣ ◱ ⿴ ⍇ ⤢ ❐
 */
 
 .bw-glass-action--minimize {
@@ -164,21 +164,27 @@ bw-glass-action-container {
   }
 }
 
+.bw-glass-action--attach {
+  &::before {
+    content: '◱';
+  }
+}
+
 .bw-glass-action--maximize {
   &::before {
-    content: '⤢';
+    content: '🡥';
+  }
+}
+
+bw-pane[maximized] .bw-glass-action--maximize {
+  &::before {
+    content: '🡧';
   }
 }
 
 .bw-glass-action--close {
   &::before {
     content: '✕';
-  }
-}
-
-bw-pane[maximized] .bw-glass-action--maximize {
-  &::before {
-    content: '◱';
   }
 }
 

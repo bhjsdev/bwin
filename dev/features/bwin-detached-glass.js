@@ -1,4 +1,4 @@
-import { BinaryWindow, DEFAULT_GLASS_ACTIONS, DEFAULT_DETACHED_GLASS_ACTIONS } from '../../src';
+import { BinaryWindow, DEFAULT_GLASS_ACTIONS, BUILTIN_ACTIONS, DEFAULT_DETACHED_GLASS_ACTIONS } from '../../src';
 
 const elem = document.createElement('div');
 const zIndex = 100;
@@ -34,10 +34,9 @@ parentElem.appendChild(elem2);
 const settings = {
   width: 444,
   height: 333,
-  // actions: [
-  //   [DEFAULT_GLASS_ACTIONS[0], DEFAULT_GLASS_ACTIONS[2]],
-  //   ['A1', ...DEFAULT_DETACHED_GLASS_ACTIONS],
-  // ],
+  actions: [
+    BUILTIN_ACTIONS,
+  ],
   children: [
     { position: 'left', size: '40%', content: createGlassContent('left'), title: 'Left pane' },
     {
