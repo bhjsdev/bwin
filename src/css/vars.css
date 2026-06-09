@@ -13,8 +13,8 @@ bw-window {
   --bw-glass-header-gap: 4px;
   --bw-glass-header-bg-color: hsl(0, 0%, 97%);
 
-  --bw-detached-glass-shadow: 0 2px 8px hsl(0, 0%, 0%, 0.15);
-  --bw-detached-glass-shadow-active: 0 6px 20px hsl(0, 0%, 0%, 0.3);
+  --bw-detached-glass-shadow: 0 2px 6px hsl(0, 0%, 0%, 0.12), 0 4px 14px hsl(0, 0%, 0%, 0.22);
+  --bw-detached-glass-shadow-active: 0 4px 10px hsl(0, 0%, 0%, 0.22), 0 10px 30px hsl(0, 0%, 0%, 0.38);
 
   /* Thickness of the resize grab zone, straddling the glass border */
   --bw-detached-glass-resize-handle-size: 12px;
@@ -31,8 +31,8 @@ bw-window[theme='dark'] {
   --bw-glass-header-bg-color: hsl(0 0% 18%);
   --bw-glass-bg-color-disabled: hsl(0 0% 16%);
   --bw-drop-area-bg-color: hsl(0 0% 100% / 0.1);
-  --bw-detached-glass-shadow: 0 2px 8px hsl(0 0% 0% / 0.5);
-  --bw-detached-glass-shadow-active: 0 6px 20px hsl(0 0% 0% / 0.7);
+  --bw-detached-glass-shadow: 0 2px 6px hsl(0 0% 0% / 0.55), 0 4px 14px hsl(0 0% 0% / 0.65);
+  --bw-detached-glass-shadow-active: 0 4px 10px hsl(0 0% 0% / 0.65), 0 10px 30px hsl(0 0% 0% / 0.8);
 
   bw-pane,
   bw-muntin {
