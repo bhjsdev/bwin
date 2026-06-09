@@ -65,7 +65,7 @@ const settings = {
           content: createGlassContent('top-right'),
           title: 'Top-right pane',
         },
-        { position: 'bottom', size: '70%', content: parentElem, title: 'Bottom pane' },
+        { position: 'bottom', size: '70%', content: parentElem },
       ],
     },
   ],

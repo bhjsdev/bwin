@@ -32,9 +32,9 @@ export class Glass {
     if (Array.isArray(this.tabs) && this.tabs.length > 0) {
       headerEl.append(this.createTabs());
     }
-    else if (this.title) {
+    else {
       const titleEl = document.createElement('bw-glass-title');
-      titleEl.append(createDomNode(this.title));
+      if (this.title) titleEl.append(createDomNode(this.title));
       headerEl.append(titleEl);
     }
 

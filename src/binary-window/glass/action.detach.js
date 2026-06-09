@@ -25,14 +25,7 @@ export default {
     
     detachedGlass.contentElement.replaceWith(glassContentEl);
 
-    if (detachedGlass.titleElement) {
-      detachedGlass.titleElement.replaceWith(glassTitleEl);
-    }
-    else {
-      const titleEl = document.createElement('bw-glass-title');
-      detachedGlass.headerElement.prepend(titleEl);
-      titleEl.replaceWith(glassTitleEl);
-    }
+    detachedGlass.titleElement.replaceWith(glassTitleEl);
 
     binaryWindow.removePane(paneSashId);
   },
