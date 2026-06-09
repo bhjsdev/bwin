@@ -1,24 +1,19 @@
-import { createDomNode } from '../utils';
-import { BUILTIN_ACTIONS } from './actions';
+import { createDomNode } from '@/utils';
+import closeAction from './action.close';
+import minimizeAction from './action.minimize';
+import detachAction from './action.detach';
 
-const DEFAULTS = {
-  title: null,
-  content: null,
-  tabs: [],
-  actions: undefined,
-  draggable: true,
-};
-
+export const DEFAULT_GLASS_ACTIONS = [minimizeAction, detachAction, closeAction];
 export class Glass {
   domNode;
 
   constructor({
-    title = DEFAULTS.title,
-    content = DEFAULTS.content,
-    tabs = DEFAULTS.tabs,
-    actions = DEFAULTS.actions,
-    draggable = DEFAULTS.draggable,
-    sash,
+    title = null,
+    content = null,
+    tabs = [],
+    actions = DEFAULT_GLASS_ACTIONS,
+    draggable = true,
+    sash = null,
     binaryWindow,
   }) {
     this.title = title;
@@ -69,12 +64,7 @@ export class Glass {
 
   createActions() {
     const containerEl = document.createElement('bw-glass-action-container');
-    const actions =
-      this.actions === undefined
-        ? BUILTIN_ACTIONS
-        : Array.isArray(this.actions)
-          ? this.actions
-          : [];
+    const actions = Array.isArray(this.actions) ? this.actions : [];
 
     for (const action of actions) {
       const label = action?.label ?? action;
@@ -102,5 +92,9 @@ export class Glass {
 
   get headerElement() {
     return this.domNode.querySelector('bw-glass-header');
+  }
+
+  get titleElement() {
+    return this.domNode.querySelector('bw-glass-title');
   }
 }

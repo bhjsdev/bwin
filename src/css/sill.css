@@ -9,7 +9,8 @@ bw-sill {
   padding-inline: var(--bw-glass-clearance);
 }
 
-.bw-minimized-glass {
+.bw-minimized-glass,
+.bw-minimized-detached-glass {
   display: block;
   flex-basis: 10%;
   height: 10px;
@@ -24,5 +25,19 @@ bw-sill {
 
   &:active {
     transform: scale(0.95);
+  }
+
+  animation: bw-minimized-glass-highlight 2s ease-out;
+}
+
+@keyframes bw-minimized-glass-highlight {
+  0% {
+    background-color: var(--bw-glass-header-bg-color);
+  }
+  30% {
+    background-color: var(--bw-minimized-glass-highlight-color);
+  }
+  100% {
+    background-color: var(--bw-glass-header-bg-color);
   }
 }

@@ -80,6 +80,7 @@ export default {
       // The muntin with the old ID will be removed during `this.update`
       parentSash.id = genId();
       parentSash.children = siblingSash.children;
+      parentSash.children.forEach((child) => (child.parent = parentSash));
 
       if (siblingSash.position === Position.Left) {
         siblingSash.width = parentSash.width;

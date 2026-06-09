@@ -1,14 +1,9 @@
-import closeAction from './actions.close';
-import minimizeAction from './actions.minimize';
-import maximizeAction from './actions.maximize';
-import { getMetricsFromElement } from '../utils';
-import { getIntersectRect } from '../rect';
-import { Position } from '../position';
-
-export const BUILTIN_ACTIONS = [minimizeAction, maximizeAction, closeAction];
+import { getMetricsFromElement } from '@/utils';
+import { getIntersectRect } from '@/rect';
+import { Position } from '@/position';
 
 export default {
-  enableActions() {
+  enableGlassActions() {
     this.handleMinimizedGlassClick();
     this.observeActionButtons();
   },
@@ -81,6 +76,7 @@ export default {
     this.updateDisabledState('.bw-glass-action--close');
     this.updateDisabledState('.bw-glass-action--minimize');
     this.updateDisabledState('.bw-glass-action--maximize');
+    this.updateDisabledState('.bw-glass-action--detach');
   },
 
   updateDisabledState(cssSelector) {
@@ -102,6 +98,8 @@ export default {
     return Array.from(els).find((el) => el.bwOriginalSashId === sashId);
   },
 
+  // Re-sync action button disabled state whenever panes are added/removed,
+  // so the last remaining pane can't be closed/minimized/maximized.
   observeActionButtons() {
     this.updateDisabledStateOfActionButtons();
 

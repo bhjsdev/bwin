@@ -219,6 +219,7 @@ export class Sash {
       throw new Error('[bwin] Maximum 2 children allowed');
     }
 
+    sash.parent = this;
     this.children.push(sash);
   }
 
@@ -239,6 +240,26 @@ export class Sash {
 
   getChildSiblingById(childId) {
     return this.children.find((child) => child.id !== childId);
+  }
+
+  // Leaf (pane) with the biggest area among self and descendants
+  getLargestLeaf() {
+    return this.getAllLeafDescendants().reduce((largest, leaf) =>
+      leaf.width * leaf.height > largest.width * largest.height ? leaf : largest
+    );
+  }
+
+  // Fraction of the parent this sash occupies along the split axis, e.g. 0.3
+  getRelativeSize() {
+    if (!this.parent) {
+      return 1;
+    }
+
+    if (this.position === Position.Left || this.position === Position.Right) {
+      return this.width / this.parent.width;
+    }
+
+    return this.height / this.parent.height;
   }
 
   get top() {

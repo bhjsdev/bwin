@@ -68,6 +68,8 @@ bw-glass-header {
   flex-shrink: 0;
   display: flex;
   align-items: center;
+  /* Prevent native text-select/drag while dragging the header */
+  user-select: none;
   gap: var(--bw-glass-header-gap);
   overflow: hidden;
   padding-inline: var(--bw-glass-header-gap);
@@ -143,28 +145,46 @@ bw-glass-action-container {
   }
 }
 
-.bw-glass-action--close {
+/* 
+  Action Icon Resources: 
+  https://shapecatcher.com
+  https://www.compart.com/en/unicode/category/So
+  🗖 🗗 ◫ □ ☐ ⊞ ⇱ ▣ ◱ ⿴ ⍇ ⤢ ❐
+*/
+
+.bw-glass-action--minimize {
   &::before {
-    content: '✕';
+    content: '−';
   }
 }
 
-.bw-glass-action--maximize {
+.bw-glass-action--detach {
   &::before {
-    /* 🗖 🗗 ◫ □ ☐ ⇱ ▣ ◱ */
     content: '☐';
   }
 }
 
-bw-pane[maximized] .bw-glass-action--maximize {
+.bw-glass-action--attach {
   &::before {
     content: '◱';
   }
 }
 
-.bw-glass-action--minimize {
+.bw-glass-action--maximize {
   &::before {
-    content: '−';
+    content: '🡥';
+  }
+}
+
+bw-pane[maximized] .bw-glass-action--maximize {
+  &::before {
+    content: '🡧';
+  }
+}
+
+.bw-glass-action--close {
+  &::before {
+    content: '✕';
   }
 }
 

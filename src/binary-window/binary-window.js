@@ -1,12 +1,18 @@
 import { Frame } from '../frame/frame';
-import { Glass } from './glass';
+import glassModule, { Glass, DEFAULT_GLASS_ACTIONS } from './glass';
 import { createDomNode } from '../utils';
-import draggableModule from './draggable';
 import trimModule from './trim';
-import actionsModule from './actions';
+import detachedGlassModule, { DEFAULT_DETACHED_GLASS_ACTIONS } from './detached-glass';
 
 export class BinaryWindow extends Frame {
   sillElement = null;
+
+  constructor(settings) {
+    super(settings);
+
+    this.theme = settings.theme || '';
+    this.actions = BinaryWindow.normActions(settings.actions);
+  }
 
   frame() {
     super.frame(...arguments);
@@ -17,12 +23,13 @@ export class BinaryWindow extends Frame {
 
   enableFeatures() {
     super.enableFeatures();
-    this.enableDrag();
-    this.enableActions();
+    this.enableGlassFeature();
+    this.enableDetachedGlassFeatures();
   }
 
   onPaneCreate(paneEl, sash) {
-    const glass = new Glass({ ...sash.store, sash, binaryWindow: this });
+    const glassActions = this.actions[0];
+    const glass = new Glass({ actions: glassActions, ...sash.store, sash, binaryWindow: this });
 
     paneEl.innerHTML = '';
     paneEl.append(glass.domNode);
@@ -81,6 +88,32 @@ export class BinaryWindow extends Frame {
       minimizedGlassEl.remove();
     }
   }
+
+  // Returns [glassActions, detachedGlassActions]
+  static normActions(actions) {
+    if (actions === undefined) return [DEFAULT_GLASS_ACTIONS, DEFAULT_DETACHED_GLASS_ACTIONS];
+    if (!actions || !Array.isArray(actions) || actions.length === 0) return [[], []];
+
+    // [glassActions]
+    if (actions.length === 1 && Array.isArray(actions[0])) return [actions[0], DEFAULT_DETACHED_GLASS_ACTIONS];
+
+    // [action1, action2, ...]
+    if (!actions.some(Array.isArray)) return [actions, DEFAULT_DETACHED_GLASS_ACTIONS];
+
+    // [undefined, detachedGlassActions]
+    if (actions.length >= 2 && !Array.isArray(actions[0]) && Array.isArray(actions[1]))
+      return [[], actions[1]];
+
+    // [glassActions, undefined]
+    if (actions.length >= 2 && Array.isArray(actions[0]) && !Array.isArray(actions[1]))
+      return [actions[0], []];
+
+    // [glassActions, detachedGlassActions]
+    if (actions.length >= 2 && Array.isArray(actions[0]) && Array.isArray(actions[1]))
+      return actions;
+
+    throw new Error(`[bwin] Invalid actions format`);
+  }
 }
 
-BinaryWindow.assemble(draggableModule, trimModule, actionsModule);
+BinaryWindow.assemble(glassModule, detachedGlassModule, trimModule);

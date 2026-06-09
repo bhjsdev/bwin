@@ -1,6 +1,7 @@
 import { ConfigNode } from './config-node';
 import { Position } from '../position';
 
+// 333 is a debug sentinel: if it surfaces downstream, a real width/height failed to reach here.
 const DEFAULTS = {
   width: 333,
   height: 333,

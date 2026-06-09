@@ -45,13 +45,23 @@ function route() {
 window.addEventListener('hashchange', route);
 route();
 
-navEl.querySelector('#_toggle-bg').addEventListener('click', () => {
-  const bgColor = 'hsl(0 0 90)';
-  const bodyEl = iframeEl.contentDocument?.body;
+navEl.querySelector('#_toggle-theme').addEventListener('click', () => {
+  const frameDoc = iframeEl.contentDocument;
+  const windowEls = frameDoc?.querySelectorAll('bw-window');
 
-  if (!bodyEl) return;
+  if (!windowEls?.length) return;
 
-  // Compare against '' rather than bgColor: the CSSOM re-serializes colors on
-  // read (e.g. hsl() -> rgb()), so equality with the original string fails.
-  bodyEl.style.backgroundColor = bodyEl.style.backgroundColor ? '' : bgColor;
+  const goDark = windowEls[0].getAttribute('theme') !== 'dark';
+
+  windowEls.forEach((windowEl) => {
+    if (goDark) {
+      windowEl.setAttribute('theme', 'dark');
+    } else {
+      windowEl.removeAttribute('theme');
+    }
+  });
+
+  frameDoc.body.style.backgroundColor = goDark ? 'hsl(0 0% 12%)' : '';
+  frameDoc.body.style.color = goDark ? 'hsl(0 0% 90%)' : '';
+  frameDoc.documentElement.style.colorScheme = goDark ? 'dark' : '';
 });

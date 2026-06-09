@@ -10,6 +10,7 @@ bw-window {
 }
 
 bw-pane {
+  isolation: isolate;
   position: absolute;
   overflow: auto;
   box-sizing: border-box;

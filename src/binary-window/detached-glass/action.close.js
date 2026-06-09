@@ -1,0 +1,14 @@
+import { detachedGlassManager } from './manager';
+
+export default {
+  label: '',
+  className: 'bw-glass-action--close',
+  onClick: (event) => {
+    const glassEl = event.target.closest('bw-glass[detached]');
+    if (!glassEl) return;
+
+    detachedGlassManager.removeGlassById(glassEl.id);
+    glassEl.remove();
+  },
+};
+
