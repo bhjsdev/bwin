@@ -46,15 +46,22 @@ window.addEventListener('hashchange', route);
 route();
 
 navEl.querySelector('#_toggle-theme').addEventListener('click', () => {
-  const windowEls = iframeEl.contentDocument?.querySelectorAll('bw-window');
+  const frameDoc = iframeEl.contentDocument;
+  const windowEls = frameDoc?.querySelectorAll('bw-window');
 
   if (!windowEls?.length) return;
 
+  const goDark = windowEls[0].getAttribute('theme') !== 'dark';
+
   windowEls.forEach((windowEl) => {
-    if (windowEl.getAttribute('theme') === 'dark') {
-      windowEl.removeAttribute('theme');
-    } else {
+    if (goDark) {
       windowEl.setAttribute('theme', 'dark');
+    } else {
+      windowEl.removeAttribute('theme');
     }
   });
+
+  frameDoc.body.style.backgroundColor = goDark ? 'hsl(0 0% 12%)' : '';
+  frameDoc.body.style.color = goDark ? 'hsl(0 0% 90%)' : '';
+  frameDoc.documentElement.style.colorScheme = goDark ? 'dark' : '';
 });
