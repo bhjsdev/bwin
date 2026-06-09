@@ -32,6 +32,7 @@ export class Glass {
     if (Array.isArray(this.tabs) && this.tabs.length > 0) {
       headerEl.append(this.createTabs());
     }
+// In the case title element not created detach action will break
     else {
       const titleEl = document.createElement('bw-glass-title');
       if (this.title) titleEl.append(createDomNode(this.title));
