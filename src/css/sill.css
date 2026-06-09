@@ -10,8 +10,7 @@ bw-sill {
 }
 
 .bw-minimized-glass,
-.bw-minimized-detached-glass
- {
+.bw-minimized-detached-glass {
   display: block;
   flex-basis: 10%;
   height: 10px;
