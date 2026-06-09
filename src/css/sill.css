@@ -35,7 +35,7 @@ bw-sill {
     background-color: var(--bw-glass-header-bg-color);
   }
   30% {
-    background-color: var(--bw-glass-highlight-color);
+    background-color: var(--bw-minimized-glass-highlight-color);
   }
   100% {
     background-color: var(--bw-glass-header-bg-color);
