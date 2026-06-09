@@ -35,7 +35,7 @@ parentElem.appendChild(elem);
 parentElem.appendChild(elem2);
 
 const settings = {
-  width: 999,
+  width: 777,
   height: 444,
   actions: [BUILTIN_ACTIONS],
   children: [
