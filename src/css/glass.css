@@ -166,7 +166,7 @@ bw-glass-action-container {
 
 .bw-glass-action--attach {
   &::before {
-    content: '◱';
+    content: '⊞';
   }
 }
 
