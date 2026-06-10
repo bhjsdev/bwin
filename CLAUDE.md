@@ -10,6 +10,17 @@
 
 - Don't run tests or builds after finishing a feature or fix unless asked.
 
+## Terminology
+
+bwin borrows real window-construction terms — match their meaning in code, comments, and docs:
+
+- **Window** — the whole layout; the root config node. Renders `<bw-window>` and carries window-level props (`width`, `height`, `fitContainer`).
+- **Sash** — a node in the binary tree that organizes panes. Identified by a Sash ID (e.g. `AB-123`). A leaf sash renders a pane; a sash with children renders a muntin.
+- **Pane** — a leaf sash, rendered as `<bw-pane sash-id="...">`. Holds a single glass.
+- **Muntin** — an internal (parent) sash, rendered as `<bw-muntin sash-id="...">`: the draggable vertical/horizontal divider used to resize panes.
+- **Glass** / **attached glass** — the glass inside a `bw-pane` (its header + content). Plain "glass" by default; "attached glass" when contrasting with detached.
+- **Detached glass** — the same glass component floating free outside any `bw-pane` (the OS-window-like panel from the detach action), appended directly to the window.
+
 ## Naming
 
 - Suffix DOM-element variables with `El`, and keep the noun specific: `activeGlassEl`, not `activeEl`. Name element accessors `get<Noun>` to match (e.g. `getActiveGlass`).
