@@ -24,8 +24,9 @@ export default {
     detachedGlass.domNode.bwOriginalRelativeSize = paneSash.getRelativeSize();
     
     detachedGlass.contentElement.replaceWith(glassContentEl);
-
-    detachedGlass.titleElement.replaceWith(glassTitleEl);
+    
+    // Attached glass may only render tabs without title element
+    if (glassTitleEl) detachedGlass.titleElement.replaceWith(glassTitleEl);
 
     binaryWindow.removePane(paneSashId);
   },
