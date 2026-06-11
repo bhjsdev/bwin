@@ -31,6 +31,7 @@ bwin borrows real window-construction terms — match their meaning in code, com
 
 - Comment only when it adds something the code doesn't already say.
 - Keep comments to 2 lines max, 100 chars per line. If one genuinely needs more, prefix it with `RATIONAL:`.
+- Wrap code keywords in backticks — API/method names, variable names, identifiers (e.g. `addPane`, `activeDragGlassEl`).
 
 ## Debug sentinel values
 
