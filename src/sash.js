@@ -54,7 +54,20 @@ export class Sash {
     this.minWidth = minWidth;
     this.minHeight = minHeight;
     this.resizeStrategy = resizeStrategy;
-    // Store non-core props from `ConfigNode` e.g. content, title, tabs, actions, etc
+    /*
+     * Stores non-core props from `ConfigNode` e.g. content, title, tabs, actions, event
+     * handlers (e.g. `onDrop`).
+     *
+     * RATIONAL: `store` is meant as a one-way seed — it carries these from the
+     * top-level API into pane/glass construction, then should stop. It is NOT a live
+     * model: moves like attach/detach/swap exchange data through the DOM, not here,
+     * because the DOM is visible and easy to debug in the browser.
+     *
+     * TECH DEBT: not yet a pure seed — `onDrop` (droppable.js) is read at drop time
+     * and `resizable` (muntin.js) when a pane is split, both long after construction.
+     * Until those are moved onto the DOM/closures at build time, `store` can't be
+     * cleared in `onPaneCreate` without breaking them.
+     */
     this.store = store;
   }
 
