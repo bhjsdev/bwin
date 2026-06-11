@@ -1,4 +1,4 @@
-import { DetachedGlass } from './class';
+import { DetachedGlass } from './detached-glass';
 import { detachedGlassManager } from './manager';
 
 const DEFAULT_GLASS_WIDTH = 200;

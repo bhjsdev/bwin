@@ -5,7 +5,7 @@ import minimizeAction from './action.minimize';
 import maximizeAction from './action.maximize';
 import detachAction from './action.detach';
 
-export { Glass, DEFAULT_GLASS_ACTIONS } from './class';
+export { Glass, DEFAULT_GLASS_ACTIONS } from './glass';
 
 // @deprecated - use DEFAULT_GLASS_ACTIONS instead
 export const BUILTIN_ACTIONS = [minimizeAction, maximizeAction, detachAction, closeAction];

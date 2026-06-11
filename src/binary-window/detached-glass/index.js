@@ -5,7 +5,7 @@ import dragModule from './drag';
 import resizeModule from './resize';
 import restoreModule from './restore';
 
-export { DetachedGlass, DEFAULT_DETACHED_GLASS_ACTIONS } from './class';
+export { DetachedGlass, DEFAULT_DETACHED_GLASS_ACTIONS } from './detached-glass';
 
 export default {
   enableDetachedGlassFeatures() {
