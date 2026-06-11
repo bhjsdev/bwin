@@ -1,4 +1,4 @@
-import { genBrightColor, genId, createDomNode, swapChildNodes } from '../utils.js';
+import { genBrightColor, genId, createDomNode } from '../utils.js';
 import { Position } from '../position.js';
 import { Sash } from '../sash.js';
 import { createPaneElement, addPaneSash, updatePaneElement } from './pane-utils.js';
@@ -46,13 +46,13 @@ export default {
    * @param {'top'|'right'|'bottom'|'left'} position - The position of the new pane relative to the target pane
    * @returns {Sash} - The newly created sash
    */
-  addPane(targetPaneSashId, { position, size, id }) {
+  addPane(targetPaneSashId, { position, size, id, store }) {
     if (!position) throw new Error('[bwin] Position is required when adding pane');
 
     const targetPaneSash = this.rootSash.getById(targetPaneSashId);
     if (!targetPaneSash) throw new Error('[bwin] Parent sash not found when adding pane');
 
-    const newPaneSash = addPaneSash(targetPaneSash, { position, size, id });
+    const newPaneSash = addPaneSash(targetPaneSash, { position, size, id, store });
 
     this.update();
 
@@ -102,17 +102,21 @@ export default {
   },
 
   swapPanes(sourcePaneEl, targetPaneEl) {
-    const sourcePaneSashId = getSashIdFromPane(sourcePaneEl);
-    const targetPaneSashId = getSashIdFromPane(targetPaneEl);
+    const sourceSash = this.rootSash.getById(getSashIdFromPane(sourcePaneEl));
+    const targetSash = this.rootSash.getById(getSashIdFromPane(targetPaneEl));
 
     const sourcePaneCanDrop = sourcePaneEl.getAttribute('can-drop') !== 'false';
     const targetPaneCanDrop = targetPaneEl.getAttribute('can-drop') !== 'false';
 
-    this.rootSash.swapIds(sourcePaneSashId, targetPaneSashId);
-    swapChildNodes(sourcePaneEl, this.activeDropPaneEl);
+    // Swap stores (the single source of truth), then re-render each pane in place.
+    // The first render adopts the other pane's live wrapper, moving it out before the
+    // second render clears it — orphaned nodes stay alive via the swapped store refs.
+    const tempStore = sourceSash.store;
+    sourceSash.store = targetSash.store;
+    targetSash.store = tempStore;
 
-    sourcePaneEl.setAttribute('sash-id', targetPaneSashId);
-    targetPaneEl.setAttribute('sash-id', sourcePaneSashId);
+    this.onPaneCreate(sourcePaneEl, sourceSash);
+    this.onPaneCreate(targetPaneEl, targetSash);
 
     sourcePaneEl.setAttribute('can-drop', targetPaneCanDrop);
     targetPaneEl.setAttribute('can-drop', sourcePaneCanDrop);

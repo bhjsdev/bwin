@@ -25,7 +25,7 @@ export function updatePaneElement(sash) {
   return paneEl;
 }
 
-function addPaneSashToLeft(targetPaneSash, { size, id }) {
+function addPaneSashToLeft(targetPaneSash, { size, id, store }) {
   const sizeParsed = parseSize(size);
   let newLeftSashWidth = targetPaneSash.width / 2;
 
@@ -37,6 +37,7 @@ function addPaneSashToLeft(targetPaneSash, { size, id }) {
 
   const newLeftSash = new Sash({
     id,
+    store,
     top: targetPaneSash.top,
     left: targetPaneSash.left,
     width: newLeftSashWidth,
@@ -46,6 +47,8 @@ function addPaneSashToLeft(targetPaneSash, { size, id }) {
 
   const newRightSash = new Sash({
     id: targetPaneSash.id,
+    // Continuing pane keeps the target's store so its live glass nodes stay tracked.
+    store: targetPaneSash.store,
     top: targetPaneSash.top,
     left: targetPaneSash.left + newLeftSash.width,
     width: targetPaneSash.width - newLeftSashWidth,
@@ -63,7 +66,7 @@ function addPaneSashToLeft(targetPaneSash, { size, id }) {
   return newLeftSash;
 }
 
-function addPaneSashToRight(targetPaneSash, { size, id }) {
+function addPaneSashToRight(targetPaneSash, { size, id, store }) {
   const sizeParsed = parseSize(size);
   let newRightSashWidth = targetPaneSash.width / 2;
 
@@ -75,6 +78,8 @@ function addPaneSashToRight(targetPaneSash, { size, id }) {
 
   const newLeftSash = new Sash({
     id: targetPaneSash.id,
+    // Continuing pane keeps the target's store so its live glass nodes stay tracked.
+    store: targetPaneSash.store,
     left: targetPaneSash.left,
     top: targetPaneSash.top,
     width: targetPaneSash.width - newRightSashWidth,
@@ -85,6 +90,7 @@ function addPaneSashToRight(targetPaneSash, { size, id }) {
 
   const newRightSash = new Sash({
     id,
+    store,
     left: targetPaneSash.left + newLeftSash.width,
     top: targetPaneSash.top,
     width: newRightSashWidth,
@@ -100,7 +106,7 @@ function addPaneSashToRight(targetPaneSash, { size, id }) {
   return newRightSash;
 }
 
-function addPaneSashToTop(targetPaneSash, { size, id }) {
+function addPaneSashToTop(targetPaneSash, { size, id, store }) {
   const sizeParsed = parseSize(size);
   let newTopSashHeight = targetPaneSash.height / 2;
 
@@ -112,6 +118,7 @@ function addPaneSashToTop(targetPaneSash, { size, id }) {
 
   const newTopSash = new Sash({
     id,
+    store,
     left: targetPaneSash.left,
     top: targetPaneSash.top,
     width: targetPaneSash.width,
@@ -121,6 +128,8 @@ function addPaneSashToTop(targetPaneSash, { size, id }) {
 
   const newBottomSash = new Sash({
     id: targetPaneSash.id,
+    // Continuing pane keeps the target's store so its live glass nodes stay tracked.
+    store: targetPaneSash.store,
     left: targetPaneSash.left,
     top: targetPaneSash.top + newTopSash.height,
     width: targetPaneSash.width,
@@ -137,7 +146,7 @@ function addPaneSashToTop(targetPaneSash, { size, id }) {
   return newTopSash;
 }
 
-function addPaneSashToBottom(targetPaneSash, { size, id }) {
+function addPaneSashToBottom(targetPaneSash, { size, id, store }) {
   const sizeParsed = parseSize(size);
   let newBottomSashHeight = targetPaneSash.height / 2;
 
@@ -149,6 +158,8 @@ function addPaneSashToBottom(targetPaneSash, { size, id }) {
 
   const newTopSash = new Sash({
     id: targetPaneSash.id,
+    // Continuing pane keeps the target's store so its live glass nodes stay tracked.
+    store: targetPaneSash.store,
     top: targetPaneSash.top,
     left: targetPaneSash.left,
     width: targetPaneSash.width,
@@ -159,6 +170,7 @@ function addPaneSashToBottom(targetPaneSash, { size, id }) {
 
   const newBottomSash = new Sash({
     id,
+    store,
     top: targetPaneSash.top + newTopSash.height,
     left: targetPaneSash.left,
     width: targetPaneSash.width,
@@ -177,17 +189,17 @@ function addPaneSashToBottom(targetPaneSash, { size, id }) {
 /**
  * @todo add pane with more Sash props e.g. minWidth, minHeight, etc.
  */
-export function addPaneSash(targetPaneSash, { position, size, id, minWidth, minHeight }) {
+export function addPaneSash(targetPaneSash, { position, size, id, minWidth, minHeight, store }) {
   if (position === Position.Left) {
-    return addPaneSashToLeft(targetPaneSash, { size, id });
+    return addPaneSashToLeft(targetPaneSash, { size, id, store });
   }
   else if (position === Position.Right) {
-    return addPaneSashToRight(targetPaneSash, { size, id });
+    return addPaneSashToRight(targetPaneSash, { size, id, store });
   }
   else if (position === Position.Top) {
-    return addPaneSashToTop(targetPaneSash, { size, id });
+    return addPaneSashToTop(targetPaneSash, { size, id, store });
   }
   else if (position === Position.Bottom) {
-    return addPaneSashToBottom(targetPaneSash, { size, id });
+    return addPaneSashToBottom(targetPaneSash, { size, id, store });
   }
 }

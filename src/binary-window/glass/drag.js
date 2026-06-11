@@ -21,12 +21,12 @@ export default {
     // Add the pane of glass next to the current pane, vertically or horizontally
     else {
       const oldSashId = getSashIdFromPane(activeDragGlassEl);
+      // Capture the source store before removal; its live wrappers flow into the new
+      // pane, so addPane re-renders the real glass (no manual DOM move needed).
+      const sourceStore = this.rootSash.getById(oldSashId).store;
       this.removePane(oldSashId);
 
-      const newPaneSash = this.addPane(sash.id, { position: dropArea, id: oldSashId });
-      // `addPane` seeds the pane with an empty placeholder glass; replace it with
-      // the dragged glass so the pane holds exactly one (the real) glass.
-      newPaneSash.domNode.replaceChildren(activeDragGlassEl);
+      this.addPane(sash.id, { position: dropArea, id: oldSashId, ...sourceStore });
     }
   },
 

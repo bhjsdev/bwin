@@ -54,8 +54,15 @@ export class Sash {
     this.minWidth = minWidth;
     this.minHeight = minHeight;
     this.resizeStrategy = resizeStrategy;
-    // Store non-core props from `ConfigNode` e.g. content, title, tabs, actions, etc
+    // Canonical store of non-core props (content, title, tabs, actions, flags).
+    // After first render `content`/`title` hold the live wrapper nodes, so a move
+    // carries the same DOM — see `setStore`.
     this.store = store;
+  }
+
+  // Single funnel for store writes so updates stay intentional and traceable.
+  setStore(partial) {
+    Object.assign(this.store, partial);
   }
 
   walk(callback) {
@@ -188,19 +195,6 @@ export class Sash {
     }
 
     return null;
-  }
-
-  swapIds(id1, id2) {
-    const sash1 = this.getById(id1);
-    const sash2 = this.getById(id2);
-
-    if (!sash1 || !sash2) {
-      throw new Error('[bwin] Sash not found when swapping IDs');
-    }
-
-    const tempId = sash1.id;
-    sash1.id = sash2.id;
-    sash2.id = tempId;
   }
 
   // Get all ids of self and descendants

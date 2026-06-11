@@ -1,5 +1,3 @@
-import { extractChildNodes } from '@/utils';
-
 export default {
   label: '',
   className: 'bw-glass-action--attach',
@@ -24,15 +22,9 @@ export default {
       size = 0.5;
     }
 
-    // Pass the inner nodes, not the bw-glass-content wrapper — Glass adds its own.
-    const contentEl = detachedGlassEl.querySelector('bw-glass-content');
-
-    binaryWindow.addPane(targetSashId, {
-      position,
-      size,
-      content: extractChildNodes(contentEl),
-      title: detachedGlassEl.querySelector('bw-glass-title')?.textContent || '',
-    });
+    // Restore from the stashed store — content/title/tabs/actions/flags all return.
+    // Its live content/title wrappers are adopted back out of the detached glass.
+    binaryWindow.addPane(targetSashId, { position, size, ...detachedGlassEl.bwStore });
 
     binaryWindow.removeDetachedGlass(detachedGlassEl.id);
   },

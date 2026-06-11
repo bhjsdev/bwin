@@ -4,6 +4,20 @@ import minimizeAction from './action.minimize';
 import detachAction from './action.detach';
 
 export const DEFAULT_GLASS_ACTIONS = [minimizeAction, detachAction, closeAction];
+
+// Reuse `value` as the wrapper when it's already the live wrapper element (a move
+// carries the same node); otherwise create a fresh wrapper and fill it from string/Node.
+function buildWrapper(tagName, value) {
+  if (value instanceof Element && value.tagName.toLowerCase() === tagName) {
+    return value;
+  }
+
+  const wrapperEl = document.createElement(tagName);
+  const node = createDomNode(value);
+  node && wrapperEl.append(node);
+  return wrapperEl;
+}
+
 export class Glass {
   domNode;
 
@@ -33,18 +47,13 @@ export class Glass {
       headerEl.append(this.createTabs());
     }
     else {
-      const titleEl = document.createElement('bw-glass-title');
-      if (this.title) titleEl.append(createDomNode(this.title));
-      headerEl.append(titleEl);
+      headerEl.append(buildWrapper('bw-glass-title', this.title));
     }
 
     headerEl.setAttribute('can-drag', this.draggable);
     headerEl.append(this.createActions());
 
-    const contentEl = document.createElement('bw-glass-content');
-    const contentNode = createDomNode(this.content);
-
-    contentNode && contentEl.append(contentNode);
+    const contentEl = buildWrapper('bw-glass-content', this.content);
 
     this.domNode = document.createElement('bw-glass');
     this.domNode.append(headerEl, contentEl);

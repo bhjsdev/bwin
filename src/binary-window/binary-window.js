@@ -34,6 +34,9 @@ export class BinaryWindow extends Frame {
     paneEl.innerHTML = '';
     paneEl.append(glass.domNode);
 
+    // Track the live wrappers so a later move carries these exact nodes, not a rebuild.
+    sash.setStore({ content: glass.contentElement, title: glass.titleElement });
+
     if (this.debug) {
       glass.contentElement.prepend(`${sash.id}`);
     }
@@ -52,9 +55,10 @@ export class BinaryWindow extends Frame {
    */
   addPane(targetPaneSashId, props) {
     const { position, size, id, ...glassProps } = props;
-    const paneSash = super.addPane(targetPaneSashId, { position, size, id });
-    const glass = new Glass({ ...glassProps, sash: paneSash, binaryWindow: this });
-    paneSash.domNode.append(glass.domNode);
+    // Seed the new sash's store, then render from it via onPaneCreate — one glass,
+    // built the same way as initial render, with live-wrapper write-back.
+    const paneSash = super.addPane(targetPaneSashId, { position, size, id, store: glassProps });
+    this.onPaneCreate(paneSash.domNode, paneSash);
     return paneSash;
   }
 
