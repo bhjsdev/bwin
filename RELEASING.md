@@ -10,9 +10,20 @@ under `latest`, `X.Y.Z-dev.N` under `dev`. The workflow creates and pushes the m
 1. **Bump the version** in `package.json` via a PR. Either edit it manually, or run an
    `npm version` command with `--no-git-tag-version` (the flag updates `package.json`
    without committing or tagging — the workflow handles the tag):
-   - Formal release: `npm version X.Y.Z --no-git-tag-version`
-   - Dev prerelease: `npm version prerelease --preid=dev --no-git-tag-version`
-     (e.g. `0.3.3-dev.0` → `0.3.3-dev.1`)
+   - Formal release — use `patch` for fixes, `minor` for backward-compatible features,
+     `major` for breaking changes (e.g. a patch bump `0.4.1` → `0.4.2`):
+
+     ```sh
+     npm version patch --no-git-tag-version
+     # or pin it explicitly:
+     npm version 0.4.2 --no-git-tag-version
+     ```
+
+   - Dev prerelease (e.g. `0.4.2-dev.0` → `0.4.2-dev.1`):
+
+     ```sh
+     npm version prerelease --preid=dev --no-git-tag-version
+     ```
 2. **Merge the PR** into `main`.
 3. **Run the workflow** — *Publish to npm* in the Actions tab, or
    `gh workflow run publish.yml`. It pauses on the `PUBLISH` environment for approval,
