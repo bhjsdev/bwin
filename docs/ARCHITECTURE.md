@@ -8,7 +8,7 @@
 
 ## 1. The window-construction metaphor
 
-bwin borrows real window-glazing vocabulary. Matching it in code, comments, and docs is a hard project convention:
+bwin borrows real window-construction vocabulary. Matching it in code, comments, and docs is a hard project convention:
 
 | Term | Meaning | Renders as |
 |------|---------|-----------|
@@ -27,33 +27,47 @@ bwin borrows real window-glazing vocabulary. Matching it in code, comments, and 
 bwin separates a **model** from **two stacked view layers**. The model is the single source of truth for geometry; each view layer renders the model to DOM and wires its own interactions. `BinaryWindow extends Frame`, so the layers stack rather than sit side by side.
 
 ```
-      Config               Model                Frame             BinaryWindow
-                                            (core tiling)          (enhance)
+      Config             Sash tree              Frame             BinaryWindow
+                          (model)           (core tiling)          (enhance)
  ┌──────────────┐     ┌──────────────┐     ┌──────────────┐     ┌──────────────┐
  │ ConfigRoot   │     │ Sash tree    │     │ bw-window    │     │ bw-glass     │
- │ ConfigNode   │ ──> │ root Sash    │ ──> │ bw-muntin    │ ──> │ drag · drop  │
- │ buildSash-   │     │ + children   │     │ bw-pane      │     │ detached     │
- │   Tree()     │     │              │     │ resize · fit │     │ sill         │
+ │ ConfigNode   │ ──> │ root Sash    │ ──> │ bw-muntin    │ ──> │ drag         │
+ │ buildSash-   │     │ + children   │     │ bw-pane      │     │ drop         │
+ │   Tree()     │     │              │     │ resize       │     │ detached     │
+ │              │     │              │     │ fit          │     │ sill         │
  └──────────────┘     └──────────────┘     └──────────────┘     └──────────────┘
                               ▲                                         │
                               └─────────────────────────────────────────┘
 
-  ──>  config compiles to the Model; the two view layers render it to DOM.
-       The arc: an interaction mutates the Sash tree, then update() re-renders.
+  ──>  config compiles to the sash tree; the two view layers render it to DOM.
+  Example flow: drag a muntin ─> update the sash tree ─> re-create the layout
+  (update()). Every interaction follows this shape: mutate the tree, re-render.
 ```
 
-- **Model** — `Sash` (`src/sash.js`) is the single source of truth for geometry. A binary tree of regions; each node holds `left/top/width/height`, `minWidth/minHeight`, `resizeStrategy`, and a `store` bag. Setters cascade geometry to children; nothing else owns layout state.
-- **Frame layer — core tiling** (`src/frame/`). The view layer that *mirrors the model*. It renders the window, **muntins**, and **panes**, and owns **pane resizing** — dragging a muntin mutates the sash tree, the defining feature of a tiling manager. It also handles generic drop infrastructure and fit-to-container. Frame renders panes but **not** their contents — a `<bw-pane>` is an empty region until the layer above fills it.
-- **BinaryWindow layer — enhanced interaction** (`src/binary-window/`). `extends Frame` and adds the user-facing window experience on top: it renders a **glass** into each pane (`onPaneCreate`), and adds glass drag-and-drop rearrangement, the minimize/maximize/close/detach actions, **detached** (floating) glasses, and the **sill**. This layer is where "windows" (glasses) live; the Frame layer underneath only knows panes.
+**Model — `Sash`** (`src/sash.js`)
+The single source of truth for geometry; nothing else owns layout state.
+- A binary tree of regions. Each node holds `left/top/width/height`, `minWidth/minHeight`, `resizeStrategy`, and a `store` bag.
+- Setters cascade geometry down to children, so the tree stays consistent after any change.
 
-Rendering is one-directional in both layers: model → DOM, via `glaze()` (initial render) and `update()` (incremental reconcile). An interaction in either layer mutates the Sash tree and calls `update()`; the DOM follows. Features are mixed onto each class's prototype via `assemble()` and attached to the live DOM in `enableFeatures()`.
+**Frame layer — core tiling** (`src/frame/`)
+The view layer that *mirrors the model*. Renders the structure, owns resizing.
+- Renders the window, **muntins**, and **panes**.
+- Owns **pane resizing**: dragging a muntin mutates the sash tree — the defining feature of a tiling manager. Also handles generic drop infrastructure and fit-to-container.
+- Renders panes but **not** their contents — a `<bw-pane>` is an empty region until the layer above fills it.
+
+**BinaryWindow layer — enhanced interaction** (`src/binary-window/`)
+`extends Frame` and adds the user-facing window experience on top.
+- Renders a **glass** into each pane (`onPaneCreate`) — this layer is where "windows" (glasses) live; the Frame layer underneath only knows panes.
+- Adds glass drag-and-drop rearrangement, the minimize/maximize/close/detach actions, **detached** (floating) glasses, and the **sill**.
+
+Rendering is one-directional in both layers: sash tree → DOM, via `glaze()` (initial render) and `update()` (incremental reconcile). An interaction in either layer mutates the sash tree and calls `update()`; the DOM follows. Features are mixed onto each class's prototype via `assemble()` and attached to the live DOM in `enableFeatures()`.
 
 ### The `mount()` lifecycle
 
 `Frame.mount(containerEl)` is the normal entry point and runs two phases:
 
 1. **`frame(containerEl)`** — *DOM creation.* Creates `<bw-window>`, calls `glaze()` to render the whole sash tree, appends to the container. `BinaryWindow.frame()` additionally appends `<bw-sill>`.
-2. **`enableFeatures()`** — *behavior wiring.* Attaches event listeners for resize/drop/fit; `BinaryWindow` adds glass and detached-glass features.
+2. **`enableFeatures()`** — *interaction wiring.* Attaches event listeners for resize/drop/fit; `BinaryWindow` adds glass and detached-glass features.
 
 This split is deliberate and is itself an integration seam — `react-bwin` skips `mount()`, sets `windowElement`/`containerElement`/`sillElement` from its own React-created DOM, then calls `enableFeatures()` directly (see §9).
 
@@ -107,8 +121,8 @@ ConfigRoot(settings)                       config-root.js
   extends ConfigNode                       config-node.js
   └ buildSashTree({ resizeStrategy })
       ├ createSash()                  ─────────────> new Sash(...)   (store = nonCoreData)
-      ├ normConfig(children[0]) → createPrimaryConfigNode
-      ├ normConfig(children[1]) → createSecondaryConfigNode(…, primary)
+      ├ normConfig(children[0]) ──> createPrimaryConfigNode
+      ├ normConfig(children[1]) ──> createSecondaryConfigNode(…, primary)
       │     (infers opposite position / complementary size from the sibling)
       └ recurse into each child's buildSashTree()
 ```
@@ -217,10 +231,10 @@ Because Sash IDs are stable across an operation (e.g. `removePane` promotes a si
 ### 8.1 Resize (`frame/resizable.js`)
 Drag a muntin to resize its two children. Uses **document-bound `mousedown`/`mousemove`/`mouseup`** (the older pattern — see §11). On `mousedown` over a `<bw-muntin>` (unless `resizable="false"`), records the active muntin sash; on `mousemove`, applies the delta to the two children (clamped by `calcMinWidth`/`calcMinHeight`) and calls `update()`; on `mouseup`, clears state. A `body--bw-resize-x/y` class sets the cursor during the drag.
 
-### 8.2 Drop / drag-rearrange (native HTML DnD)
-Dragging an attached glass and dropping it on a pane rearranges the layout. Split across three layers:
+### 8.2 Glass drag-and-drop rearrangement (native HTML DnD)
+Dragging an attached glass and dropping it on a pane rearranges the layout. Split across three files:
 
-- **`frame/droppable.js`** — generic drop infra on `windowElement`: `dragover` (must `preventDefault` to allow drop; finds the `<bw-pane>` under cursor, computes the zone via `getCursorPosition`, writes it to the pane's `drop-area` attribute so CSS paints a preview), `dragleave` (with a Chrome child-element guard), and `drop` (resolves the sash, calls the overridable `onPaneDrop(event, sash)` stub, then any `sash.store.onDrop`).
+- **`frame/droppable.js`** — generic drop infrastructure on `windowElement`: `dragover` (must `preventDefault` to allow drop; finds the `<bw-pane>` under cursor, computes the zone via `getCursorPosition`, writes it to the pane's `drop-area` attribute so CSS paints a preview), `dragleave` (with a Chrome child-element guard), and `drop` (resolves the sash, calls the overridable `onPaneDrop(event, sash)` stub, then any `sash.store.onDrop`).
 - **`binary-window/glass/drag.js`** — arms the attached-glass drag and provides the **real `onPaneDrop`**. A native drag is one document-global gesture, so the dragged element is tracked in a **module-level** `activeDragGlassEl` (only one glass drags at a time). `mousedown` on a `bw-glass-header` (left button, `can-drag` not false) sets `draggable=true` on the glass; `dragstart` saves and disables the source pane's `can-drop` so it isn't its own target; `dragend`/`mouseup` clean up and carry `can-drop` back.
 - **`src/position.js`** — `getCursorPosition` splits a pane into 5 zones (top/right/bottom/left/center) using the two diagonals plus a center box (`centerRadio = 0.3`).
 
@@ -306,7 +320,7 @@ CSS is split by concern: `vars.css` (custom properties — sizes, shadows, color
 
 These are enforced project conventions (see `CLAUDE.md`):
 
-- **Terminology** — use the glazing metaphor (§1) precisely; don't pick a name whose well-known meaning differs from what the code does.
+- **Terminology** — use the window-construction metaphor (§1) precisely; don't pick a name whose well-known meaning differs from what the code does.
 - **Naming** — suffix DOM-element variables with `El` and keep the noun specific (`activeGlassEl`, not `activeEl`); name accessors `get<Noun>`. Name constants for their context (`MIN_RESIZE_WIDTH`, not `MIN_WIDTH`).
 - **Interaction code (preferred for new features)** — Pointer Events + `setPointerCapture` (one path for mouse/touch/pen; capture keeps move events flowing and self-releases) over document-bound `mouse*`; **delegated listeners on `windowElement`** (constant listener count); **create affordance DOM on demand** (on hover), not eagerly; scope child queries with `:scope > selector`. *Note:* existing `resizable.js` and the attached-glass `drag.js` still use the older `document` + `mouse*` style; detached glass `move.js`/`resize.js` use the modern pattern.
 - **Comments** — only when they add what the code doesn't say; ≤2 lines / 100 chars; prefix a genuinely longer one with `RATIONAL:`; wrap identifiers in backticks.
