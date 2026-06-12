@@ -5,6 +5,7 @@ Operational rules for working in this repo. Detailed background lives in `docs/`
 - **[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)** — system design: model + two view layers, the config→sash compile, the `store` bag, rendering/reconcile, interaction features, public API.
 - **[`docs/context/conventions.md`](docs/context/conventions.md)** — full coding conventions (terminology, naming, comments, debug sentinels, interaction code, dev pages) with rationale. The sections below are the checklist; that file is the *why*.
 - **[`docs/context/react-bwin-integration.md`](docs/context/react-bwin-integration.md)** — the downstream `react-bwin` contract; check before changing internals, `sash.store` keys, or actions defaults.
+- **[`docs/TECH_DEBT.md`](docs/TECH_DEBT.md)** — known design flaws and compromises. Check before reworking an area; update it when you take on or pay down debt. (Bugs/features → GitHub issues.)
 
 ## Git
 
