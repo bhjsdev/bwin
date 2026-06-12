@@ -1,41 +1,32 @@
 # CLAUDE.md
 
+Operational rules for working in this repo. Detailed background lives in `docs/` — read the relevant file before non-trivial work:
+
+- **[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)** — system design: model + two view layers, the config→sash compile, the `store` bag, rendering/reconcile, interaction features, public API.
+- **[`docs/context/conventions.md`](docs/context/conventions.md)** — full coding conventions (terminology, naming, comments, debug sentinels, interaction code, dev pages) with rationale. The sections below are the checklist; that file is the *why*.
+- **[`docs/context/react-bwin-integration.md`](docs/context/react-bwin-integration.md)** — the downstream `react-bwin` contract; check before changing internals, `sash.store` keys, or actions defaults.
+- **[`docs/TECH_DEBT.md`](docs/TECH_DEBT.md)** — known design flaws and compromises. Check before reworking an area; update it when you take on or pay down debt. (Bugs/features → GitHub issues.)
+
 ## Git
 
 - **Don't `git commit` or `git push` unless the same message explicitly asks for it.** Approval doesn't carry over — ask each time.
 - When committing, print the commit message in your reply.
-- Type commits that only touch `dev/` as plain `chore:` — never `feat:`/`fix:`, no `(dev)` scope. It's test scaffolding, not library source (see [Dev pages](#dev-pages-dev)).
+- **No Claude attribution trailers** — never add `Co-Authored-By: Claude` or `Generated with Claude Code` (or similar) to commit messages or PR descriptions.
+- Type commits that only touch `dev/` as plain `chore:` — never `feat:`/`fix:`, no `(dev)` scope. It's test scaffolding, not library source.
 
 ## Testing
 
 - Don't run tests or builds after finishing a feature or fix unless asked.
 
-## Terminology
+## Conventions (checklist)
 
-bwin borrows real window-construction terms — match their meaning in code, comments, and docs:
+Full detail + rationale in [`docs/context/conventions.md`](docs/context/conventions.md).
 
-- **Window** — the whole layout; the root config node. Renders `<bw-window>` and carries window-level props (`width`, `height`, `fitContainer`).
-- **Sash** — a node in the binary tree that organizes panes. Identified by a Sash ID (e.g. `AB-123`). A leaf sash renders a pane; a sash with children renders a muntin.
-- **Pane** — a leaf sash, rendered as `<bw-pane sash-id="...">`. Holds a single glass.
-- **Muntin** — an internal (parent) sash, rendered as `<bw-muntin sash-id="...">`: the draggable vertical/horizontal divider used to resize panes.
-- **Glass** / **attached glass** — the glass inside a `bw-pane` (its header + content). Plain "glass" by default; "attached glass" when contrasting with detached.
-- **Detached glass** — the same glass component floating free outside any `bw-pane` (the OS-window-like panel from the detach action), appended directly to the window.
-
-## Naming
-
-- Suffix DOM-element variables with `El`, and keep the noun specific: `activeGlassEl`, not `activeEl`. Name element accessors `get<Noun>` to match (e.g. `getActiveGlass`).
-- Name constants for the context they apply to, not just the quantity: `MIN_RESIZE_WIDTH`, not `MIN_WIDTH` — so they aren't confused with unrelated values like creation-time defaults.
-- Prefer established domain/library terms and match their conventional meaning. Don't pick a name whose well-known meaning differs from what the code does — e.g. jQuery's `unwrap` removes the wrapper in place, so `extractChildNodes` is clearer for moving children into a fragment.
-
-## Comments
-
-- Comment only when it adds something the code doesn't already say.
-- Keep comments to 2 lines max, 100 chars per line. If one genuinely needs more, prefix it with `RATIONAL:`.
-- Wrap code keywords in backticks — API/method names, variable names, identifiers (e.g. `addPane`, `activeDragGlassEl`).
-
-## Debug sentinel values
-
-- Leave repeating-digit literals like `222` and `333` in default/fallback paths alone — they're intentional debug sentinels, not magic numbers. Don't rename them to constants or replace them. If one surfaces in a lower-level API or the rendered output, a guard upstream was bypassed and a real value leaked — investigate that instead.
+- **Terminology** — use the window-construction metaphor precisely; glossary in [`docs/ARCHITECTURE.md` §1](docs/ARCHITECTURE.md#1-the-window-construction-metaphor). Plain "glass" by default; "attached glass" only when contrasting with detached.
+- **Naming** — DOM-element vars get an `El` suffix with a specific noun (`activeGlassEl`, not `activeEl`); accessors named `get<Noun>`; constants name their context (`MIN_RESIZE_WIDTH`, not `MIN_WIDTH`); prefer established domain terms.
+- **Comments** — only when they add what the code doesn't say; ≤2 lines / 100 chars; prefix a genuinely longer one with `RATIONAL:`; wrap identifiers in backticks.
+- **Debug sentinels** — repeating-digit literals (`222`, `333`) in default/fallback paths are intentional tripwires, not magic numbers. Don't tidy them. If one surfaces downstream, a guard upstream was bypassed — investigate that.
+- **Interaction code** — for new pointer features prefer Pointer Events + `setPointerCapture`, delegated listeners on `windowElement`, affordance DOM created on demand, and `:scope >` child queries. (Some existing files use the older `document`+`mouse*` style; match the surrounding style when editing them.)
 
 ## Dev pages (`dev/`)
 
