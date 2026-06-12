@@ -41,15 +41,6 @@ This complements [`ARCHITECTURE.md`](./ARCHITECTURE.md) (how things work) and [`
 
 ---
 
-## [medium] `addPane` seeds an empty placeholder glass (drop must `replaceChildren`)
-
-- **Where:** `src/binary-window/binary-window.js` (`addPane`), `src/binary-window/glass/drag.js` (`onPaneDrop`)
-- **What:** `BinaryWindow.addPane` always creates a new pane pre-seeded with its own empty placeholder `Glass`. Callers that want to place an existing glass into the new pane must `replaceChildren(...)`, **not** `append(...)` — an append leaves two glasses (empty placeholder first), and a later detach's `querySelector('bw-glass-content')` then grabs the empty one, producing a blank detached glass.
-- **Impact:** A non-obvious sequencing trap; this exact mistake has produced "blank glass" bugs (the kind of root cause that may underlie a GitHub issue). The placeholder is wasted work whenever the caller is about to replace it.
-- **Fix direction:** let `addPane` optionally skip seeding the placeholder (e.g. accept a glass/content to mount, or a `seedGlass: false` flag), so the drop path doesn't create-then-discard a glass.
-
----
-
 ## [medium] `react-bwin` depends on bwin internals (no stable public surface)
 
 - **Where:** cross-repo — `../react-bwin`; documented in [`context/react-bwin-integration.md`](./context/react-bwin-integration.md)

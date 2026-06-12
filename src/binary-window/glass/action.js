@@ -57,6 +57,7 @@ export default {
         id: originalSashId,
         position: newPosition,
         size: newSize,
+        withGlass: false,
       });
       newSashPane.domNode.append(minimizedGlassEl.bwGlassElement);
     }
