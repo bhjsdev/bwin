@@ -54,8 +54,8 @@ export class BinaryWindow extends Frame {
    * @returns {Sash} - The newly created Sash
    */
   addPane(targetPaneSashId, props) {
-    const { position, size, id, withGlass = true, ...glassProps } = props;
-    const paneSash = super.addPane(targetPaneSashId, { position, size, id });
+    const { position, size, id, minWidth, minHeight, withGlass = true, ...glassProps } = props;
+    const paneSash = super.addPane(targetPaneSashId, { position, size, id, minWidth, minHeight });
     if (withGlass) {
       const glass = new Glass({ ...glassProps, sash: paneSash, binaryWindow: this });
       paneSash.domNode.append(glass.domNode);

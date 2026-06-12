@@ -83,6 +83,5 @@ Open questions parked in code comments — not yet decided:
 
 - **`src/sash.js`** — what should happen when `minWidth`/`minHeight` is set larger than the sash's own width/height? (currently undefined behavior)
 - **`src/frame/frame.js`** — should the frame resize immediately when `fitContainer` toggles? (a `fit()` method now exists, so this is partly addressed)
-- **`src/frame/pane-utils.js`** — `addPaneSash` ignores `minWidth`/`minHeight` (and other Sash props); a pane added at runtime can't carry min-size constraints.
 
-**Impact:** edge-case behavior is unspecified; `addPaneSash`'s gap means runtime-added panes differ from config-built ones. **Fix direction:** decide the min-vs-own-size rule and thread the remaining Sash props through `addPaneSash`.
+**Impact:** edge-case behavior is unspecified. **Fix direction:** decide the min-vs-own-size rule.
