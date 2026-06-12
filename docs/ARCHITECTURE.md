@@ -1,12 +1,8 @@
 # bwin — Software Architecture
 
-**bwin** ("Binary Window") is a lightweight, dependency-free **tiling window-manager library for the browser**: resizable panes, drag-and-drop rearrangement, minimize/maximize/close, and floating OS-window-like panels. Published as the npm package `bwin` (MIT). Entry: `dist/bwin.js` + `./bwin.css`.
+**bwin** ("Binary Window") is a lightweight, dependency-free tiling window-manager library for the browser: resizable panes, drag-and-drop rearrangement, minimize/maximize/close, and floating OS-window-like panels.
 
-- **Docs site:** https://bhjsdev.github.io/bwin-docs/
-- **Stack:** vanilla JS (ES modules), Vite (dev/build), Vitest (tests), pnpm.
-- **Current version:** see `package.json` (`0.4.x` at time of writing).
-
-> This document describes the internal architecture for contributors. For the public API/config reference, see the docs site.
+> This document describes the internal architecture for contributors. For the public API/config reference, see the [docs site](https://bhjsdev.github.io/bwin-docs/).
 
 ---
 
@@ -26,26 +22,31 @@ bwin borrows real window-glazing vocabulary. Matching it in code, comments, and 
 
 ---
 
-## 2. The big picture: model / view / behavior
+## 2. The big picture: model + two view layers
 
-bwin cleanly separates three concerns:
+bwin separates a **model** from **two stacked view layers**. The model is the single source of truth for geometry; each view layer renders the model to DOM and wires its own interactions. `BinaryWindow extends Frame`, so the layers stack rather than sit side by side.
 
 ```
-  Config (declarative)              Model                 View (DOM)            Behavior (features)
- ┌────────────────────┐      ┌──────────────────┐   ┌────────────────┐   ┌────────────────────────┐
- │ ConfigRoot         │      │  Sash tree       │   │ <bw-window>    │   │ resize  (muntin drag)  │
- │  └ ConfigNode tree │ ───▶ │   (root Sash     │──▶│  <bw-muntin>   │   │ drop    (glass DnD)    │
- │  buildSashTree()   │      │    + children)   │   │  <bw-pane>     │◀──│ fitContainer (RO)      │
- └────────────────────┘      └──────────────────┘   │   <bw-glass>   │   │ glass actions          │
-                                     ▲               │  <bw-sill>     │   │ detached glass         │
-                              walk() │ getById()     └────────────────┘   └────────────────────────┘
-                                     │                       ▲ glaze()/update() render the tree
-                                     └───────────────────────┘
+      Config               Model                Frame             BinaryWindow
+                                            (core tiling)          (enhance)
+ ┌──────────────┐     ┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+ │ ConfigRoot   │     │ Sash tree    │     │ bw-window    │     │ bw-glass     │
+ │ ConfigNode   │ ──> │ root Sash    │ ──> │ bw-muntin    │ ──> │ drag · drop  │
+ │ buildSash-   │     │ + children   │     │ bw-pane      │     │ detached     │
+ │   Tree()     │     │              │     │ resize · fit │     │ sill         │
+ └──────────────┘     └──────────────┘     └──────────────┘     └──────────────┘
+                              ▲                                         │
+                              └─────────────────────────────────────────┘
+
+  ──>  config compiles to the Model; the two view layers render it to DOM.
+       The arc: an interaction mutates the Sash tree, then update() re-renders.
 ```
 
-- **Model** — `Sash` (`src/sash.js`) is the single source of truth for geometry. A binary tree of regions; each node holds `left/top/width/height`, `minWidth/minHeight`, `resizeStrategy`, and a `store` bag. Resizing mutates the tree; setters cascade geometry to children.
-- **View** — `Frame` (`src/frame/`) walks the sash tree and renders DOM. `BinaryWindow` extends it with glass content, the sill, and floating glasses. Rendering is one-directional: model → DOM (`glaze()` for initial render, `update()` for incremental reconcile).
-- **Behavior** — features (resize, drop, fit, glass actions, detached glass) are mixed onto the prototype via `assemble()` and attached to the live DOM in `enableFeatures()`.
+- **Model** — `Sash` (`src/sash.js`) is the single source of truth for geometry. A binary tree of regions; each node holds `left/top/width/height`, `minWidth/minHeight`, `resizeStrategy`, and a `store` bag. Setters cascade geometry to children; nothing else owns layout state.
+- **Frame layer — core tiling** (`src/frame/`). The view layer that *mirrors the model*. It renders the window, **muntins**, and **panes**, and owns **pane resizing** — dragging a muntin mutates the sash tree, the defining feature of a tiling manager. It also handles generic drop infrastructure and fit-to-container. Frame renders panes but **not** their contents — a `<bw-pane>` is an empty region until the layer above fills it.
+- **BinaryWindow layer — enhanced interaction** (`src/binary-window/`). `extends Frame` and adds the user-facing window experience on top: it renders a **glass** into each pane (`onPaneCreate`), and adds glass drag-and-drop rearrangement, the minimize/maximize/close/detach actions, **detached** (floating) glasses, and the **sill**. This layer is where "windows" (glasses) live; the Frame layer underneath only knows panes.
+
+Rendering is one-directional in both layers: model → DOM, via `glaze()` (initial render) and `update()` (incremental reconcile). An interaction in either layer mutates the Sash tree and calls `update()`; the DOM follows. Features are mixed onto each class's prototype via `assemble()` and attached to the live DOM in `enableFeatures()`.
 
 ### The `mount()` lifecycle
 
@@ -105,7 +106,7 @@ A node with **no children** becomes a **pane**; a node **with children** becomes
 ConfigRoot(settings)                       config-root.js
   extends ConfigNode                       config-node.js
   └ buildSashTree({ resizeStrategy })
-      ├ createSash()                  ─────────────▶ new Sash(...)   (store = nonCoreData)
+      ├ createSash()                  ─────────────> new Sash(...)   (store = nonCoreData)
       ├ normConfig(children[0]) → createPrimaryConfigNode
       ├ normConfig(children[1]) → createSecondaryConfigNode(…, primary)
       │     (infers opposite position / complementary size from the sibling)
@@ -312,49 +313,3 @@ These are enforced project conventions (see `CLAUDE.md`):
 - **Debug sentinels** — repeating-digit literals (`222`, `333`) in default/fallback paths are intentional tripwires, **not** magic numbers. Don't tidy them. If one surfaces downstream, a guard upstream was bypassed — investigate that, don't rename it.
 - **`dev/`** — test scaffolding, not shippable source. Interactive controls go in the `.html`; the paired `.js` queries them and wires behavior. Commits touching only `dev/` are plain `chore:`.
 - **Git** — don't commit/push unless explicitly asked; no Claude co-author trailers.
-
----
-
-## 12. Repository map
-
-```
-src/
-  index.js                  Public exports + CSS imports
-  sash.js                   Sash model: binary tree, geometry, min-size, resize strategies
-  position.js               Position enum, opposite/zone math (getCursorPosition)
-  rect.js                   Rect helpers
-  utils.js                  genId/parseSize/createDomNode/strictAssign/swapChildNodes/throttle/…
-  config/
-    config-root.js          ConfigRoot (window-level: width/height/fitContainer/theme)
-    config-node.js          ConfigNode: normalize forms, geometry, sibling inference, buildSashTree
-    sash-config.js          SashConfig: pre-built Sash subtree as config
-  frame/
-    frame.js                Frame class + assemble() of base modules; mount/frame/enableFeatures
-    main.js                 createWindow/glaze/update (render & reconcile)
-    pane.js                 createPane/addPane/removePane/swapPanes (tree + DOM)
-    pane-utils.js           pane element + addPaneSash split surgery
-    muntin.js               muntin element create/update
-    resizable.js            muntin-drag resize (document mouse*)
-    droppable.js            generic native-DnD drop infra (onPaneDrop stub)
-    fit-container.js        ResizeObserver → fit()
-    frame-utils.js          getSashIdFromPane
-  binary-window/
-    binary-window.js        BinaryWindow extends Frame; glass on panes, sill, normActions
-    trim.js                 muntin-trim mixin (shrink ends at intersections)
-    glass/
-      glass.js              Glass component (header/tabs/actions/content) + DEFAULT_GLASS_ACTIONS
-      index.js              glass mixin + BUILTIN_ACTIONS (deprecated alias)
-      action.js             action wiring mixin
-      drag.js               attached-glass native drag + real onPaneDrop
-      action.close/minimize/maximize/detach.js   built-in actions
-    detached-glass/
-      detached-glass.js     DetachedGlass extends Glass
-      index.js              detached mixin + DEFAULT_DETACHED_GLASS_ACTIONS
-      crud.js               addDetachedGlass/removeDetachedGlass (cascade placement)
-      manager.js            z-index/active-state singleton
-      activate/move/resize/drag/restore.js        behaviors
-      action.attach/close/minimize.js             detached actions
-      utils.js              genStylesByPosition, resize handles
-  css/                      vars/body/frame/glass/detached-glass/sill
-dev/                        Manual feature/bug test pages (scaffolding, not shipped)
-```
