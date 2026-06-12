@@ -44,17 +44,22 @@ export class BinaryWindow extends Frame {
   }
 
   /**
-   * Add a pane with glass into the target pane.
+   * Add a pane into the target pane, optionally seeded with a glass built from
+   * `glassProps`. Callers that mount their own existing glass (drag, restore)
+   * pass `withGlass: false` to get a bare pane without glass.
    *
    * @param {string} targetPaneSashId - The Sash ID of the target pane
    * @param {Object} props - The pane and glass properties grouped together
+   * @param {boolean} [props.withGlass=true] - Whether to seed the pane with a glass
    * @returns {Sash} - The newly created Sash
    */
   addPane(targetPaneSashId, props) {
-    const { position, size, id, ...glassProps } = props;
+    const { position, size, id, withGlass = true, ...glassProps } = props;
     const paneSash = super.addPane(targetPaneSashId, { position, size, id });
-    const glass = new Glass({ ...glassProps, sash: paneSash, binaryWindow: this });
-    paneSash.domNode.append(glass.domNode);
+    if (withGlass) {
+      const glass = new Glass({ ...glassProps, sash: paneSash, binaryWindow: this });
+      paneSash.domNode.append(glass.domNode);
+    }
     return paneSash;
   }
 

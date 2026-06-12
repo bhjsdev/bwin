@@ -23,10 +23,8 @@ export default {
       const oldSashId = getSashIdFromPane(activeDragGlassEl);
       this.removePane(oldSashId);
 
-      const newPaneSash = this.addPane(sash.id, { position: dropArea, id: oldSashId });
-      // `addPane` seeds the pane with an empty placeholder glass; replace it with
-      // the dragged glass so the pane holds exactly one (the real) glass.
-      newPaneSash.domNode.replaceChildren(activeDragGlassEl);
+      const newPaneSash = this.addPane(sash.id, { position: dropArea, id: oldSashId, withGlass: false });
+      newPaneSash.domNode.append(activeDragGlassEl);
     }
   },
 
