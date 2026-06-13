@@ -51,7 +51,6 @@ bw-glass {
   flex-direction: column;
   border: 1px solid var(--bw-glass-border-color);
   border-radius: var(--bw-glass-border-radius);
-  background-color: white;
   font-family: var(--bw-font-family);
   font-size: var(--bw-font-size);
   box-sizing: border-box;
@@ -193,4 +192,7 @@ bw-glass-content {
   box-sizing: border-box;
   overflow: auto;
   flex-grow: 1;
+  background-color: white;
+  border-bottom-left-radius: var(--bw-glass-border-radius);
+  border-bottom-right-radius: var(--bw-glass-border-radius);
 }
