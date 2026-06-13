@@ -42,9 +42,9 @@ bw-window[theme='dark'] {
     background-color: hsl(0 0% 14%);
   }
 
-  bw-glass {
-    background-color: hsl(0 0% 16%);
+  bw-glass-content {
     color: hsl(0 0% 90%);
+    background-color: hsl(0 0% 16%);
   }
 
   .bw-glass-tab:hover,
