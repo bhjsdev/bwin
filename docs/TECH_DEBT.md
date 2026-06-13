@@ -77,6 +77,28 @@ This complements [`ARCHITECTURE.md`](./ARCHITECTURE.md) (how things work) and [`
 
 ---
 
+## [low] `bw-minimized-glass` names a state, not a sill object
+
+- **Where:** `src/binary-window/glass/action.js`, `glass/action.minimize.js`, `detached-glass/action.minimize.js`, `binary-window.js` (`getMinimizedGlassElementBySashId` + `removePane` cleanup); `.bw-minimized-glass` in `src/css/sill.css`; `--bw-minimized-glass-*` vars in `src/css/vars.css` (~29 identifiers total).
+- **What:** The `<bw-sill>` dock is the right metaphor, but the object set on it is named `bw-minimized-glass` — describing its *state* (a minimized glass) rather than what it *is* on the sill. Everything else in the codebase leans into the window-construction metaphor; this name breaks it. The element is also a bare `<button class="bw-minimized-glass">`, which boxes in the roadmap (see below).
+- **Impact:** Metaphor inconsistency; the name couples the object to the `minimize` action rather than to the sill. Renaming is a **breaking change** — `getMinimizedGlassElementBySashId` and `.bw-minimized-glass` are part of the [react-bwin integration contract](./context/react-bwin-integration.md), so a rename needs either a coordinated downstream change or a deprecated alias (as with `BUILTIN_ACTIONS`).
+- **Fix direction:** rename to a sill object — proposed **`bw-pot`** (a potted plant is the canonical windowsill object), giving a clean verb pair (minimize *pots* a glass onto the sill; restore *un-pots* it). Keeps the `minimize` action and `<bw-sill>` unchanged. Grep the react-bwin coupling first; alias the old class/accessor if downstream can't migrate in lockstep.
+- **Element shape (decided):** make `<bw-pot>` an **autonomous custom element that wraps a real `<button>`**, not a bare button and not a `<button is="bw-pot">` customized built-in:
+  ```html
+  <bw-pot>
+    <button class="bw-pot__restore" aria-label="Restore <glass title>"><!-- snapshot --></button>
+    <!-- future: tooltip, badge, … as siblings -->
+  </bw-pot>
+  ```
+  - The **host** owns layout + state — the expandos stashed on minimize (`bwOriginalBoundingRect`, `bwOriginalPosition`, `bwOriginalSashId`, `bwGlassElement`) and the sill-item sizing — and is the positioning context for sibling affordances (tooltip, badge).
+  - The inner **`<button>`** is the single activation surface, so click / focus / Enter+Space / `disabled` / `:hover`/`:focus-visible`/`:active` come from the platform — no `role=button`, no hand-written keyboard activation (the custom-button a11y trap). Just needs `aria-label` since its visible content is a snapshot, not text.
+  - **Light-DOM only — no Shadow DOM**: theming is plain `bwin.css` classes keyed off `theme="…"`, and downstream react-bwin reads these classes; a shadow root would hide both. Avoids the Safari `is=` polyfill too (customized built-ins are unsupported in WebKit).
+  - The sill's delegated click handler changes from `event.target.matches('.bw-minimized-glass')` to `event.target.closest('bw-pot')` so a click on the snapshot still resolves to the pot.
+- **Roadmap (why the wrapper):** pots will grow richer — a **live preview** of the stashed glass (CSS-`transform: scale` clone of the kept-alive `bwGlassElement`, `pointer-events:none`, `aria-hidden`; clone, don't move, since restore re-appends the original — `<canvas>`/`<video>` content won't clone pixels and needs a real snapshot fallback) and a **tooltip**. Holding siblings is exactly what the autonomous host enables and a bare/`is=` button cannot.
+- **Apply the same shape to `<bw-glass-action>`:** the action buttons (`createActions()` in `glass/glass.js`, currently `createDomNode('<button class="bw-glass-action ...">')`) get the **same host-wraps-button** treatment for consistency and for the same roadmap reason (per-action tooltips as siblings). Host carries the `--close/--minimize/--maximize/--detach` modifier + `onClick` wiring + the `updateDisabledState` disabled-sync; inner `<button>` is the activation surface. Keep the existing modifier classes so `updateDisabledStateOfActionButtons` selectors and the react-bwin contract keep working.
+
+---
+
 ## [low] Unresolved design questions left as `@think-about` / `@todo`
 
 Open questions parked in code comments — not yet decided:
