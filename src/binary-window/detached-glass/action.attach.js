@@ -1,4 +1,4 @@
-import { extractChildNodes } from '@/utils';
+import { transferGlass } from '../glass/utils';
 
 export default {
   label: '',
@@ -24,15 +24,12 @@ export default {
       size = 0.5;
     }
 
-    // Pass the inner nodes, not the bw-glass-content wrapper — Glass adds its own.
-    const contentEl = detachedGlassEl.querySelector('bw-glass-content');
-
-    binaryWindow.addPane(targetSashId, {
+    const paneSash = binaryWindow.addPane(targetSashId, {
       position,
       size,
-      content: extractChildNodes(contentEl),
-      title: detachedGlassEl.querySelector('bw-glass-title')?.textContent || '',
     });
+
+    transferGlass(detachedGlassEl, paneSash.domNode);
 
     binaryWindow.removeDetachedGlass(detachedGlassEl.id);
   },
