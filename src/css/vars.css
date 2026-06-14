@@ -22,6 +22,8 @@ bw-window {
   --bw-detached-glass-resize-handle-size: 12px;
 
   --bw-sill-gap: 6px;
+
+  --bw-glass-attach-indicator-size: 16px;
 }
 
 bw-window[theme='dark'] {

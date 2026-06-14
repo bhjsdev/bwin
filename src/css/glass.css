@@ -76,12 +76,34 @@ bw-glass-header {
   border-top-left-radius: var(--bw-glass-border-radius);
   border-top-right-radius: var(--bw-glass-border-radius);
   background-color: var(--bw-glass-header-bg-color);
+  position: relative;
+}
+
+/* TODO: add CSS variable for attach indicator size */
+bw-glass-attach-indicator {
+  
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  height: var(--bw-glass-attach-indicator-size);
+  width: var(--bw-glass-attach-indicator-size);
+  cursor: copy;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:before {
+    content: '◸';
+  }
+
 }
 
 bw-glass-title {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  margin-left: var(--bw-glass-attach-indicator-size, 0);
 }
 
 bw-glass-tab-container {

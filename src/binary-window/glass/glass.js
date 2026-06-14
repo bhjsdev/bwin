@@ -29,6 +29,8 @@ export class Glass {
   build() {
     const headerEl = document.createElement('bw-glass-header');
 
+    headerEl.append(document.createElement('bw-glass-attach-indicator'));
+
     if (Array.isArray(this.tabs) && this.tabs.length > 0) {
       headerEl.append(this.createTabs());
     }
