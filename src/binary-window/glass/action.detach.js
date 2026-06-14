@@ -1,3 +1,5 @@
+import { transferGlass } from './utils';
+
 const DETACHED_GLASS_INSET = 15;
 
 export default {
@@ -7,8 +9,7 @@ export default {
     if (!binaryWindow.addDetachedGlass) throw new Error('[bwin] Failed to detach glass from pane');
 
     const paneEl = event.target.closest('bw-pane');
-    const glassContentEl = paneEl.querySelector('bw-glass-content');
-    const glassTitleEl = paneEl.querySelector('bw-glass-title');
+    const glassEl = paneEl.querySelector('bw-glass');
 
     const windowRect = binaryWindow.windowElement.getBoundingClientRect();
     const width = windowRect.width - DETACHED_GLASS_INSET * 2;
@@ -23,10 +24,7 @@ export default {
     detachedGlass.domNode.bwOriginalPosition = paneEl.getAttribute('position');
     detachedGlass.domNode.bwOriginalRelativeSize = paneSash.getRelativeSize();
     
-    detachedGlass.contentElement.replaceWith(glassContentEl);
-    
-    // Attached glass may only render tabs without title element
-    if (glassTitleEl) detachedGlass.titleElement.replaceWith(glassTitleEl);
+    transferGlass(glassEl, detachedGlass.domNode);
 
     binaryWindow.removePane(paneSashId);
   },
