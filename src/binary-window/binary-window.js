@@ -2,7 +2,7 @@ import { Frame } from '../frame/frame';
 import glassModule, { Glass } from './glass';
 import { createDomNode } from '../utils';
 import trimModule from './trim';
-import detachedGlassModule, { DetachedGlass, DEFAULT_FREE_GLASS_ACTIONS } from './detached-glass';
+import detachedGlassModule, { DetachedGlass, DEFAULT_WINDOWLESS_GLASS_ACTIONS } from './detached-glass';
 import { detachedGlassManager } from './detached-glass/manager';
 import { normActions } from './utils';
 
@@ -97,21 +97,21 @@ export class BinaryWindow extends Frame {
   }
 
   /**
-   * Add a free glass: a detached glass that floats on `document.body` instead of
-   * inside a `bw-window`, so it isn't owned by any window instance. Managed by the
+   * Add a windowless glass: a detached glass that floats on `document.body` instead
+   * of inside a `bw-window`, so it isn't owned by any window instance. Managed by the
    * shared glass manager (z-index/activation) like an in-window detached glass.
    *
    * @param {Object} [options] - Same shape as `addDetachedGlass`; `position` defaults to `center`.
    * @returns {DetachedGlass}
    */
-  static addFreeGlass(options = {}) {
+  static addWindowlessGlass(options = {}) {
     const glass = new DetachedGlass({
-      actions: DEFAULT_FREE_GLASS_ACTIONS,
+      actions: DEFAULT_WINDOWLESS_GLASS_ACTIONS,
       position: 'center',
       ...options,
     });
 
-    glass.domNode.setAttribute('free', '');
+    glass.domNode.setAttribute('windowless', '');
 
     document.body.append(glass.domNode);
     detachedGlassManager.addGlassByElement(glass.domNode);

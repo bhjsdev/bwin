@@ -28,8 +28,8 @@ export function getContainingBlockOrigin(el) {
     return { left, top };
   }
 
-  // Free glass on a static `body`: the containing block is the initial one (the
-  // canvas at the document origin), which sits scroll-distance above the viewport.
+  // Windowless glass on a static `body`: the containing block is the initial one
+  // (the canvas at the document origin), which sits scroll-distance above the viewport.
   return { left: -window.scrollX, top: -window.scrollY };
 }
 

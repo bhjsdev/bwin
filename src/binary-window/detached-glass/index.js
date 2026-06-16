@@ -8,7 +8,7 @@ import restoreModule from './restore';
 export {
   DetachedGlass,
   DEFAULT_DETACHED_GLASS_ACTIONS,
-  DEFAULT_FREE_GLASS_ACTIONS,
+  DEFAULT_WINDOWLESS_GLASS_ACTIONS,
 } from './detached-glass';
 
 export default {

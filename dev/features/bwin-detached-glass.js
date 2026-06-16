@@ -133,14 +133,14 @@ document.querySelector('#add-default').addEventListener('click', () => {
 });
 
 // Static method: floats on document.body, not inside any bw-window.
-document.querySelector('#add-free').addEventListener('click', () => {
-  BinaryWindow.addFreeGlass({ title: 'Free glass', content: createGlassContent('free') });
+document.querySelector('#add-windowless').addEventListener('click', () => {
+  BinaryWindow.addWindowlessGlass({ title: 'Windowless glass', content: createGlassContent('windowless') });
 });
 
-// Free glass filling the viewport with a 50px inset on every edge.
+// Windowless glass filling the viewport with a 50px inset on every edge.
 document.querySelector('#add-fullscreen').addEventListener('click', () => {
   const EDGE = 20;
-  BinaryWindow.addFreeGlass({
+  BinaryWindow.addWindowlessGlass({
     title: 'Fullscreen popup',
     draggable: false,
     position: 'top-left',

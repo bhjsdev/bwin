@@ -7,7 +7,9 @@ import minimizeAction from './action.minimize';
 
 export const DEFAULT_DETACHED_GLASS_ACTIONS = [minimizeAction, attachAction, closeAction];
 
-export const DEFAULT_FREE_GLASS_ACTIONS = [closeAction];
+// A windowless glass floats on `document.body` with no owning window, so minimize/attach
+// (which need a `binaryWindow`) don't apply — close is the only built-in that works.
+export const DEFAULT_WINDOWLESS_GLASS_ACTIONS = [closeAction];
 
 export class DetachedGlass extends Glass {
   constructor(options) {

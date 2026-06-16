@@ -34,7 +34,7 @@ export default {
       moveStartY = event.pageY;
 
       // Normalize corner-anchored geometry to left/top relative to the glass's
-      // containing block (the window for a detached glass, the viewport for a free one).
+      // containing block (the window for a detached glass, the viewport for a windowless one).
       const origin = getContainingBlockOrigin(glassEl);
       const glassRect = glassEl.getBoundingClientRect();
       moveStartLeft = glassRect.left - origin.left;
