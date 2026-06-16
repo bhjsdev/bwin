@@ -9,6 +9,14 @@ export function createResizeHandles() {
   });
 }
 
+// Resize handles straddle the glass border, so each overhangs its edge by half
+// the handle size. Returns that overhang, so callers can keep handles on-screen.
+export function getResizeHandleOverhang(windowEl) {
+  const styles = getComputedStyle(windowEl);
+  const size = styles.getPropertyValue('--bw-detached-glass-resize-handle-size');
+  return (parseFloat(size) || 0) / 2;
+}
+
 // `offset` nudges the glass from the anchored corner/edge. `offsetX`/`offsetY`
 // override it per-axis; when only one is given, `offset` fills the other axis.
 export function genStylesByPosition({ position, offset, offsetX, offsetY, width, height }) {

@@ -1,3 +1,6 @@
+import { clamp } from '@/utils';
+import { getResizeHandleOverhang } from './utils';
+
 export default {
   enableDetachedGlassMove() {
     let activeMoveGlassEl = null;
@@ -5,6 +8,11 @@ export default {
     let moveStartY = 0;
     let moveStartLeft = 0;
     let moveStartTop = 0;
+    // Window-relative bounds that keep the glass within the viewport, captured at grab time.
+    let minMoveLeft = 0;
+    let maxMoveLeft = 0;
+    let minMoveTop = 0;
+    let maxMoveTop = 0;
 
     this.windowElement.addEventListener('pointerdown', (event) => {
       if (event.button !== 0) return;
@@ -30,13 +38,25 @@ export default {
       const glassRect = glassEl.getBoundingClientRect();
       moveStartLeft = glassRect.left - windowRect.left;
       moveStartTop = glassRect.top - windowRect.top;
+
+      // Bound the move to the viewport so dragging past an edge never grows the
+      // page. clientWidth/Height exclude scrollbars; the handle overhang on the
+      // right/bottom is reserved so hover handles stay on-screen too.
+      const overhang = getResizeHandleOverhang(this.windowElement);
+      const viewportWidth = document.documentElement.clientWidth;
+      const viewportHeight = document.documentElement.clientHeight;
+      minMoveLeft = -windowRect.left;
+      maxMoveLeft = viewportWidth - glassRect.width - overhang - windowRect.left;
+      minMoveTop = -windowRect.top;
+      maxMoveTop = viewportHeight - glassRect.height - overhang - windowRect.top;
     });
 
     this.windowElement.addEventListener('pointermove', (event) => {
       if (!activeMoveGlassEl) return;
 
-      const left = moveStartLeft + (event.pageX - moveStartX);
-      const top = moveStartTop + (event.pageY - moveStartY);
+      // Clamp to the viewport; a glass larger than the viewport pins to the top-left edge.
+      const left = clamp(moveStartLeft + (event.pageX - moveStartX), minMoveLeft, maxMoveLeft);
+      const top = clamp(moveStartTop + (event.pageY - moveStartY), minMoveTop, maxMoveTop);
 
       activeMoveGlassEl.style.right = 'auto';
       activeMoveGlassEl.style.bottom = 'auto';
