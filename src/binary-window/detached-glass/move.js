@@ -1,5 +1,5 @@
 import { clamp } from '@/utils';
-import { getResizeHandleOverhang } from './utils';
+import { getResizeHandleOverhang, getContainingBlockOrigin } from './utils';
 
 export default {
   enableDetachedGlassMove() {
@@ -33,12 +33,12 @@ export default {
       moveStartX = event.pageX;
       moveStartY = event.pageY;
 
-      // Normalize corner-anchored geometry to container-relative left/top. The
-      // glass is `position: absolute`, so `offsetParent` is its containing block.
-      const windowRect = glassEl.offsetParent.getBoundingClientRect();
+      // Normalize corner-anchored geometry to left/top relative to the glass's
+      // containing block (the window for a detached glass, the viewport for a free one).
+      const origin = getContainingBlockOrigin(glassEl);
       const glassRect = glassEl.getBoundingClientRect();
-      moveStartLeft = glassRect.left - windowRect.left;
-      moveStartTop = glassRect.top - windowRect.top;
+      moveStartLeft = glassRect.left - origin.left;
+      moveStartTop = glassRect.top - origin.top;
 
       // Bound the move to the viewport so dragging past an edge never grows the
       // page. clientWidth/Height exclude scrollbars; the handle overhang on the
@@ -46,10 +46,10 @@ export default {
       const overhang = getResizeHandleOverhang(glassEl);
       const viewportWidth = document.documentElement.clientWidth;
       const viewportHeight = document.documentElement.clientHeight;
-      minMoveLeft = -windowRect.left;
-      maxMoveLeft = viewportWidth - glassRect.width - overhang - windowRect.left;
-      minMoveTop = -windowRect.top;
-      maxMoveTop = viewportHeight - glassRect.height - overhang - windowRect.top;
+      minMoveLeft = -origin.left;
+      maxMoveLeft = viewportWidth - glassRect.width - overhang - origin.left;
+      minMoveTop = -origin.top;
+      maxMoveTop = viewportHeight - glassRect.height - overhang - origin.top;
     });
 
     document.addEventListener('pointermove', (event) => {

@@ -2,7 +2,12 @@ import { Frame } from '../frame/frame';
 import glassModule, { Glass, DEFAULT_GLASS_ACTIONS } from './glass';
 import { createDomNode } from '../utils';
 import trimModule from './trim';
-import detachedGlassModule, { DEFAULT_DETACHED_GLASS_ACTIONS } from './detached-glass';
+import detachedGlassModule, {
+  DetachedGlass,
+  DEFAULT_DETACHED_GLASS_ACTIONS,
+  DEFAULT_FREE_GLASS_ACTIONS,
+} from './detached-glass';
+import { detachedGlassManager } from './detached-glass/manager';
 
 export class BinaryWindow extends Frame {
   sillElement = null;
@@ -92,6 +97,30 @@ export class BinaryWindow extends Frame {
     if (minimizedGlassEl) {
       minimizedGlassEl.remove();
     }
+  }
+
+  /**
+   * Add a free glass: a detached glass that floats on `document.body` instead of
+   * inside a `bw-window`, so it isn't owned by any window instance. Managed by the
+   * shared glass manager (z-index/activation) like an in-window detached glass.
+   *
+   * @param {Object} [options] - Same shape as `addDetachedGlass`; `position` defaults to `center`.
+   * @returns {DetachedGlass}
+   */
+  static addFreeGlass(options = {}) {
+    const glass = new DetachedGlass({
+      actions: DEFAULT_FREE_GLASS_ACTIONS,
+      position: 'center',
+      ...options,
+    });
+
+    glass.domNode.setAttribute('free', '');
+
+    document.body.append(glass.domNode);
+    detachedGlassManager.addGlassByElement(glass.domNode);
+    detachedGlassManager.bringToFront(glass.domNode);
+
+    return glass;
   }
 
   // Returns [glassActions, detachedGlassActions]

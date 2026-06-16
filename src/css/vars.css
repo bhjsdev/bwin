@@ -1,4 +1,4 @@
-bw-window {
+:root {
   --bw-font-family: system-ui;
   --bw-font-size: 14px;
   --bw-drop-area-bg-color: hsl(0, 0%, 0%, 0.05);

@@ -132,4 +132,9 @@ document.querySelector('#add-default').addEventListener('click', () => {
   bwin.addDetachedGlass({ content: createGlassContent('default') });
 });
 
+// Static method: floats on document.body, not inside any bw-window.
+document.querySelector('#add-free').addEventListener('click', () => {
+  BinaryWindow.addFreeGlass({ title: 'Free glass', content: createGlassContent('free') });
+});
+
 // document.querySelector('#add-default').click();
