@@ -3,6 +3,7 @@ import glassModule, { Glass, DEFAULT_GLASS_ACTIONS } from './glass';
 import { createDomNode } from '../utils';
 import trimModule from './trim';
 import detachedGlassModule, { DEFAULT_DETACHED_GLASS_ACTIONS } from './detached-glass';
+import dragNewModule from './drag-new';
 
 export class BinaryWindow extends Frame {
   sillElement = null;
@@ -25,6 +26,7 @@ export class BinaryWindow extends Frame {
     super.enableFeatures();
     this.enableGlassFeature();
     this.enableDetachedGlassFeatures();
+    this.enableGlassDetachDrag();
   }
 
   onPaneCreate(paneEl, sash) {
@@ -121,4 +123,4 @@ export class BinaryWindow extends Frame {
   }
 }
 
-BinaryWindow.assemble(glassModule, detachedGlassModule, trimModule);
+BinaryWindow.assemble(glassModule, detachedGlassModule, trimModule, dragNewModule);

@@ -59,6 +59,11 @@ bw-glass {
     cursor: move;
     opacity: 0.4;
   }
+
+  /* Origin glass dimmed in place while its content floats detached (detach-drag) */
+  &.bw-glass--dimmed {
+    opacity: 0.3;
+  }
 }
 
 bw-glass-header {
