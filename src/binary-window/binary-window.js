@@ -1,13 +1,10 @@
 import { Frame } from '../frame/frame';
-import glassModule, { Glass, DEFAULT_GLASS_ACTIONS } from './glass';
+import glassModule, { Glass } from './glass';
 import { createDomNode } from '../utils';
 import trimModule from './trim';
-import detachedGlassModule, {
-  DetachedGlass,
-  DEFAULT_DETACHED_GLASS_ACTIONS,
-  DEFAULT_FREE_GLASS_ACTIONS,
-} from './detached-glass';
+import detachedGlassModule, { DetachedGlass, DEFAULT_FREE_GLASS_ACTIONS } from './detached-glass';
 import { detachedGlassManager } from './detached-glass/manager';
+import { normActions } from './utils';
 
 export class BinaryWindow extends Frame {
   sillElement = null;
@@ -16,7 +13,7 @@ export class BinaryWindow extends Frame {
     super(settings);
 
     this.theme = settings.theme || '';
-    this.actions = BinaryWindow.normActions(settings.actions);
+    this.actions = normActions(settings.actions);
   }
 
   frame() {
@@ -121,32 +118,6 @@ export class BinaryWindow extends Frame {
     detachedGlassManager.bringToFront(glass.domNode);
 
     return glass;
-  }
-
-  // Returns [glassActions, detachedGlassActions]
-  static normActions(actions) {
-    if (actions === undefined) return [DEFAULT_GLASS_ACTIONS, DEFAULT_DETACHED_GLASS_ACTIONS];
-    if (!actions || !Array.isArray(actions) || actions.length === 0) return [[], []];
-
-    // [glassActions]
-    if (actions.length === 1 && Array.isArray(actions[0])) return [actions[0], DEFAULT_DETACHED_GLASS_ACTIONS];
-
-    // [action1, action2, ...]
-    if (!actions.some(Array.isArray)) return [actions, DEFAULT_DETACHED_GLASS_ACTIONS];
-
-    // [undefined, detachedGlassActions]
-    if (actions.length >= 2 && !Array.isArray(actions[0]) && Array.isArray(actions[1]))
-      return [[], actions[1]];
-
-    // [glassActions, undefined]
-    if (actions.length >= 2 && Array.isArray(actions[0]) && !Array.isArray(actions[1]))
-      return [actions[0], []];
-
-    // [glassActions, detachedGlassActions]
-    if (actions.length >= 2 && Array.isArray(actions[0]) && Array.isArray(actions[1]))
-      return actions;
-
-    throw new Error(`[bwin] Invalid actions format`);
   }
 }
 
