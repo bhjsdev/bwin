@@ -11,8 +11,8 @@ export function createResizeHandles() {
 
 // Resize handles straddle the glass border, so each overhangs its edge by half
 // the handle size. Returns that overhang, so callers can keep handles on-screen.
-export function getResizeHandleOverhang(windowEl) {
-  const styles = getComputedStyle(windowEl);
+export function getResizeHandleOverhang(glassEl) {
+  const styles = getComputedStyle(glassEl);
   const size = styles.getPropertyValue('--bw-detached-glass-resize-handle-size');
   return (parseFloat(size) || 0) / 2;
 }

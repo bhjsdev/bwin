@@ -14,7 +14,7 @@ export default {
     let minMoveTop = 0;
     let maxMoveTop = 0;
 
-    this.windowElement.addEventListener('pointerdown', (event) => {
+    document.addEventListener('pointerdown', (event) => {
       if (event.button !== 0) return;
 
       // Move from anywhere in the header (incl. title text), but not its buttons.
@@ -33,8 +33,9 @@ export default {
       moveStartX = event.pageX;
       moveStartY = event.pageY;
 
-      // Normalize corner-anchored geometry to window-relative left/top.
-      const windowRect = this.windowElement.getBoundingClientRect();
+      // Normalize corner-anchored geometry to container-relative left/top. The
+      // glass is `position: absolute`, so `offsetParent` is its containing block.
+      const windowRect = glassEl.offsetParent.getBoundingClientRect();
       const glassRect = glassEl.getBoundingClientRect();
       moveStartLeft = glassRect.left - windowRect.left;
       moveStartTop = glassRect.top - windowRect.top;
@@ -42,7 +43,7 @@ export default {
       // Bound the move to the viewport so dragging past an edge never grows the
       // page. clientWidth/Height exclude scrollbars; the handle overhang on the
       // right/bottom is reserved so hover handles stay on-screen too.
-      const overhang = getResizeHandleOverhang(this.windowElement);
+      const overhang = getResizeHandleOverhang(glassEl);
       const viewportWidth = document.documentElement.clientWidth;
       const viewportHeight = document.documentElement.clientHeight;
       minMoveLeft = -windowRect.left;
@@ -51,7 +52,7 @@ export default {
       maxMoveTop = viewportHeight - glassRect.height - overhang - windowRect.top;
     });
 
-    this.windowElement.addEventListener('pointermove', (event) => {
+    document.addEventListener('pointermove', (event) => {
       if (!activeMoveGlassEl) return;
 
       // Clamp to the viewport; a glass larger than the viewport pins to the top-left edge.
@@ -64,7 +65,7 @@ export default {
       activeMoveGlassEl.style.top = `${top}px`;
     });
 
-    this.windowElement.addEventListener('pointerup', (event) => {
+    document.addEventListener('pointerup', (event) => {
       if (!activeMoveGlassEl) return;
 
       if (event.target.hasPointerCapture?.(event.pointerId)) {
