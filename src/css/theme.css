@@ -1,4 +1,6 @@
-bw-window[theme='dark'] {
+/* TODO: differentiate settings between window and windowless glass */
+bw-window[theme='dark'],
+bw-glass[windowless][theme='dark'] {
   color-scheme: dark;
 
   --bw-glass-border-color: hsl(0 0% 40%);
