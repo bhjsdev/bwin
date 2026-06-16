@@ -50,12 +50,21 @@ This complements [`ARCHITECTURE.md`](./ARCHITECTURE.md) (how things work) and [`
 
 ---
 
+## [low] Source is untyped JavaScript — no static type checking
+
+- **Where:** whole `src/` tree; no `tsconfig.json`, no JSDoc `@type` annotations, no `checkJs`. The shapes that matter most are untyped: `sash.store` keys, the config→sash compile output, the actions `undefined`-vs-`null` contract, and the public API surface.
+- **What:** The library is authored in plain `.js` with no compiler in the loop. Data shapes are documented only in prose ([`ARCHITECTURE.md`](./ARCHITECTURE.md), [`context/`](./context/)) and enforced at runtime, never statically. This is distinct from the *output* gap below (*bwin publishes no TypeScript types*): that one is about shipping `.d.ts` to consumers; this is about checking bwin's own source.
+- **Impact:** No compiler catches shape mismatches during refactors — e.g. the queued `bw-pot`/`bw-glass-action` rename and the in-flight drag-and-drop rework rely entirely on manual tracing plus tests. Type drift against the downstream `react-bwin` shim isn't caught mechanically (same root friction as *`react-bwin` depends on bwin internals* above). Contributors (and AI assistants reading statically) must trace the pipeline to learn shapes a type would state outright.
+- **Fix direction:** prefer an *incremental* path over a big-bang `.ts` conversion. Add a `tsconfig.json` with `allowJs`/`checkJs` plus JSDoc `@type` annotations, starting with the public API and the `store`/`config`/`sash` shapes — exactly where refactor-safety and the react-bwin contract concentrate. Keeps `.js` source and the current build, and is reversible. A `checkJs` setup that also emits `.d.ts` would subsume the next entry, addressing both gaps at once. Full `.ts` conversion is a larger, separate step to weigh only if the JSDoc path proves its worth (custom-element / DOM typing is the main friction).
+
+---
+
 ## [low] bwin publishes no TypeScript types
 
 - **Where:** `package.json` (no `types` field); downstream `react-bwin` ships a hand-written `src/bwin.d.ts` shim
 - **What:** No `.d.ts` is generated or shipped, so every TS consumer hand-maintains a `declare module 'bwin'` shim.
 - **Impact:** Downstream type drift; no editor intellisense for library consumers.
-- **Fix direction:** generate and ship `.d.ts` (add a `types` export); removes the downstream shim.
+- **Fix direction:** generate and ship `.d.ts` (add a `types` export); removes the downstream shim. The incremental `checkJs` + JSDoc setup in the entry above can emit these `.d.ts` directly rather than hand-authoring them.
 
 ---
 
