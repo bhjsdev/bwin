@@ -4,6 +4,7 @@ import './css/frame.css';
 import './css/glass.css';
 import './css/detached-glass.css';
 import './css/sill.css';
+import './css/theme.css';
 
 export { Frame } from './frame/frame';
 export { BinaryWindow } from './binary-window/binary-window';
