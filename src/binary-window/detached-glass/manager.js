@@ -22,9 +22,9 @@ class DetachedGlassManager {
     glassEl.style.zIndex = this.topZIndex;
 
     // Only the front-most glass keeps [active]; it drives the stronger shadow in CSS.
-    glassEl.parentElement
-      ?.querySelectorAll(':scope > bw-glass[detached][active]')
-      .forEach((el) => el !== glassEl && el.removeAttribute('active'));
+    // Cleared across all managed glasses, so a detached and a free glass (different
+    // parents) can't both look active at once.
+    this.glasses.forEach((el) => el !== glassEl && el.removeAttribute('active'));
     glassEl.setAttribute('active', '');
   }
 

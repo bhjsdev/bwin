@@ -137,4 +137,18 @@ document.querySelector('#add-free').addEventListener('click', () => {
   BinaryWindow.addFreeGlass({ title: 'Free glass', content: createGlassContent('free') });
 });
 
+// Free glass filling the viewport with a 50px inset on every edge.
+document.querySelector('#add-fullscreen').addEventListener('click', () => {
+  const EDGE = 20;
+  BinaryWindow.addFreeGlass({
+    title: 'Fullscreen popup',
+    draggable: false,
+    position: 'top-left',
+    offset: EDGE,
+    width: document.documentElement.clientWidth - EDGE * 2,
+    height: document.documentElement.clientHeight - EDGE * 2,
+    content: createGlassContent('fullscreen'),
+  });
+});
+
 // document.querySelector('#add-default').click();
