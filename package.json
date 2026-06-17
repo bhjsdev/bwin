@@ -33,12 +33,23 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "test": "vitest"
+    "test": "vitest",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "simple-git-hooks"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm exec lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,html,css,json,md,yml,yaml}": "prettier --write"
   },
   "devDependencies": {
     "jsdom": "^29.1.1",
+    "lint-staged": "^17.0.7",
     "prettier": "^3.8.3",
     "prettier-plugin-brace-style": "^0.10.1",
+    "simple-git-hooks": "^2.13.1",
     "vite": "^8.0.13",
     "vitest": "^4.1.6"
   }
