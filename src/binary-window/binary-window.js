@@ -10,7 +10,6 @@ import { detachedGlassManager } from './detached-glass/manager';
 import { removeGlassBackdrop } from './detached-glass/utils';
 import { normActions } from './utils';
 
-// debug: ci round 2
 export class BinaryWindow extends Frame {
   sillElement = null;
 
@@ -30,7 +29,7 @@ export class BinaryWindow extends Frame {
 
   enableFeatures() {
     super.enableFeatures();
-    this.enableGlassFeature();
+    this.enableGlassFeatures();
     this.enableDetachedGlassFeatures();
   }
 
@@ -167,3 +166,7 @@ export class BinaryWindow extends Frame {
 }
 
 BinaryWindow.assemble(glassModule, detachedGlassModule, trimModule);
+
+// Enable features that do not need a BinaryWindow instance
+// e.g. detached glass move/resize/activate
+detachedGlassModule.enableDetachedGlassStandaloneFeatures();
