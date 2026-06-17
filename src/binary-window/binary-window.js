@@ -1,8 +1,14 @@
 import { Frame } from '../frame/frame';
-import glassModule, { Glass, DEFAULT_GLASS_ACTIONS } from './glass';
+import glassModule, { Glass } from './glass';
 import { createDomNode } from '../utils';
 import trimModule from './trim';
-import detachedGlassModule, { DEFAULT_DETACHED_GLASS_ACTIONS } from './detached-glass';
+import detachedGlassModule, {
+  DetachedGlass,
+  DEFAULT_WINDOWLESS_GLASS_ACTIONS,
+} from './detached-glass';
+import { detachedGlassManager } from './detached-glass/manager';
+import { removeGlassBackdrop } from './detached-glass/utils';
+import { normActions } from './utils';
 
 // debug: ci round 2
 export class BinaryWindow extends Frame {
@@ -12,7 +18,7 @@ export class BinaryWindow extends Frame {
     super(settings);
 
     this.theme = settings.theme || '';
-    this.actions = BinaryWindow.normActions(settings.actions);
+    this.actions = normActions(settings.actions);
   }
 
   frame() {
@@ -95,30 +101,68 @@ export class BinaryWindow extends Frame {
     }
   }
 
-  // Returns [glassActions, detachedGlassActions]
-  static normActions(actions) {
-    if (actions === undefined) return [DEFAULT_GLASS_ACTIONS, DEFAULT_DETACHED_GLASS_ACTIONS];
-    if (!actions || !Array.isArray(actions) || actions.length === 0) return [[], []];
+  /**
+   * Add a windowless glass: a detached glass that floats on `document.body` instead
+   * of inside a `bw-window`, so it isn't owned by any window instance. Managed by the
+   * shared glass manager (z-index/activation) like an in-window detached glass.
+   *
+   * @param {Object} [options]
+   * @param {boolean} [options.modal] - When true, append a `<bw-glass-backdrop for="<glassId>">`
+   *   behind the glass to block interaction with everything underneath.
+   * @param {'center'|'top-left'|'top-right'|'bottom-left'|'bottom-right'} [options.position='center'] - Where to anchor the glass.
+   * @param {number} [options.width] - Glass width in px.
+   * @param {number} [options.height] - Glass height in px.
+   * @param {number} [options.offset=0] - Distance in px from the anchored corner/edge (no effect on `center`).
+   * @param {number} [options.offsetX] - Per-axis override of `offset` on the x-axis.
+   * @param {number} [options.offsetY] - Per-axis override of `offset` on the y-axis.
+   * @param {string} [options.id] - Glass id; auto-generated (suffixed `-F`) when omitted.
+   * @param {Object[]} [options.actions] - Action buttons; defaults to `DEFAULT_WINDOWLESS_GLASS_ACTIONS` (close only).
+   * @param {string|Node} [options.title] - Header title.
+   * @param {string|Node} [options.content] - Glass body content.
+   * @param {Object[]} [options.tabs] - Header tabs (shown instead of `title`).
+   * @param {boolean} [options.draggable=true] - Whether the header can be dragged to move the glass.
+   * @returns {DetachedGlass}
+   */
+  static addWindowlessGlass(options = {}) {
+    const { modal, ...glassOptions } = options;
 
-    // [glassActions]
-    if (actions.length === 1 && Array.isArray(actions[0])) return [actions[0], DEFAULT_DETACHED_GLASS_ACTIONS];
+    const glass = new DetachedGlass({
+      actions: DEFAULT_WINDOWLESS_GLASS_ACTIONS,
+      position: 'center',
+      ...glassOptions,
+    });
 
-    // [action1, action2, ...]
-    if (!actions.some(Array.isArray)) return [actions, DEFAULT_DETACHED_GLASS_ACTIONS];
+    glass.domNode.setAttribute('windowless', '');
 
-    // [undefined, detachedGlassActions]
-    if (actions.length >= 2 && !Array.isArray(actions[0]) && Array.isArray(actions[1]))
-      return [[], actions[1]];
+    document.body.append(glass.domNode);
+    detachedGlassManager.addGlassByElement(glass.domNode);
+    // bringToFront reserves the z-index slot just below the glass for this backdrop.
+    const glassZIndex = detachedGlassManager.bringToFront(glass.domNode);
 
-    // [glassActions, undefined]
-    if (actions.length >= 2 && Array.isArray(actions[0]) && !Array.isArray(actions[1]))
-      return [actions[0], []];
+    if (modal) {
+      const backdropEl = document.createElement('bw-glass-backdrop');
+      backdropEl.setAttribute('for', glass.domNode.id);
+      backdropEl.style.zIndex = glassZIndex - 1;
+      document.body.append(backdropEl);
+    }
 
-    // [glassActions, detachedGlassActions]
-    if (actions.length >= 2 && Array.isArray(actions[0]) && Array.isArray(actions[1]))
-      return actions;
+    return glass;
+  }
 
-    throw new Error(`[bwin] Invalid actions format`);
+  /**
+   * Remove a windowless glass by id, unregistering it from the shared glass manager
+   * and detaching it from `document.body`. Also removes its modal backdrop, if any.
+   *
+   * @param {string} windowlessGlassId - The id of the `bw-glass[windowless]` to remove
+   * @returns {Element|null} - The removed element, or null if no glass had that id
+   */
+  static removeWindowlessGlass(windowlessGlassId) {
+    const removedGlassEl = detachedGlassManager.removeGlassById(windowlessGlassId);
+    removedGlassEl?.remove();
+
+    removeGlassBackdrop(windowlessGlassId);
+
+    return removedGlassEl;
   }
 }
 

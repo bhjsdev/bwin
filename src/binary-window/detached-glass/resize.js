@@ -1,4 +1,4 @@
-import { createResizeHandles } from './utils';
+import { createResizeHandles, getContainingBlockOrigin } from './utils';
 
 const MIN_RESIZE_WIDTH = 100;
 const MIN_RESIZE_HEIGHT = 60;
@@ -26,12 +26,12 @@ export default {
     let resizeStartRect = null;
 
     // Handles exist only while a glass is hovered, so idle glasses cost no extra DOM.
-    this.windowElement.addEventListener('pointerover', (event) => {
+    document.addEventListener('pointerover', (event) => {
       const glassEl = event.target.closest?.('bw-glass[detached]');
       if (glassEl) addResizeHandles(glassEl);
     });
 
-    this.windowElement.addEventListener('pointerout', (event) => {
+    document.addEventListener('pointerout', (event) => {
       const glassEl = event.target.closest?.('bw-glass[detached]');
       if (!glassEl) return;
 
@@ -45,7 +45,7 @@ export default {
       removeResizeHandles(glassEl);
     });
 
-    this.windowElement.addEventListener('pointerdown', (event) => {
+    document.addEventListener('pointerdown', (event) => {
       if (event.button !== 0 || event.target.tagName !== 'BW-GLASS-RESIZE-HANDLE') return;
 
       const glassEl = event.target.closest('bw-glass[detached]');
@@ -59,19 +59,19 @@ export default {
       resizeStartX = event.pageX;
       resizeStartY = event.pageY;
 
-      // Normalize corner-anchored geometry to window-relative left/top/width/height
-      // so every edge resizes with the same math.
-      const windowRect = this.windowElement.getBoundingClientRect();
+      // Normalize corner-anchored geometry to containing-block-relative
+      // left/top/width/height so every edge resizes with the same math.
+      const origin = getContainingBlockOrigin(glassEl);
       const glassRect = glassEl.getBoundingClientRect();
       resizeStartRect = {
-        left: glassRect.left - windowRect.left,
-        top: glassRect.top - windowRect.top,
+        left: glassRect.left - origin.left,
+        top: glassRect.top - origin.top,
         width: glassRect.width,
         height: glassRect.height,
       };
     });
 
-    this.windowElement.addEventListener('pointermove', (event) => {
+    document.addEventListener('pointermove', (event) => {
       if (!activeResizeGlassEl) return;
 
       const dir = activeResizeDir;
@@ -105,7 +105,7 @@ export default {
       activeResizeGlassEl.style.height = `${height}px`;
     });
 
-    this.windowElement.addEventListener('pointerup', (event) => {
+    document.addEventListener('pointerup', (event) => {
       if (!activeResizeGlassEl) return;
 
       if (event.target.hasPointerCapture?.(event.pointerId)) {

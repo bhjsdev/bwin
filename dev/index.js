@@ -53,11 +53,14 @@ navEl.querySelector('#_toggle-theme').addEventListener('click', () => {
 
   const goDark = windowEls[0].getAttribute('theme') !== 'dark';
 
-  windowEls.forEach((windowEl) => {
+  // Windowless glasses float on the page body, outside bw-window, so theme them too.
+  const themedEls = [...windowEls, ...frameDoc.querySelectorAll('bw-glass[windowless]')];
+
+  themedEls.forEach((el) => {
     if (goDark) {
-      windowEl.setAttribute('theme', 'dark');
+      el.setAttribute('theme', 'dark');
     } else {
-      windowEl.removeAttribute('theme');
+      el.removeAttribute('theme');
     }
   });
 

@@ -132,4 +132,35 @@ document.querySelector('#add-default').addEventListener('click', () => {
   bwin.addDetachedGlass({ content: createGlassContent('default') });
 });
 
+// Static method: floats on document.body, not inside any bw-window.
+document.querySelector('#add-windowless').addEventListener('click', () => {
+  BinaryWindow.addWindowlessGlass({
+    title: 'Windowless glass',
+    content: createGlassContent('windowless'),
+  });
+});
+
+// Modal: a backdrop is appended behind the glass to block everything underneath.
+document.querySelector('#add-modal').addEventListener('click', () => {
+  BinaryWindow.addWindowlessGlass({
+    modal: true,
+    title: 'Modal windowless glass',
+    content: createGlassContent('modal'),
+  });
+});
+
+// Windowless glass filling the viewport with a 50px inset on every edge.
+document.querySelector('#add-fullscreen').addEventListener('click', () => {
+  const EDGE = 20;
+  BinaryWindow.addWindowlessGlass({
+    title: 'Fullscreen popup',
+    draggable: false,
+    position: 'top-left',
+    offset: EDGE,
+    width: document.documentElement.clientWidth - EDGE * 2,
+    height: document.documentElement.clientHeight - EDGE * 2,
+    content: createGlassContent('fullscreen'),
+  });
+});
+
 // document.querySelector('#add-default').click();
