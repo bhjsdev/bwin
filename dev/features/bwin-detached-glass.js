@@ -134,7 +134,19 @@ document.querySelector('#add-default').addEventListener('click', () => {
 
 // Static method: floats on document.body, not inside any bw-window.
 document.querySelector('#add-windowless').addEventListener('click', () => {
-  BinaryWindow.addWindowlessGlass({ title: 'Windowless glass', content: createGlassContent('windowless') });
+  BinaryWindow.addWindowlessGlass({
+    title: 'Windowless glass',
+    content: createGlassContent('windowless'),
+  });
+});
+
+// Modal: a backdrop is appended behind the glass to block everything underneath.
+document.querySelector('#add-modal').addEventListener('click', () => {
+  BinaryWindow.addWindowlessGlass({
+    modal: true,
+    title: 'Modal windowless glass',
+    content: createGlassContent('modal'),
+  });
 });
 
 // Windowless glass filling the viewport with a 50px inset on every edge.

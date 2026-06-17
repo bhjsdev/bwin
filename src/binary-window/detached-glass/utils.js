@@ -17,6 +17,12 @@ export function getResizeHandleOverhang(glassEl) {
   return (parseFloat(size) || 0) / 2;
 }
 
+// Remove the modal backdrop tied to a glass id, if one exists (windowless modal glass).
+export function removeGlassBackdrop(glassId) {
+  const backdropEl = document.querySelector(`bw-glass-backdrop[for="${glassId}"]`);
+  backdropEl?.remove();
+}
+
 // Viewport-space top-left of an absolutely-positioned element's containing block.
 export function getContainingBlockOrigin(el) {
   const offsetParentEl = el.offsetParent;

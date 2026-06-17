@@ -1,6 +1,6 @@
 # Coding conventions
 
-The full rationale behind the rules summarized in [`CLAUDE.md`](../../CLAUDE.md). Read this when writing or reviewing bwin source; `CLAUDE.md` is the quick checklist, this is the *why*.
+The full rationale behind the rules summarized in [`CLAUDE.md`](../../CLAUDE.md). Read this when writing or reviewing bwin source; `CLAUDE.md` is the quick checklist, this is the _why_.
 
 See also [`ARCHITECTURE.md`](../ARCHITECTURE.md) for the system design and [`react-bwin-integration.md`](./react-bwin-integration.md) for the downstream contract.
 
@@ -10,13 +10,13 @@ See also [`ARCHITECTURE.md`](../ARCHITECTURE.md) for the system design and [`rea
 
 Use the window-construction metaphor precisely — the full glossary is [`ARCHITECTURE.md` §1](../ARCHITECTURE.md#1-the-window-construction-metaphor). Don't pick a name whose well-known meaning differs from what the code does (e.g. jQuery's `unwrap` removes the wrapper in place, so `extractChildNodes` is clearer for moving children into a fragment).
 
-Use plain "glass" by default; say "attached glass" only when contrasting with "detached glass".
+Use plain "glass" by default; say "attached glass" only when contrasting with "detached glass". A **windowless glass** is a detached glass with no owning window (floats on `document.body`); use that exact term — not "free glass" (the old name) or "floating glass".
 
 ---
 
 ## Naming
 
-- **DOM-element variables get an `El` suffix with a *specific* noun** — `activeGlassEl`, not `activeEl`, and not a vague `glassEl` when more specificity is available.
+- **DOM-element variables get an `El` suffix with a _specific_ noun** — `activeGlassEl`, not `activeEl`, and not a vague `glassEl` when more specificity is available.
 - **Element accessors are named `get<Noun>`** — e.g. `getActiveGlass` (returns the element that `activeGlassEl` would hold).
 - **Constants name the context they apply to, not just the quantity** — `MIN_RESIZE_WIDTH`, not `MIN_WIDTH`, so a resize-time minimum isn't confused with an unrelated creation-time size default.
 - **Prefer established domain/library terms** and match their conventional meaning.

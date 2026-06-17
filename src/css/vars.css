@@ -16,10 +16,14 @@
   --bw-minimized-glass-highlight-color: hsl(0, 0%, 85%);
 
   --bw-detached-glass-shadow: 0 2px 6px hsl(0, 0%, 0%, 0.12), 0 4px 14px hsl(0, 0%, 0%, 0.22);
-  --bw-detached-glass-shadow-active: 0 4px 10px hsl(0, 0%, 0%, 0.22), 0 10px 30px hsl(0, 0%, 0%, 0.38);
+  --bw-detached-glass-shadow-active:
+    0 4px 10px hsl(0, 0%, 0%, 0.22), 0 10px 30px hsl(0, 0%, 0%, 0.38);
 
   /* Thickness of the resize grab zone, straddling the glass border */
   --bw-detached-glass-resize-handle-size: 12px;
+
+  /* Modal backdrop behind a windowless glass */
+  --bw-glass-backdrop-color: hsl(0, 0%, 0%, 0.4);
 
   --bw-sill-gap: 6px;
 }

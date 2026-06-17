@@ -13,6 +13,13 @@ bw-glass[detached] > bw-glass-header[can-drag='true'] {
   }
 }
 
+/* Modal backdrop behind a windowless glass; z-index set inline to sit just below its glass */
+bw-glass-backdrop {
+  position: fixed;
+  inset: 0;
+  background: var(--bw-glass-backdrop-color);
+}
+
 bw-glass-resize-handle {
   position: absolute;
   z-index: 2;
