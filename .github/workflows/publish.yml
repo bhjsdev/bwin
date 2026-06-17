@@ -10,6 +10,13 @@ on:
   pull_request:
     types: [closed]
     branches: [main]
+    # Only changes that affect the published package warrant a dev pre-release.
+    # dev/, docs/, *.md, .github/, and config that doesn't feed the build are excluded.
+    paths:
+      - 'src/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'vite.config.js'
 
 jobs:
   publish:

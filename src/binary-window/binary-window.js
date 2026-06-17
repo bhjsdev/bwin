@@ -4,6 +4,7 @@ import { createDomNode } from '../utils';
 import trimModule from './trim';
 import detachedGlassModule, { DEFAULT_DETACHED_GLASS_ACTIONS } from './detached-glass';
 
+// debug ci
 export class BinaryWindow extends Frame {
   sillElement = null;
 
