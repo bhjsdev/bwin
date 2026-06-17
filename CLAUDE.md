@@ -9,7 +9,9 @@ Operational rules for working in this repo. Detailed background lives in `docs/`
 
 ## Git
 
-- **Don't `git commit` or `git push` unless the same message explicitly asks for it.** Approval doesn't carry over — ask each time.
+- **Never `git commit` or `git push` unless the user explicitly asks for it in that same turn.** Approval never carries over between turns — ask every time.
+  - A request to "create a PR", "fix this", or a shared error message is **not** authorization to commit or push. Do the work, then ask before committing (e.g. "Want me to commit and push?").
+  - Only an explicit yes/instruction in the current turn counts. When in doubt, ask.
 - When committing, print the commit message in your reply.
 - **No Claude attribution trailers** — never add `Co-Authored-By: Claude` or `Generated with Claude Code` (or similar) to commit messages or PR descriptions.
 - Type commits that only touch `dev/` as plain `chore:` — never `feat:`/`fix:`, no `(dev)` scope. It's test scaffolding, not library source.

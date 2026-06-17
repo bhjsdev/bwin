@@ -6,6 +6,7 @@ import detachedGlassModule, { DetachedGlass, DEFAULT_WINDOWLESS_GLASS_ACTIONS } 
 import { detachedGlassManager } from './detached-glass/manager';
 import { normActions } from './utils';
 
+// debug: ci round 2
 export class BinaryWindow extends Frame {
   sillElement = null;
 
