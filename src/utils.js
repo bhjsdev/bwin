@@ -138,6 +138,18 @@ export function parseSize(size) {
 }
 
 /**
+ * Clamp a number to the inclusive range [min, max]
+ *
+ * @param {number} value - The value to clamp
+ * @param {number} min - The lower bound
+ * @param {number} max - The upper bound
+ * @returns {number}
+ */
+export function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
+/**
  * Check if a value is a plain object, not array, null, etc
  *
  * @param {*} value - The value to check

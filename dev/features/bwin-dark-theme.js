@@ -54,3 +54,7 @@ document.querySelector('#set-theme-form').addEventListener('submit', (event) => 
   const theme = document.querySelector('#theme-input').value.trim();
   bwin.setTheme(theme);
 });
+
+document.querySelector('#add-windowless').addEventListener('click', () => {
+  BinaryWindow.addWindowlessGlass({ title: 'Windowless glass', content: inputs });
+});

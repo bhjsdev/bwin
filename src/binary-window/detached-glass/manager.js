@@ -18,14 +18,17 @@ class DetachedGlassManager {
     // Already front-most (it owns the [active] marker) → nothing to raise.
     if (glassEl.hasAttribute('active')) return;
 
-    this.topZIndex += 1;
+    // Reserve 1 for modal on windowless glass
+    this.topZIndex += 2;
     glassEl.style.zIndex = this.topZIndex;
 
     // Only the front-most glass keeps [active]; it drives the stronger shadow in CSS.
-    glassEl.parentElement
-      ?.querySelectorAll(':scope > bw-glass[detached][active]')
-      .forEach((el) => el !== glassEl && el.removeAttribute('active'));
+    // Cleared across all managed glasses, so a detached and a windowless glass
+    // (different parents) can't both look active at once.
+    this.glasses.forEach((el) => el !== glassEl && el.removeAttribute('active'));
     glassEl.setAttribute('active', '');
+
+    return this.topZIndex;
   }
 
   removeGlassById(id) {

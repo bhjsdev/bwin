@@ -3,13 +3,15 @@
 Operational rules for working in this repo. Detailed background lives in `docs/` — read the relevant file before non-trivial work:
 
 - **[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)** — system design: model + two view layers, the config→sash compile, the `store` bag, rendering/reconcile, interaction features, public API.
-- **[`docs/context/conventions.md`](docs/context/conventions.md)** — full coding conventions (terminology, naming, comments, debug sentinels, interaction code, dev pages) with rationale. The sections below are the checklist; that file is the *why*.
+- **[`docs/context/conventions.md`](docs/context/conventions.md)** — full coding conventions (terminology, naming, comments, debug sentinels, interaction code, dev pages) with rationale. The sections below are the checklist; that file is the _why_.
 - **[`docs/context/react-bwin-integration.md`](docs/context/react-bwin-integration.md)** — the downstream `react-bwin` contract; check before changing internals, `sash.store` keys, or actions defaults.
 - **[`docs/TECH_DEBT.md`](docs/TECH_DEBT.md)** — known design flaws and compromises. Check before reworking an area; update it when you take on or pay down debt. (Bugs/features → GitHub issues.)
 
 ## Git
 
-- **Don't `git commit` or `git push` unless the same message explicitly asks for it.** Approval doesn't carry over — ask each time.
+- **Never `git commit` or `git push` unless the user explicitly asks for it in that same turn.** Approval never carries over between turns — ask every time.
+  - A request to "create a PR", "fix this", or a shared error message is **not** authorization to commit or push. Do the work, then ask before committing (e.g. "Want me to commit and push?").
+  - Only an explicit yes/instruction in the current turn counts. When in doubt, ask.
 - When committing, print the commit message in your reply.
 - **No Claude attribution trailers** — never add `Co-Authored-By: Claude` or `Generated with Claude Code` (or similar) to commit messages or PR descriptions.
 - Type commits that only touch `dev/` as plain `chore:` — never `feat:`/`fix:`, no `(dev)` scope. It's test scaffolding, not library source.

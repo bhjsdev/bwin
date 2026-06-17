@@ -9,6 +9,36 @@ export function createResizeHandles() {
   });
 }
 
+// Resize handles straddle the glass border, so each overhangs its edge by half
+// the handle size. Returns that overhang, so callers can keep handles on-screen.
+export function getResizeHandleOverhang(glassEl) {
+  const styles = getComputedStyle(glassEl);
+  const size = styles.getPropertyValue('--bw-detached-glass-resize-handle-size');
+  return (parseFloat(size) || 0) / 2;
+}
+
+// Remove the modal backdrop tied to a glass id, if one exists (windowless modal glass).
+export function removeGlassBackdrop(glassId) {
+  const backdropEl = document.querySelector(`bw-glass-backdrop[for="${glassId}"]`);
+  backdropEl?.remove();
+}
+
+// Viewport-space top-left of an absolutely-positioned element's containing block.
+export function getContainingBlockOrigin(el) {
+  const offsetParentEl = el.offsetParent;
+
+  // Detached glass: the positioned `bw-window` IS the containing block, so its
+  // rect's top-left is the origin directly.
+  if (offsetParentEl && getComputedStyle(offsetParentEl).position !== 'static') {
+    const { left, top } = offsetParentEl.getBoundingClientRect();
+    return { left, top };
+  }
+
+  // Windowless glass on a static `body`: the containing block is the initial one
+  // (the canvas at the document origin), which sits scroll-distance above the viewport.
+  return { left: -window.scrollX, top: -window.scrollY };
+}
+
 // `offset` nudges the glass from the anchored corner/edge. `offsetX`/`offsetY`
 // override it per-axis; when only one is given, `offset` fills the other axis.
 export function genStylesByPosition({ position, offset, offsetX, offsetY, width, height }) {

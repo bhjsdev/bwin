@@ -27,10 +27,12 @@ function genLinkText(file) {
   return text;
 }
 
-navEl.querySelector('._menu').insertAdjacentHTML(
-  'beforeend',
-  files.map((file) => `<li><a href="#${file}">${genLinkText(file)}</a></li>`).join('')
-);
+navEl
+  .querySelector('._menu')
+  .insertAdjacentHTML(
+    'beforeend',
+    files.map((file) => `<li><a href="#${file}">${genLinkText(file)}</a></li>`).join('')
+  );
 
 function route() {
   const name = location.hash.slice(1) || DEFAULT_FILE;
@@ -53,11 +55,15 @@ navEl.querySelector('#_toggle-theme').addEventListener('click', () => {
 
   const goDark = windowEls[0].getAttribute('theme') !== 'dark';
 
-  windowEls.forEach((windowEl) => {
+  // Windowless glasses float on the page body, outside bw-window, so theme them too.
+  const themedEls = [...windowEls, ...frameDoc.querySelectorAll('bw-glass[windowless]')];
+
+  themedEls.forEach((el) => {
     if (goDark) {
-      windowEl.setAttribute('theme', 'dark');
-    } else {
-      windowEl.removeAttribute('theme');
+      el.setAttribute('theme', 'dark');
+    }
+    else {
+      el.removeAttribute('theme');
     }
   });
 

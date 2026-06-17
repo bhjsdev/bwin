@@ -11,7 +11,7 @@ export { Glass, DEFAULT_GLASS_ACTIONS } from './glass';
 export const BUILTIN_ACTIONS = [minimizeAction, maximizeAction, detachAction, closeAction];
 
 export default {
-  enableGlassFeature() {
+  enableGlassFeatures() {
     this.enableGlassActions();
     // this.enableGlassDrag();
   },
