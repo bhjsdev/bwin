@@ -6,6 +6,20 @@ export default {
   enableGlassActions() {
     this.handleMinimizedGlassClick();
     this.observeActionButtons();
+    this.dismissActionListMenuOnPointerDown();
+  },
+
+  // Dismiss the open action list menu when pressing elsewhere (dragging muntins,
+  // glass headers, etc). Pointerdowns inside the action list are left alone so
+  // the popover's own toggle/light-dismiss handles the trigger and menu items.
+  dismissActionListMenuOnPointerDown() {
+    this.windowElement.addEventListener('pointerdown', (event) => {
+      if (event.target.closest('bw-glass-action-list')) return;
+
+      this.windowElement
+        .querySelectorAll('bw-glass-action-list-menu:popover-open')
+        .forEach((menuEl) => menuEl.hidePopover());
+    });
   },
 
   restoreGlass(minimizedGlassEl) {

@@ -168,5 +168,7 @@ export class BinaryWindow extends Frame {
 BinaryWindow.assemble(glassModule, detachedGlassModule, trimModule);
 
 // Enable features that do not need a BinaryWindow instance
+// e.g. handle pointer events
+glassModule.enableGlassStandaloneFeatures();
 // e.g. detached glass move/resize/activate
 detachedGlassModule.enableDetachedGlassStandaloneFeatures();

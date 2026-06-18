@@ -47,7 +47,7 @@ const settings = {
         {
           actions: [
             {
-              label: 'Another action',
+              label: 'A 10',
               placement: 'list',
               onClick: () => {
                 alert('Another action clicked');
