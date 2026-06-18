@@ -20,7 +20,7 @@ bw-sill {
   background-color: var(--bw-glass-header-bg-color);
 
   &:hover {
-    background-color: white;
+    background-color: var(--bw-glass-action-bg-color-hover);
   }
 
   &:active {
