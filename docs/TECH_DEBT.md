@@ -32,6 +32,15 @@ This complements [`ARCHITECTURE.md`](./ARCHITECTURE.md) (how things work) and [`
 
 ---
 
+## [medium] `assemble`d modules flatten their whole surface onto the instance — no public/internal split
+
+- **Where:** `Frame.assemble` / `BinaryWindow.assemble` (`src/frame/frame.js:60`, called at `frame.js:67` and `src/binary-window/binary-window.js:168`); the `*Module` mixins (`src/frame/{main,muntin,pane,fit-container,droppable,resizable}.js`, `src/binary-window/{glass,detached-glass,trim}.js`); `strictAssign` (`src/utils.js:173`).
+- **What:** A `*Module` is a plain object literal — a bag of methods (e.g. `trim.js` exports `{ trimMuntin, onMuntinCreate, onMuntinUpdate }`). `assemble(...modules)` copies **every** own key of each module onto the class _prototype_ via `strictAssign` (which only guards against collisions, not visibility). So every method a module defines — feature wiring (`enableGlassDrag`), lifecycle hooks (`onMuntinCreate`), and internal helpers (`trimMuntin`) alike — becomes an undifferentiated public method on the `BinaryWindow`/`Frame` instance. There is no marker for "this is internal" vs "this is API".
+- **Impact:** The instance's public surface is whatever the modules happen to add, not a curated contract. Hard to tell what consumers may rely on, so any method rename/removal is potentially breaking; this is part of why [`react-bwin` reaches into internals](#medium-react-bwin-depends-on-bwin-internals-no-stable-public-surface) — there's no smaller surface to depend on. Mixing onto the prototype also means no per-module privacy and easy accidental name clashes across modules.
+- **Fix direction:** audit what the binary-window instance actually needs to expose vs. what's module-internal. Options: keep internal helpers as module-local functions (not assigned onto the prototype), prefix internal methods, or separate the "feature-enable + lifecycle hooks" contract `assemble` depends on from the genuinely public instance API. Pairs with formalizing the public surface in the react-bwin entry below.
+
+---
+
 ## [medium] Drop infrastructure lives in `frame/` but is really a `binary-window` concern
 
 - **Where:** `src/frame/droppable.js` (`TODO` at top of file)
@@ -84,6 +93,7 @@ This complements [`ARCHITECTURE.md`](./ARCHITECTURE.md) (how things work) and [`
 - **Impact:** Metaphor inconsistency; the name couples the object to the `minimize` action rather than to the sill. Renaming is a **breaking change** — `getMinimizedGlassElementBySashId` and `.bw-minimized-glass` are part of the [react-bwin integration contract](./context/react-bwin-integration.md), so a rename needs either a coordinated downstream change or a deprecated alias (as with `BUILTIN_ACTIONS`).
 - **Fix direction:** rename to a sill object — proposed **`bw-pot`** (a potted plant is the canonical windowsill object), giving a clean verb pair (minimize _pots_ a glass onto the sill; restore _un-pots_ it). Keeps the `minimize` action and `<bw-sill>` unchanged. Grep the react-bwin coupling first; alias the old class/accessor if downstream can't migrate in lockstep.
 - **Element shape (decided):** make `<bw-pot>` an **autonomous custom element that wraps a real `<button>`**, not a bare button and not a `<button is="bw-pot">` customized built-in:
+
   ```html
   <bw-pot>
     <button class="bw-pot__restore" aria-label="Restore <glass title>"><!-- snapshot --></button>
@@ -95,6 +105,7 @@ This complements [`ARCHITECTURE.md`](./ARCHITECTURE.md) (how things work) and [`
   - The inner **`<button>`** is the single activation surface, so click / focus / Enter+Space / `disabled` / `:hover`/`:focus-visible`/`:active` come from the platform — no `role=button`, no hand-written keyboard activation (the custom-button a11y trap). Just needs `aria-label` since its visible content is a snapshot, not text.
   - **Light-DOM only — no Shadow DOM**: theming is plain `bwin.css` classes keyed off `theme="…"`, and downstream react-bwin reads these classes; a shadow root would hide both. Avoids the Safari `is=` polyfill too (customized built-ins are unsupported in WebKit).
   - The sill's delegated click handler changes from `event.target.matches('.bw-minimized-glass')` to `event.target.closest('bw-pot')` so a click on the snapshot still resolves to the pot.
+
 - **Roadmap (why the wrapper):** pots will grow richer — a **live preview** of the stashed glass (CSS-`transform: scale` clone of the kept-alive `bwGlassElement`, `pointer-events:none`, `aria-hidden`; clone, don't move, since restore re-appends the original — `<canvas>`/`<video>` content won't clone pixels and needs a real snapshot fallback) and a **tooltip**. Holding siblings is exactly what the autonomous host enables and a bare/`is=` button cannot.
 - **Apply the same shape to `<bw-glass-action>`:** the action buttons (`createActions()` in `glass/glass.js`, currently `createDomNode('<button class="bw-glass-action ...">')`) get the **same host-wraps-button** treatment for consistency and for the same roadmap reason (per-action tooltips as siblings). Host carries the `--close/--minimize/--maximize/--detach` modifier + `onClick` wiring + the `updateDisabledState` disabled-sync; inner `<button>` is the activation surface. Keep the existing modifier classes so `updateDisabledStateOfActionButtons` selectors and the react-bwin contract keep working.
 
