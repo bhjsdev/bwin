@@ -1,6 +1,8 @@
 import { getMetricsFromElement } from '@/utils';
 
 export default {
+  type: 'glass-builtin',
+  placement: 'bar',
   label: '',
   className: 'bw-glass-action--maximize',
   onClick: (event) => {

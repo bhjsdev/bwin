@@ -2,6 +2,8 @@ import { detachedGlassManager } from './manager';
 import { removeGlassBackdrop } from './utils';
 
 export default {
+  type: 'detached-glass-builtin',
+  placement: 'bar',
   label: '',
   className: 'bw-glass-action--close',
   onClick: (event) => {

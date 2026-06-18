@@ -73,13 +73,13 @@ export class Glass {
   createActionList(actions) {
     // Wrapper scopes `anchor-name` so multiple glasses can reuse the same name
     // without colliding; trigger + list are its direct children (see glass.css).
-    const wrapperEl = document.createElement('bw-glass-action-list');
+    const listEl = document.createElement('bw-glass-action-list');
     const triggerEl = createDomNode(`<button class="bw-glass-action-list-trigger"></button>`);
-    const listEl = document.createElement('bw-glass-action-list-menu');
+    const menuEl = document.createElement('bw-glass-action-list-menu');
 
-    listEl.setAttribute('popover', 'auto');
+    menuEl.setAttribute('popover', 'auto');
     // Element reference instead of an `id` — nothing to collide on dynamic glasses.
-    triggerEl.popoverTargetElement = listEl;
+    triggerEl.popoverTargetElement = menuEl;
 
     for (const action of actions) {
       const label = action?.label ?? action;
@@ -91,17 +91,17 @@ export class Glass {
 
       if (typeof action.onClick === 'function') {
         buttonEl.addEventListener('click', (event) => {
-          listEl.hidePopover();
+          menuEl.hidePopover();
           action.onClick(event, this.binaryWindow);
         });
       }
 
-      listEl.append(buttonEl);
+      menuEl.append(buttonEl);
     }
 
-    wrapperEl.append(triggerEl, listEl);
+    listEl.append(triggerEl, menuEl);
 
-    return wrapperEl;
+    return listEl;
   }
 
   createActions() {
@@ -119,6 +119,9 @@ export class Glass {
         : 'bw-glass-action';
 
       const buttonEl = createDomNode(`<button class="${className}">${label}</button>`);
+
+      // Stamp the type so transferGlass can tell custom actions from builtins.
+      if (action.type) buttonEl.bwActionType = action.type;
 
       if (typeof action.onClick === 'function') {
         buttonEl.addEventListener('click', (event) => {

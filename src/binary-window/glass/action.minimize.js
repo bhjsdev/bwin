@@ -1,6 +1,8 @@
 import { createDomNode, getMetricsFromElement } from '@/utils';
 
 export default {
+  type: 'glass-builtin',
+  placement: 'bar',
   label: '',
   className: 'bw-glass-action--minimize',
   onClick: (event, binaryWindow) => {

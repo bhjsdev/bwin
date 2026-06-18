@@ -1,6 +1,8 @@
 import { transferGlass } from '../glass/utils';
 
 export default {
+  type: 'detached-glass-builtin',
+  placement: 'bar',
   label: '',
   className: 'bw-glass-action--attach',
   onClick: (event, binaryWindow) => {

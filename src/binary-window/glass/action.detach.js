@@ -3,6 +3,8 @@ import { transferGlass } from './utils';
 const DETACHED_GLASS_INSET = 15;
 
 export default {
+  type: 'glass-builtin',
+  placement: 'bar',
   label: '',
   className: 'bw-glass-action--detach',
   onClick: (event, binaryWindow) => {
@@ -23,7 +25,7 @@ export default {
     detachedGlass.domNode.bwOriginalSiblingSashId = siblingSashId;
     detachedGlass.domNode.bwOriginalPosition = paneEl.getAttribute('position');
     detachedGlass.domNode.bwOriginalRelativeSize = paneSash.getRelativeSize();
-    
+
     transferGlass(glassEl, detachedGlass.domNode);
 
     binaryWindow.removePane(paneSashId);
