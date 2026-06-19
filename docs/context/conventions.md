@@ -17,7 +17,7 @@ Use plain "glass" by default; say "attached glass" only when contrasting with "d
 ## Naming
 
 - **DOM-element variables get an `El` suffix with a _specific_ noun** — `activeGlassEl`, not `activeEl`, and not a vague `glassEl` when more specificity is available.
-- **Element accessors are named `get<Noun>`** — e.g. `getActiveGlass` (returns the element that `activeGlassEl` would hold).
+- **Element accessors are named `get<Noun>`** — e.g. `getActiveDetachedGlass` (returns the element that `activeGlassEl` would hold).
 - **Constants name the context they apply to, not just the quantity** — `MIN_RESIZE_WIDTH`, not `MIN_WIDTH`, so a resize-time minimum isn't confused with an unrelated creation-time size default.
 - **Prefer established domain/library terms** and match their conventional meaning.
 - **Stash data on DOM elements via a `bw`-prefixed expando property**, not `dataset`/`data-*` attributes — `el.bwOriginalPosition`, `el.bwActionType`. Use this to hand data between elements that outlives a single call (e.g. a detached glass remembering where to re-attach, or a button carrying its action `type` so `transferGlass` can tell custom actions from builtins). The `bw` prefix namespaces it against other libraries and keeps it out of the serialized DOM; reserve `data-*` for values CSS or external tooling must read.

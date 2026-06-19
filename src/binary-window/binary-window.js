@@ -8,7 +8,6 @@ import detachedGlassModule, {
   DEFAULT_WINDOWLESS_GLASS_ACTIONS,
 } from './detached-glass';
 import { detachedGlassManager } from './detached-glass/manager';
-import { removeGlassBackdrop } from './detached-glass/utils';
 import { normActions } from './utils';
 
 export class BinaryWindow extends Frame {
@@ -135,7 +134,7 @@ export class BinaryWindow extends Frame {
     glass.domNode.setAttribute('windowless', '');
 
     document.body.append(glass.domNode);
-    detachedGlassManager.addGlassByElement(glass.domNode);
+    detachedGlassManager.addDetachedGlassByElement(glass.domNode);
     // bringToFront reserves the z-index slot just below the glass for this backdrop.
     const glassZIndex = detachedGlassManager.bringToFront(glass.domNode);
 
@@ -157,12 +156,10 @@ export class BinaryWindow extends Frame {
    * @returns {Element|null} - The removed element, or null if no glass had that id
    */
   static removeWindowlessGlass(windowlessGlassId) {
-    const removedGlassEl = detachedGlassManager.removeGlassById(windowlessGlassId);
-    removedGlassEl?.remove();
+    const glassEl = document.getElementById(windowlessGlassId);
 
-    removeGlassBackdrop(windowlessGlassId);
-
-    return removedGlassEl;
+    // Unregister + animated removal (which also clears the modal backdrop).
+    return detachedGlassManager.removeDetachedGlassByElement(glassEl);
   }
 }
 

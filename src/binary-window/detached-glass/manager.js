@@ -1,3 +1,5 @@
+import { removeDetachedGlassElement } from './utils';
+
 class DetachedGlassManager {
   constructor() {
     this.glasses = [];
@@ -5,12 +7,12 @@ class DetachedGlassManager {
     this.topZIndex = 1;
   }
 
-  addGlassByElement(glassEl) {
+  addDetachedGlassByElement(glassEl) {
     this.glasses.push(glassEl);
   }
 
   // The front-most glass owns the [active] marker (set in bringToFront).
-  getActiveGlass() {
+  getActiveDetachedGlass() {
     return this.glasses.find((glassEl) => glassEl.hasAttribute('active')) ?? null;
   }
 
@@ -31,7 +33,7 @@ class DetachedGlassManager {
     return this.topZIndex;
   }
 
-  removeGlassById(id) {
+  removeDetachedGlassById(id) {
     const index = this.glasses.findIndex((glassEl) => glassEl.id === id);
 
     if (index !== -1) {
@@ -40,6 +42,16 @@ class DetachedGlassManager {
     }
 
     return null;
+  }
+
+  // Unregister, then remove the element from the DOM with its close animation.
+  removeDetachedGlassByElement(glassEl) {
+    if (!glassEl) return null;
+
+    this.removeDetachedGlassById(glassEl.id);
+    removeDetachedGlassElement(glassEl);
+
+    return glassEl;
   }
 }
 
