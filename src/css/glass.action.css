@@ -14,7 +14,9 @@
   }
 
   &:active {
+    /* Scale from the bottom-left so the popover's anchor point doesn't move */
     transform: scale(0.95);
+    transform-origin: bottom left;
   }
 }
 
@@ -23,16 +25,34 @@ bw-action-menu {
   position-anchor: --bw-action-menu;
   position-area: bottom span-right;
   min-width: 80px;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
   background-color: var(--bw-glass-bg-color);
   border: 1px solid var(--bw-glass-border-color);
   border-radius: var(--bw-glass-border-radius);
   box-shadow: var(--bw-action-menu-shadow);
 
+  /* Closed/exit state. `allow-discrete` on display/overlay keeps the menu around
+     long enough for the fade+slide-up to play before it's pulled from the DOM. */
+  opacity: 0;
+  transform: translateY(-8px);
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease,
+    display 0.15s allow-discrete,
+    overlay 0.15s allow-discrete;
+
   &:popover-open {
     display: flex;
-    flex-direction: column;
-    gap: 4px;
-    margin-top: 8px;
+    opacity: 1;
+    transform: translateY(0);
+
+    /* Entry: slide down + fade in from the closed state */
+    @starting-style {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
   }
 
   /* Menu items read as a list, not a row of icons */

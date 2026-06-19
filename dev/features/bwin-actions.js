@@ -27,6 +27,13 @@ const dropdownActions = [
       alert('Dummy action clicked');
     },
   },
+  {
+    label: 'Dummy action 2',
+    placement: 'list',
+    onClick: () => {
+      alert('Dummy action 2 clicked');
+    },
+  },
 ];
 
 const settings = {

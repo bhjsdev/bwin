@@ -26,7 +26,7 @@ bw-sill {
     transform: scale(0.95);
   }
 
-  animation: bw-pot-highlight 2s ease-out;
+  animation: bw-pot-highlight 1.5s ease;
 }
 
 @keyframes bw-pot-highlight {
