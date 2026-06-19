@@ -9,8 +9,7 @@ bw-sill {
   padding-inline: var(--bw-glass-clearance);
 }
 
-.bw-minimized-glass,
-.bw-minimized-detached-glass {
+.bw-pot {
   display: block;
   flex-basis: 10%;
   height: 10px;
@@ -27,15 +26,15 @@ bw-sill {
     transform: scale(0.95);
   }
 
-  animation: bw-minimized-glass-highlight 2s ease-out;
+  animation: bw-pot-highlight 2s ease-out;
 }
 
-@keyframes bw-minimized-glass-highlight {
+@keyframes bw-pot-highlight {
   0% {
     background-color: var(--bw-glass-header-bg-color);
   }
   30% {
-    background-color: var(--bw-minimized-glass-highlight-color);
+    background-color: var(--bw-pot-highlight-color);
   }
   100% {
     background-color: var(--bw-glass-header-bg-color);

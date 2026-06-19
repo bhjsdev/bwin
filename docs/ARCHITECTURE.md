@@ -93,7 +93,7 @@ Frame.assemble(
 );
 
 // src/binary-window/binary-window.js
-BinaryWindow.assemble(glassModule, detachedGlassModule, trimModule);
+BinaryWindow.assemble(glassModule, detachedGlassModule, trimModule, sillModule);
 ```
 
 `assemble()` uses `strictAssign` (`src/utils.js`), which **throws if a key already exists** on the target prototype. This makes the method namespace a flat, collision-checked shared space.
@@ -288,7 +288,7 @@ When `fitContainer` is set, a `ResizeObserver` on the container calls `fit()` (i
 Each built-in action is a small object `{ label, className, onClick(event, binaryWindow) }`. `Glass.createActions()` renders them as buttons in `<bw-action-bar>` and wires `onClick`. `DEFAULT_GLASS_ACTIONS = [minimize, detach, close]`.
 
 - **close** (`action.close.js`) — removes the pane.
-- **minimize** (`action.minimize.js`) — appends a `.bw-minimized-glass` button to the sill that stashes the live glass element + original position/rect/sash-id, then `removePane`s. Restoring re-inserts the glass (the `getMinimizedGlassElementBySashId` path in `binary-window.js removePane` also cleans up minimized entries).
+- **minimize** (`action.minimize.js`) — appends a `<button class="bw-pot" bw-plant="glass">` to the sill that stashes the live glass element + original position/rect/sash-id, then `removePane`s. Un-potting re-inserts the glass (the `getPotElementBySashId` path in `binary-window.js removePane` also cleans up pots).
 - **maximize** (`action.maximize.js`) — toggles a `maximized` attribute, saving/restoring the pane's bounding rect; maximized panes go `0/0/100%/100%`.
 - **detach** (`action.detach.js`) — see §8.5.
 
@@ -298,22 +298,21 @@ Built-in actions are **pane-centric** (`closest('bw-pane')`), so they don't work
 
 Floating `<bw-glass detached>` panels that mimic OS windows, appended directly to `windowElement` (not bound to any pane/sash). The canonical "feature folder," mirrored by `glass/`:
 
-| File                                                          | Role                                                                                                                                                                                  |
-| ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `index.js`                                                    | re-exports `DetachedGlass` + the action defaults; the assembled mixin (`enableDetachedGlassFeatures` + `enableDetachedGlassStandaloneFeatures` + `crud` spread). See the split below. |
-| `detached-glass.js`                                           | `DetachedGlass extends Glass`; positions/sizes the floating node, defaults `actions = DEFAULT_DETACHED_GLASS_ACTIONS`.                                                                |
-| `crud.js`                                                     | `addDetachedGlass` / `removeDetachedGlass` (public). Cascades placement down-right from the active glass; guards size so the constructor's `222` debug default never fires.           |
-| `manager.js`                                                  | `detachedGlassManager` singleton: tracks glasses, `bringToFront` (rising z-index + sole `[active]` marker), find/remove.                                                              |
-| `activate.js`                                                 | click-to-focus → `bringToFront`. Document-global; installed by `enableDetachedGlassStandaloneFeatures`.                                                                               |
-| `move.js`                                                     | drag the header to reposition (pointer events + `setPointerCapture`). Document-global; installed by `enableDetachedGlassStandaloneFeatures`.                                          |
-| `resize.js`                                                   | 8 resize handles created **on demand** (on hover). Document-global; installed by `enableDetachedGlassStandaloneFeatures`.                                                             |
-| `restore.js`                                                  | `enableRestoreFromMinimizedDetachedGlass` — restore a minimized detached glass from its sill button. Per-instance (binds `this.sillElement`).                                         |
-| `action.attach.js` / `action.close.js` / `action.minimize.js` | the detached action set.                                                                                                                                                              |
-| `utils.js`                                                    | `genStylesByPosition`, resize-handle creation, `removeGlassBackdrop`, `getContainingBlockOrigin`.                                                                                     |
+| File                                                          | Role                                                                                                                                                                        |
+| ------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `index.js`                                                    | re-exports `DetachedGlass` + the action defaults; the assembled mixin (`enableDetachedGlassStandaloneFeatures` + `crud` spread). See the split below.                       |
+| `detached-glass.js`                                           | `DetachedGlass extends Glass`; positions/sizes the floating node, defaults `actions = DEFAULT_DETACHED_GLASS_ACTIONS`.                                                      |
+| `crud.js`                                                     | `addDetachedGlass` / `removeDetachedGlass` (public). Cascades placement down-right from the active glass; guards size so the constructor's `222` debug default never fires. |
+| `manager.js`                                                  | `detachedGlassManager` singleton: tracks glasses, `bringToFront` (rising z-index + sole `[active]` marker), find/remove.                                                    |
+| `activate.js`                                                 | click-to-focus → `bringToFront`. Document-global; installed by `enableDetachedGlassStandaloneFeatures`.                                                                     |
+| `move.js`                                                     | drag the header to reposition (pointer events + `setPointerCapture`). Document-global; installed by `enableDetachedGlassStandaloneFeatures`.                                |
+| `resize.js`                                                   | 8 resize handles created **on demand** (on hover). Document-global; installed by `enableDetachedGlassStandaloneFeatures`.                                                   |
+| `action.attach.js` / `action.close.js` / `action.minimize.js` | the detached action set.                                                                                                                                                    |
+| `utils.js`                                                    | `genStylesByPosition`, resize-handle creation, `removeGlassBackdrop`, `getContainingBlockOrigin`.                                                                           |
 
 `DEFAULT_DETACHED_GLASS_ACTIONS = [minimize, attach, close]`.
 
-**Standalone vs. per-instance features.** `activate`/`move`/`resize` attach **document-global, instance-independent** listeners (they find their target via `closest('bw-glass[detached]')` and never read `this`). They're installed by `enableDetachedGlassStandaloneFeatures()`, called **once at module load** in `binary-window.js` (module evaluation is one-time, so no idempotency flag is needed). This is what makes the static `addWindowlessGlass` path work with **no mounted window** — importing `BinaryWindow` is enough to wire move/resize/activate. The per-instance `enableDetachedGlassFeatures()` (run from `enableFeatures()` during `mount()`) wires only `enableRestoreFromMinimizedDetachedGlass`, which needs `this.sillElement` (windowless glasses have no sill). _Historical note:_ an earlier `drag.js` offered native-DnD repositioning (docked to panes) as an alternative to `move.js`; it was removed in favor of free-floating `move.js`.
+**Standalone vs. per-instance features.** `activate`/`move`/`resize` attach **document-global, instance-independent** listeners (they find their target via `closest('bw-glass[detached]')` and never read `this`). They're installed by `enableDetachedGlassStandaloneFeatures()`, called **once at module load** in `binary-window.js` (module evaluation is one-time, so no idempotency flag is needed). This is what makes the static `addWindowlessGlass` path work with **no mounted window** — importing `BinaryWindow` is enough to wire move/resize/activate. Un-potting (restore from the sill) is **not** here: it's a per-instance sill feature wired by `enableSillFeatures()` (see `sill.js`), which needs `this.sillElement` (windowless glasses have no sill). _Historical note:_ an earlier `drag.js` offered native-DnD repositioning (docked to panes) as an alternative to `move.js`; it was removed in favor of free-floating `move.js`.
 
 **Position** supports the four corners + `center` (centered via `calc(50% - size/2)`, _not_ translate, so left/top stay in sync with drag/resize math; `offset` has no effect on centered).
 

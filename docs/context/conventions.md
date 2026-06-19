@@ -21,6 +21,7 @@ Use plain "glass" by default; say "attached glass" only when contrasting with "d
 - **Constants name the context they apply to, not just the quantity** — `MIN_RESIZE_WIDTH`, not `MIN_WIDTH`, so a resize-time minimum isn't confused with an unrelated creation-time size default.
 - **Prefer established domain/library terms** and match their conventional meaning.
 - **Stash data on DOM elements via a `bw`-prefixed expando property**, not `dataset`/`data-*` attributes — `el.bwOriginalPosition`, `el.bwActionType`. Use this to hand data between elements that outlives a single call (e.g. a detached glass remembering where to re-attach, or a button carrying its action `type` so `transferGlass` can tell custom actions from builtins). The `bw` prefix namespaces it against other libraries and keeps it out of the serialized DOM; reserve `data-*` for values CSS or external tooling must read.
+- **Custom HTML _attributes_ are `bw-`-prefixed only on native elements** — a meaningful attribute set on a native element gets `bw-` so it's namespaced and clearly ours: `<button class="bw-pot" bw-plant="glass">`. Do **not** prefix attributes on bwin's own custom elements (`<bw-pane>`, `<bw-glass>`, …); the element name already carries the `bw-` namespace, so plain attributes like `position`, `sash-id`, `maximized`, `detached` stay unprefixed.
 
 **Why:** self-documenting names. A reader should know what a variable holds and where a constant applies without chasing its definition.
 

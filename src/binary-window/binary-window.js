@@ -2,6 +2,7 @@ import { Frame } from '../frame/frame';
 import glassModule, { Glass } from './glass';
 import { createDomNode } from '../utils';
 import trimModule from './trim';
+import sillModule from './sill';
 import detachedGlassModule, {
   DetachedGlass,
   DEFAULT_WINDOWLESS_GLASS_ACTIONS,
@@ -30,7 +31,7 @@ export class BinaryWindow extends Frame {
   enableFeatures() {
     super.enableFeatures();
     this.enableGlassFeatures();
-    this.enableDetachedGlassFeatures();
+    this.enableSillFeatures();
   }
 
   onPaneCreate(paneEl, sash) {
@@ -93,10 +94,10 @@ export class BinaryWindow extends Frame {
       return;
     }
 
-    // Remove minimized glass element if pane is minimized
-    const minimizedGlassEl = this.getMinimizedGlassElementBySashId(paneSashId);
-    if (minimizedGlassEl) {
-      minimizedGlassEl.remove();
+    // Remove the glass's sill pot if it was minimized
+    const potEl = this.getPotElementBySashId(paneSashId);
+    if (potEl) {
+      potEl.remove();
     }
   }
 
@@ -165,7 +166,7 @@ export class BinaryWindow extends Frame {
   }
 }
 
-BinaryWindow.assemble(glassModule, detachedGlassModule, trimModule);
+BinaryWindow.assemble(glassModule, detachedGlassModule, trimModule, sillModule);
 
 // Enable features that do not need a BinaryWindow instance
 // e.g. handle pointer events
