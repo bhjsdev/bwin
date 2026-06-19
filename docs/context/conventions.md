@@ -64,6 +64,32 @@ Preferred patterns for **new** pointer-driven interaction features:
 
 ---
 
+## Animations (enter / exit)
+
+- **Enter animations are plain CSS** — an `animation:` on the element's base selector fires once when it's inserted (or un-hidden). No JS needed. Example: `bw-glass[detached] { animation: bw-detached-glass-open 0.18s ease-out; }`.
+- **Exit animations need a JS dance** — CSS can't animate a _normal_ element out of the DOM (only popover/dialog get `transition-behavior: allow-discrete`). The pattern: set a **`[closing]` attribute** the CSS keys the exit animation off, then **defer `.remove()` with a `setTimeout` matching the CSS duration**. Hold the duration in a named constant next to the helper and keep it in sync with the stylesheet by hand.
+
+  ```js
+  export const DETACHED_GLASS_CLOSE_DURATION = 180; // keep in sync with the 0.18s in CSS
+  export function removeDetachedGlassElement(el, timeout = DETACHED_GLASS_CLOSE_DURATION) {
+    el.setAttribute('closing', '');
+    setTimeout(() => {
+      el.remove();
+      removeGlassBackdrop(el.id);
+    }, timeout);
+  }
+  ```
+
+  Canonical use: `binary-window/detached-glass/utils.js`. Add `pointer-events: none` to the `[closing]` rule so the dying element can't be re-clicked mid-animation.
+
+- **Prefer the timeout over `animationend`** for exit removal — `animationend` bubbles from descendants (a child popover/menu animating), so it needs `event.target`/`animationName` guards plus listener cleanup; the flat timeout is simpler and its constant doubles as documentation.
+- **For genuinely discrete elements (popover/dialog), use the platform** instead of the `[closing]` dance — `@starting-style` for the enter state and `transition-behavior: allow-discrete` on `display`/`overlay` for the exit. Example: the `bw-action-menu` popover in `glass.action.css`.
+- **Animate only `transform`/`opacity`** for enter/exit so the animation never fights features that set `top`/`left`/`width`/`height` (drag/resize write those directly).
+
+**Why:** keep the simple case simple (CSS-only enter), and make the unavoidable JS for exit a single predictable shape rather than ad-hoc per feature.
+
+---
+
 ## Dev pages (`dev/`)
 
 `dev/` is **test scaffolding** for manually exercising features and bugs — not shippable library source.
