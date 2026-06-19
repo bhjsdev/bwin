@@ -285,7 +285,7 @@ When `fitContainer` is set, a `ResizeObserver` on the container calls `fit()` (i
 
 ### 8.4 Glass actions (`binary-window/glass/`)
 
-Each built-in action is a small object `{ label, className, onClick(event, binaryWindow) }`. `Glass.createActions()` renders them as buttons in `<bw-glass-action-container>` and wires `onClick`. `DEFAULT_GLASS_ACTIONS = [minimize, detach, close]`.
+Each built-in action is a small object `{ label, className, onClick(event, binaryWindow) }`. `Glass.createActions()` renders them as buttons in `<bw-action-bar>` and wires `onClick`. `DEFAULT_GLASS_ACTIONS = [minimize, detach, close]`.
 
 - **close** (`action.close.js`) — removes the pane.
 - **minimize** (`action.minimize.js`) — appends a `.bw-minimized-glass` button to the sill that stashes the live glass element + original position/rect/sash-id, then `removePane`s. Restoring re-inserts the glass (the `getMinimizedGlassElementBySashId` path in `binary-window.js removePane` also cleans up minimized entries).

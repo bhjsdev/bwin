@@ -34,7 +34,7 @@ export class Glass {
       : [];
 
     if (listActions.length > 0) {
-      headerEl.append(this.createActionList(listActions));
+      headerEl.append(this.createActionMenu(listActions));
     }
 
     if (Array.isArray(this.tabs) && this.tabs.length > 0) {
@@ -70,12 +70,11 @@ export class Glass {
     return containerEl;
   }
 
-  createActionList(actions) {
-    // Wrapper scopes `anchor-name` so multiple glasses can reuse the same name
-    // without colliding; trigger + list are its direct children (see glass.css).
-    const listEl = document.createElement('bw-glass-action-list');
-    const triggerEl = createDomNode(`<button class="bw-glass-action-list-trigger"></button>`);
-    const menuEl = document.createElement('bw-glass-action-list-menu');
+  createActionMenu(actions) {
+    // The header scopes `anchor-name` (see glass.css) so multiple glasses can reuse
+    // the same name without colliding; trigger + menu are its direct children.
+    const triggerEl = createDomNode(`<button class="bw-action-menu-trigger"></button>`);
+    const menuEl = document.createElement('bw-action-menu');
 
     menuEl.setAttribute('popover', 'auto');
     // Element reference instead of an `id` — nothing to collide on dynamic glasses.
@@ -83,9 +82,7 @@ export class Glass {
 
     for (const action of actions) {
       const label = action?.label ?? action;
-      const className = action.className
-        ? `bw-glass-action-list-item ${action.className}`
-        : 'bw-glass-action-list-item';
+      const className = action.className ? `bw-action ${action.className}` : 'bw-action';
 
       const buttonEl = createDomNode(`<button class="${className}">${label}</button>`);
 
@@ -99,13 +96,14 @@ export class Glass {
       menuEl.append(buttonEl);
     }
 
-    listEl.append(triggerEl, menuEl);
+    const fragment = document.createDocumentFragment();
+    fragment.append(triggerEl, menuEl);
 
-    return listEl;
+    return fragment;
   }
 
   createActions() {
-    const containerEl = document.createElement('bw-glass-action-container');
+    const containerEl = document.createElement('bw-action-bar');
     const actions = Array.isArray(this.actions)
       ? this.actions.filter(
           (action) => action.placement === undefined || action.placement === 'bar'
@@ -114,9 +112,7 @@ export class Glass {
 
     for (const action of actions) {
       const label = action?.label ?? action;
-      const className = action.className
-        ? `bw-glass-action ${action.className}`
-        : 'bw-glass-action';
+      const className = action.className ? `bw-action ${action.className}` : 'bw-action';
 
       const buttonEl = createDomNode(`<button class="${className}">${label}</button>`);
 

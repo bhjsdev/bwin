@@ -1,11 +1,5 @@
-bw-glass-action-list {
-  /* Confines `anchor-name` to this subtree so each glass's trigger anchors its
-     own menu, even with many glasses on the page. */
-  anchor-scope: --bw-glass-action-list;
-}
-
-.bw-glass-action-list-trigger {
-  anchor-name: --bw-glass-action-list;
+.bw-action-menu-trigger {
+  anchor-name: --bw-action-menu;
   font-family: var(--bw-font-family);
   border: 1px solid var(--bw-glass-border-color);
   border-radius: var(--bw-glass-border-radius);
@@ -25,14 +19,14 @@ bw-glass-action-list {
 }
 
 /* DON'T USE `display: flex` on the menu, it breaks show/hide logic */
-bw-glass-action-list-menu {
-  position-anchor: --bw-glass-action-list;
+bw-action-menu {
+  position-anchor: --bw-action-menu;
   position-area: bottom span-right;
   min-width: 80px;
   background-color: var(--bw-glass-bg-color);
   border: 1px solid var(--bw-glass-border-color);
   border-radius: var(--bw-glass-border-radius);
-  box-shadow: var(--bw-glass-action-list-menu-shadow);
+  box-shadow: var(--bw-action-menu-shadow);
 
   &:popover-open {
     display: flex;
@@ -40,25 +34,14 @@ bw-glass-action-list-menu {
     gap: 4px;
     margin-top: 8px;
   }
-}
 
-.bw-glass-action-list-item {
-  font-family: var(--bw-font-family);
-  text-align: left;
-  border: 1px solid var(--bw-glass-border-color);
-  border-radius: var(--bw-glass-border-radius);
-  cursor: pointer;
-
-  &:hover {
-    background-color: var(--bw-glass-action-bg-color-hover);
-  }
-
-  &:active {
-    transform: scale(0.95);
+  /* Menu items read as a list, not a row of icons */
+  .bw-action {
+    text-align: left;
   }
 }
 
-bw-glass-action-container {
+bw-action-bar {
   /* always on the right */
   margin-left: auto;
   display: flex;
@@ -66,7 +49,7 @@ bw-glass-action-container {
   gap: 2px;
 }
 
-.bw-glass-action {
+.bw-action {
   font-family: var(--bw-font-family);
   border: 1px solid var(--bw-glass-border-color);
   border-radius: var(--bw-glass-border-radius);
@@ -95,44 +78,44 @@ bw-glass-action-container {
   }
 }
 
-/* 
-  Action Icon Resources: 
+/*
+  Action Icon Resources:
   https://shapecatcher.com
   https://www.compart.com/en/unicode/category/So
   🗖 🗗 ◫ □ ☐ ⊞ ⇱ ▣ ◱ ⿴ ⍇ ⤢ ❐
 */
 
-.bw-glass-action--minimize {
+.bw-action--minimize {
   &::before {
     content: '−';
   }
 }
 
-.bw-glass-action--detach {
+.bw-action--detach {
   &::before {
     content: '☐';
   }
 }
 
-.bw-glass-action--attach {
+.bw-action--attach {
   &::before {
     content: '⊞';
   }
 }
 
-.bw-glass-action--maximize {
+.bw-action--maximize {
   &::before {
     content: '🡥';
   }
 }
 
-bw-pane[maximized] .bw-glass-action--maximize {
+bw-pane[maximized] .bw-action--maximize {
   &::before {
     content: '🡧';
   }
 }
 
-.bw-glass-action--close {
+.bw-action--close {
   &::before {
     content: '✕';
   }

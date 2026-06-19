@@ -12,7 +12,7 @@
   --bw-glass-border-color-disabled: hsl(0, 0%, 80%);
 
   --bw-glass-action-bg-color-hover: hsl(0, 0%, 100%);
-  --bw-glass-action-list-menu-shadow: 0 4px 12px hsl(0, 0%, 0%, 0.15);
+  --bw-action-menu-shadow: 0 4px 12px hsl(0, 0%, 0%, 0.15);
 
   --bw-glass-header-height: 30px;
   --bw-glass-header-gap: 4px;

@@ -4,7 +4,7 @@ export default {
   type: 'glass-builtin',
   placement: 'bar',
   label: '',
-  className: 'bw-glass-action--maximize',
+  className: 'bw-action--maximize',
   onClick: (event) => {
     const paneEl = event.target.closest('bw-pane');
 

@@ -6,7 +6,7 @@ export default {
   type: 'glass-builtin',
   placement: 'bar',
   label: '',
-  className: 'bw-glass-action--detach',
+  className: 'bw-action--detach',
   onClick: (event, binaryWindow) => {
     if (!binaryWindow.addDetachedGlass) throw new Error('[bwin] Failed to detach glass from pane');
 

@@ -76,6 +76,8 @@ bw-glass-header {
   border-top-left-radius: var(--bw-glass-border-radius);
   border-top-right-radius: var(--bw-glass-border-radius);
   background-color: var(--bw-glass-header-bg-color);
+
+  anchor-scope: --bw-action-menu;
 }
 
 bw-glass-title {

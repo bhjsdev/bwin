@@ -6,18 +6,18 @@ export default {
   enableGlassActions() {
     this.handleMinimizedGlassClick();
     this.observeActionButtons();
-    this.dismissActionListMenuOnPointerDown();
+    this.dismissActionMenuOnPointerDown();
   },
 
-  // Dismiss the open action list menu when pressing elsewhere (dragging muntins,
-  // glass headers, etc). Pointerdowns inside the action list are left alone so
-  // the popover's own toggle/light-dismiss handles the trigger and menu items.
-  dismissActionListMenuOnPointerDown() {
+  // Dismiss the open action menu when pressing elsewhere (dragging muntins,
+  // glass headers, etc). Pointerdowns on the trigger or inside the menu are left
+  // alone so the popover's own toggle/light-dismiss handles them.
+  dismissActionMenuOnPointerDown() {
     this.windowElement.addEventListener('pointerdown', (event) => {
-      if (event.target.closest('bw-glass-action-list')) return;
+      if (event.target.closest('.bw-action-menu-trigger, bw-action-menu')) return;
 
       this.windowElement
-        .querySelectorAll('bw-glass-action-list-menu:popover-open')
+        .querySelectorAll('bw-action-menu:popover-open')
         .forEach((menuEl) => menuEl.hidePopover());
     });
   },
@@ -88,10 +88,10 @@ export default {
   },
 
   updateDisabledStateOfActionButtons() {
-    this.updateDisabledState('.bw-glass-action--close');
-    this.updateDisabledState('.bw-glass-action--minimize');
-    this.updateDisabledState('.bw-glass-action--maximize');
-    this.updateDisabledState('.bw-glass-action--detach');
+    this.updateDisabledState('.bw-action--close');
+    this.updateDisabledState('.bw-action--minimize');
+    this.updateDisabledState('.bw-action--maximize');
+    this.updateDisabledState('.bw-action--detach');
   },
 
   updateDisabledState(cssSelector) {

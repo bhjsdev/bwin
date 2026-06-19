@@ -4,7 +4,7 @@ export default {
   type: 'glass-builtin',
   placement: 'bar',
   label: '',
-  className: 'bw-glass-action--minimize',
+  className: 'bw-action--minimize',
   onClick: (event, binaryWindow) => {
     const sillEl = binaryWindow.sillElement;
     if (!sillEl) throw new Error(`[bwin] Sill element not found when minimizing`);
