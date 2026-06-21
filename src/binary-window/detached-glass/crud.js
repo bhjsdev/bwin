@@ -1,5 +1,6 @@
 import { DetachedGlass } from './detached-glass';
 import { detachedGlassManager } from './manager';
+import { removeDetachedGlassElement } from './utils';
 
 const DEFAULT_GLASS_WIDTH = 200;
 const DEFAULT_GLASS_HEIGHT = 200;
@@ -9,7 +10,7 @@ const CASCADE_OFFSET = 25;
 
 // Cascade down-right of the active glass; wrap back to the inset at the window edges.
 function getCascadedPlacement(windowEl, { width, height }) {
-  const activeGlassEl = detachedGlassManager.getActiveGlass();
+  const activeGlassEl = detachedGlassManager.getActiveDetachedGlass();
   if (!activeGlassEl) return { position: 'center' };
 
   const windowRect = windowEl.getBoundingClientRect();
@@ -48,15 +49,15 @@ export default {
     });
 
     this.windowElement.append(glass.domNode);
-    detachedGlassManager.addGlassByElement(glass.domNode);
+    detachedGlassManager.addDetachedGlassByElement(glass.domNode);
     detachedGlassManager.bringToFront(glass.domNode);
 
     return glass;
   },
 
   removeDetachedGlass(detachedGlassId) {
-    const removedGlassEl = detachedGlassManager.removeGlassById(detachedGlassId);
-    removedGlassEl?.remove();
+    const removedGlassEl = detachedGlassManager.removeDetachedGlassById(detachedGlassId);
+    removedGlassEl && removeDetachedGlassElement(removedGlassEl);
     return removedGlassEl;
   },
 };

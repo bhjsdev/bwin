@@ -31,6 +31,14 @@ export class Glass {
 
     headerEl.append(document.createElement('bw-glass-attach-indicator'));
 
+    const listActions = Array.isArray(this.actions)
+      ? this.actions.filter((action) => action.placement === 'list')
+      : [];
+
+    if (listActions.length > 0) {
+      headerEl.append(this.createActionMenu(listActions));
+    }
+
     if (Array.isArray(this.tabs) && this.tabs.length > 0) {
       headerEl.append(this.createTabs());
     }
@@ -64,17 +72,54 @@ export class Glass {
     return containerEl;
   }
 
-  createActions() {
-    const containerEl = document.createElement('bw-glass-action-container');
-    const actions = Array.isArray(this.actions) ? this.actions : [];
+  createActionMenu(actions) {
+    // The header scopes `anchor-name` (see glass.css) so multiple glasses can reuse
+    // the same name without colliding; trigger + menu are its direct children.
+    const triggerEl = createDomNode(`<button class="bw-action-menu-trigger"></button>`);
+    const menuEl = document.createElement('bw-action-menu');
+
+    menuEl.setAttribute('popover', 'auto');
+    // Element reference instead of an `id` — nothing to collide on dynamic glasses.
+    triggerEl.popoverTargetElement = menuEl;
 
     for (const action of actions) {
       const label = action?.label ?? action;
-      const className = action.className
-        ? `bw-glass-action ${action.className}`
-        : 'bw-glass-action';
+      const className = action.className ? `bw-action ${action.className}` : 'bw-action';
 
       const buttonEl = createDomNode(`<button class="${className}">${label}</button>`);
+
+      if (typeof action.onClick === 'function') {
+        buttonEl.addEventListener('click', (event) => {
+          menuEl.hidePopover();
+          action.onClick(event, this.binaryWindow);
+        });
+      }
+
+      menuEl.append(buttonEl);
+    }
+
+    const fragment = document.createDocumentFragment();
+    fragment.append(triggerEl, menuEl);
+
+    return fragment;
+  }
+
+  createActions() {
+    const containerEl = document.createElement('bw-action-bar');
+    const actions = Array.isArray(this.actions)
+      ? this.actions.filter(
+          (action) => action.placement === undefined || action.placement === 'bar'
+        )
+      : [];
+
+    for (const action of actions) {
+      const label = action?.label ?? action;
+      const className = action.className ? `bw-action ${action.className}` : 'bw-action';
+
+      const buttonEl = createDomNode(`<button class="${className}">${label}</button>`);
+
+      // Stamp the type so transferGlass can tell custom actions from builtins.
+      if (action.type) buttonEl.bwActionType = action.type;
 
       if (typeof action.onClick === 'function') {
         buttonEl.addEventListener('click', (event) => {

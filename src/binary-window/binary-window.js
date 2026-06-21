@@ -2,12 +2,12 @@ import { Frame } from '../frame/frame';
 import glassModule, { Glass } from './glass';
 import { createDomNode } from '../utils';
 import trimModule from './trim';
+import sillModule from './sill';
 import detachedGlassModule, {
   DetachedGlass,
   DEFAULT_WINDOWLESS_GLASS_ACTIONS,
 } from './detached-glass';
 import { detachedGlassManager } from './detached-glass/manager';
-import { removeGlassBackdrop } from './detached-glass/utils';
 import { normActions } from './utils';
 import dragNewModule from './drag-new';
 
@@ -31,8 +31,7 @@ export class BinaryWindow extends Frame {
   enableFeatures() {
     super.enableFeatures();
     this.enableGlassFeatures();
-    this.enableDetachedGlassFeatures();
-    this.enableGlassDetachDrag();
+    this.enableSillFeatures();
   }
 
   onPaneCreate(paneEl, sash) {
@@ -95,10 +94,10 @@ export class BinaryWindow extends Frame {
       return;
     }
 
-    // Remove minimized glass element if pane is minimized
-    const minimizedGlassEl = this.getMinimizedGlassElementBySashId(paneSashId);
-    if (minimizedGlassEl) {
-      minimizedGlassEl.remove();
+    // Remove the glass's sill pot if it was minimized
+    const potEl = this.getPotElementBySashId(paneSashId);
+    if (potEl) {
+      potEl.remove();
     }
   }
 
@@ -136,7 +135,7 @@ export class BinaryWindow extends Frame {
     glass.domNode.setAttribute('windowless', '');
 
     document.body.append(glass.domNode);
-    detachedGlassManager.addGlassByElement(glass.domNode);
+    detachedGlassManager.addDetachedGlassByElement(glass.domNode);
     // bringToFront reserves the z-index slot just below the glass for this backdrop.
     const glassZIndex = detachedGlassManager.bringToFront(glass.domNode);
 
@@ -158,17 +157,17 @@ export class BinaryWindow extends Frame {
    * @returns {Element|null} - The removed element, or null if no glass had that id
    */
   static removeWindowlessGlass(windowlessGlassId) {
-    const removedGlassEl = detachedGlassManager.removeGlassById(windowlessGlassId);
-    removedGlassEl?.remove();
+    const glassEl = document.getElementById(windowlessGlassId);
 
-    removeGlassBackdrop(windowlessGlassId);
-
-    return removedGlassEl;
+    // Unregister + animated removal (which also clears the modal backdrop).
+    return detachedGlassManager.removeDetachedGlassByElement(glassEl);
   }
 }
 
-BinaryWindow.assemble(glassModule, detachedGlassModule, trimModule, dragNewModule);
+BinaryWindow.assemble(glassModule, detachedGlassModule, trimModule, sillModule, dragNewModule);
 
 // Enable features that do not need a BinaryWindow instance
+// e.g. handle pointer events
+glassModule.enableGlassStandaloneFeatures();
 // e.g. detached glass move/resize/activate
 detachedGlassModule.enableDetachedGlassStandaloneFeatures();

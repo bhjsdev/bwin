@@ -1,19 +1,29 @@
 :root {
   --bw-font-family: system-ui;
   --bw-font-size: 14px;
+  --bw-font-color: hsl(0, 0%, 0%);
   --bw-drop-area-bg-color: hsl(0, 0%, 0%, 0.05);
 
   --bw-glass-clearance: 2px;
+  --bw-glass-bg-color: hsl(0, 0%, 100%);
+  --bw-glass-bg-color-disabled: hsl(0, 0%, 97%);
   --bw-glass-border-radius: 2px;
   --bw-glass-border-color: hsl(0, 0%, 10%);
   --bw-glass-border-color-disabled: hsl(0, 0%, 80%);
-  --bw-glass-bg-color-disabled: hsl(0, 0%, 97%);
+
+  /* Make sure min-width/min-height does not change size at button's active state */
+  --bw-action-button-min-width: 26px;
+  --bw-action-button-min-height: 22px;
+  --bw-action-button-active-scale: 95%;
+
+  --bw-action-button-bg-color-hover: hsl(0, 0%, 100%);
+  --bw-action-menu-shadow: 0 4px 12px hsl(0, 0%, 0%, 0.15);
 
   --bw-glass-header-height: 30px;
   --bw-glass-header-gap: 4px;
   --bw-glass-header-bg-color: hsl(0, 0%, 97%);
 
-  --bw-minimized-glass-highlight-color: hsl(0, 0%, 85%);
+  --bw-pot-highlight-color: hsl(0, 0%, 85%);
 
   --bw-detached-glass-shadow: 0 2px 6px hsl(0, 0%, 0%, 0.12), 0 4px 14px hsl(0, 0%, 0%, 0.22);
   --bw-detached-glass-shadow-active:

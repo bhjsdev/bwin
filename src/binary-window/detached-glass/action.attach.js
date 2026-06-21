@@ -1,8 +1,10 @@
 import { transferGlass } from '../glass/utils';
 
 export default {
+  type: 'detached-glass-builtin',
+  placement: 'bar',
   label: '',
-  className: 'bw-glass-action--attach',
+  className: 'bw-action--attach',
   onClick: (event, binaryWindow) => {
     const detachedGlassEl = event.target.closest('bw-glass[detached]');
     const originalPosition = detachedGlassEl.bwOriginalPosition;
