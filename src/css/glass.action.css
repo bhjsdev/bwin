@@ -20,7 +20,7 @@ bw-action-bar {
   }
 
   &:active {
-    font-size: var(--bw-action-button-active-scale);
+    transform: scale(var(--bw-action-button-active-scale));
   }
 
   &:disabled {
@@ -33,7 +33,7 @@ bw-action-bar {
     }
 
     &:active {
-      font-size: 100%;
+      transform: scale(1);
     }
   }
 }
@@ -86,6 +86,19 @@ bw-pane[maximized] .bw-action--maximize {
 
   &::before {
     content: '☰';
+  }
+
+  &:active {
+    /* Resets scale to avoid action menu shift caused by the button shrinking at active state */
+    transform: scale(1);
+    /* Use font size for a similar pressed effect without causing layout shift */
+    font-size: 85%;
+  }
+
+  &:disabled {
+    &:active {
+      font-size: 100%;
+    }
   }
 }
 

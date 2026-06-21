@@ -14,7 +14,7 @@
   /* Make sure min-width/min-height does not change size at button's active state */
   --bw-action-button-min-width: 26px;
   --bw-action-button-min-height: 22px;
-  --bw-action-button-active-scale: 80%;
+  --bw-action-button-active-scale: 95%;
 
   --bw-action-button-bg-color-hover: hsl(0, 0%, 100%);
   --bw-action-menu-shadow: 0 4px 12px hsl(0, 0%, 0%, 0.15);
