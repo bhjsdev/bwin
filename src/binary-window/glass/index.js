@@ -16,6 +16,10 @@ export default {
     this.enableGlassDrag();
   },
 
+  enableGlassStandaloneFeatures() {
+    // placeholder for now
+  },
+
   ...actionModule,
   ...dragModule,
 };

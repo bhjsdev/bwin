@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script type="module" src="./_html-popover.js"></script>
+    <style>
+      /* Anchor the dropdown to the trigger button. */
+      #menu {
+        /* position: absolute; */
+        position-anchor: --menu-btn;
+        position-area: bottom span-right;
+        /* inset: auto;
+        margin: 4px 0 0;
+
+        min-width: 12ch;
+        padding: 4px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgb(0 0 0 / 0.15); */
+      }
+
+      #menu button {
+        display: block;
+        width: 100%;
+
+        /* padding: 6px 10px;
+        border: 0;
+        border-radius: 4px;
+        background: none;
+        text-align: left;
+        cursor: pointer; */
+      }
+
+      #menu button:hover {
+        background: #eee;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h2>HTML popover dropdown</h2>
+      <p>
+        Pure HTML + CSS: Popover API for show/hide/light-dismiss, Anchor Positioning to place it.
+      </p>
+
+      <button id="trigger" popovertarget="menu" style="anchor-name: --menu-btn">Options ▾</button>
+
+      <div id="menu" popover>
+        <button>Edit</button>
+        <button>Duplicate</button>
+        <button>Delete</button>
+      </div>
+    </main>
+  </body>
+</html>

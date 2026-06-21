@@ -32,6 +32,15 @@ This complements [`ARCHITECTURE.md`](./ARCHITECTURE.md) (how things work) and [`
 
 ---
 
+## [medium] `assemble`d modules flatten their whole surface onto the instance — no public/internal split
+
+- **Where:** `Frame.assemble` / `BinaryWindow.assemble` (`src/frame/frame.js:60`, called at `frame.js:67` and `src/binary-window/binary-window.js:168`); the `*Module` mixins (`src/frame/{main,muntin,pane,fit-container,droppable,resizable}.js`, `src/binary-window/{glass,detached-glass,trim}.js`); `strictAssign` (`src/utils.js:173`).
+- **What:** A `*Module` is a plain object literal — a bag of methods (e.g. `trim.js` exports `{ trimMuntin, onMuntinCreate, onMuntinUpdate }`). `assemble(...modules)` copies **every** own key of each module onto the class _prototype_ via `strictAssign` (which only guards against collisions, not visibility). So every method a module defines — feature wiring (`enableGlassDrag`), lifecycle hooks (`onMuntinCreate`), and internal helpers (`trimMuntin`) alike — becomes an undifferentiated public method on the `BinaryWindow`/`Frame` instance. There is no marker for "this is internal" vs "this is API".
+- **Impact:** The instance's public surface is whatever the modules happen to add, not a curated contract. Hard to tell what consumers may rely on, so any method rename/removal is potentially breaking; this is part of why [`react-bwin` reaches into internals](#medium-react-bwin-depends-on-bwin-internals-no-stable-public-surface) — there's no smaller surface to depend on. Mixing onto the prototype also means no per-module privacy and easy accidental name clashes across modules.
+- **Fix direction:** split each module's surface in two — keep `export default` as the bag of methods `assemble` mixes onto the prototype (the genuinely public/overridable instance API + lifecycle hooks), and move the feature-wiring entry points to **named exports that take the instance explicitly** instead of relying on `this`. So `this.enableXxxFeatures()` becomes `xxxModule.enableXxxFeatures(this)`, called from `enableFeatures()`, while `BinaryWindow.assemble(xxxModule, …)` still mixes in the default bag. The named `enableXxx(instance)` functions (and any helpers they call) live off the prototype, so feature wiring is no longer an undifferentiated public method — only the curated default-export surface is. Pairs with formalizing the public surface in the react-bwin entry below.
+
+---
+
 ## [medium] Drop infrastructure lives in `frame/` but is really a `binary-window` concern
 
 - **Where:** `src/frame/droppable.js` (`TODO` at top of file)
@@ -54,7 +63,7 @@ This complements [`ARCHITECTURE.md`](./ARCHITECTURE.md) (how things work) and [`
 
 - **Where:** whole `src/` tree; no `tsconfig.json`, no JSDoc `@type` annotations, no `checkJs`. The shapes that matter most are untyped: `sash.store` keys, the config→sash compile output, the actions `undefined`-vs-`null` contract, and the public API surface.
 - **What:** The library is authored in plain `.js` with no compiler in the loop. Data shapes are documented only in prose ([`ARCHITECTURE.md`](./ARCHITECTURE.md), [`context/`](./context/)) and enforced at runtime, never statically. This is distinct from the _output_ gap below (_bwin publishes no TypeScript types_): that one is about shipping `.d.ts` to consumers; this is about checking bwin's own source.
-- **Impact:** No compiler catches shape mismatches during refactors — e.g. the queued `bw-pot`/`bw-glass-action` rename and the in-flight drag-and-drop rework rely entirely on manual tracing plus tests. Type drift against the downstream `react-bwin` shim isn't caught mechanically (same root friction as _`react-bwin` depends on bwin internals_ above). Contributors (and AI assistants reading statically) must trace the pipeline to learn shapes a type would state outright.
+- **Impact:** No compiler catches shape mismatches during refactors — e.g. the queued `bw-pot`/`.bw-action` rework and the in-flight drag-and-drop rework rely entirely on manual tracing plus tests. Type drift against the downstream `react-bwin` shim isn't caught mechanically (same root friction as _`react-bwin` depends on bwin internals_ above). Contributors (and AI assistants reading statically) must trace the pipeline to learn shapes a type would state outright.
 - **Fix direction:** prefer an _incremental_ path over a big-bang `.ts` conversion. Add a `tsconfig.json` with `allowJs`/`checkJs` plus JSDoc `@type` annotations, starting with the public API and the `store`/`config`/`sash` shapes — exactly where refactor-safety and the react-bwin contract concentrate. Keeps `.js` source and the current build, and is reversible. A `checkJs` setup that also emits `.d.ts` would subsume the next entry, addressing both gaps at once. Full `.ts` conversion is a larger, separate step to weigh only if the JSDoc path proves its worth (custom-element / DOM typing is the main friction).
 
 ---
@@ -77,13 +86,13 @@ This complements [`ARCHITECTURE.md`](./ARCHITECTURE.md) (how things work) and [`
 
 ---
 
-## [low] `bw-minimized-glass` names a state, not a sill object
+## [low] `bw-pot` is still a bare button, not the autonomous wrapper element
 
-- **Where:** `src/binary-window/glass/action.js`, `glass/action.minimize.js`, `detached-glass/action.minimize.js`, `binary-window.js` (`getMinimizedGlassElementBySashId` + `removePane` cleanup); `.bw-minimized-glass` in `src/css/sill.css`; `--bw-minimized-glass-*` vars in `src/css/vars.css` (~29 identifiers total).
-- **What:** The `<bw-sill>` dock is the right metaphor, but the object set on it is named `bw-minimized-glass` — describing its _state_ (a minimized glass) rather than what it _is_ on the sill. Everything else in the codebase leans into the window-construction metaphor; this name breaks it. The element is also a bare `<button class="bw-minimized-glass">`, which boxes in the roadmap (see below).
-- **Impact:** Metaphor inconsistency; the name couples the object to the `minimize` action rather than to the sill. Renaming is a **breaking change** — `getMinimizedGlassElementBySashId` and `.bw-minimized-glass` are part of the [react-bwin integration contract](./context/react-bwin-integration.md), so a rename needs either a coordinated downstream change or a deprecated alias (as with `BUILTIN_ACTIONS`).
-- **Fix direction:** rename to a sill object — proposed **`bw-pot`** (a potted plant is the canonical windowsill object), giving a clean verb pair (minimize _pots_ a glass onto the sill; restore _un-pots_ it). Keeps the `minimize` action and `<bw-sill>` unchanged. Grep the react-bwin coupling first; alias the old class/accessor if downstream can't migrate in lockstep.
+- **Where:** `src/binary-window/glass/action.minimize.js`, `detached-glass/action.minimize.js` (create the pot); `binary-window/sill.js` (`enableSillFeatures`, `enableUnpotGlass`, `enableUnpotDetachedGlass`, `unpotGlass`, `getPotElementBySashId`); `binary-window.js` (`removePane` cleanup); `.bw-pot` in `src/css/sill.css`; `--bw-pot-highlight-color` in `src/css/{vars,theme}.css`.
+- **Done:** the state-named `bw-minimized-glass`/`bw-minimized-detached-glass` were renamed to a sill object — a single `<button class="bw-pot" bw-plant="glass|detached-glass">`, giving the verb pair _pot_ (minimize) / _un-pot_ (restore). This was a breaking rename against the [react-bwin integration contract](./context/react-bwin-integration.md) (the old `.bw-minimized-glass` class + `getMinimizedGlassElementBySashId` accessor); landed as a clean rename with no alias, so react-bwin must migrate in lockstep.
+- **Remaining:** the pot is still a **bare `<button>`**, which boxes in the roadmap below.
 - **Element shape (decided):** make `<bw-pot>` an **autonomous custom element that wraps a real `<button>`**, not a bare button and not a `<button is="bw-pot">` customized built-in:
+
   ```html
   <bw-pot>
     <button class="bw-pot__restore" aria-label="Restore <glass title>"><!-- snapshot --></button>
@@ -94,9 +103,10 @@ This complements [`ARCHITECTURE.md`](./ARCHITECTURE.md) (how things work) and [`
   - The **host** owns layout + state — the expandos stashed on minimize (`bwOriginalBoundingRect`, `bwOriginalPosition`, `bwOriginalSashId`, `bwGlassElement`) and the sill-item sizing — and is the positioning context for sibling affordances (tooltip, badge).
   - The inner **`<button>`** is the single activation surface, so click / focus / Enter+Space / `disabled` / `:hover`/`:focus-visible`/`:active` come from the platform — no `role=button`, no hand-written keyboard activation (the custom-button a11y trap). Just needs `aria-label` since its visible content is a snapshot, not text.
   - **Light-DOM only — no Shadow DOM**: theming is plain `bwin.css` classes keyed off `theme="…"`, and downstream react-bwin reads these classes; a shadow root would hide both. Avoids the Safari `is=` polyfill too (customized built-ins are unsupported in WebKit).
-  - The sill's delegated click handler changes from `event.target.matches('.bw-minimized-glass')` to `event.target.closest('bw-pot')` so a click on the snapshot still resolves to the pot.
+  - The sill's delegated click handler changes from `event.target.matches('.bw-pot[bw-plant="…"]')` to `event.target.closest('bw-pot')` so a click on the snapshot still resolves to the pot.
+
 - **Roadmap (why the wrapper):** pots will grow richer — a **live preview** of the stashed glass (CSS-`transform: scale` clone of the kept-alive `bwGlassElement`, `pointer-events:none`, `aria-hidden`; clone, don't move, since restore re-appends the original — `<canvas>`/`<video>` content won't clone pixels and needs a real snapshot fallback) and a **tooltip**. Holding siblings is exactly what the autonomous host enables and a bare/`is=` button cannot.
-- **Apply the same shape to `<bw-glass-action>`:** the action buttons (`createActions()` in `glass/glass.js`, currently `createDomNode('<button class="bw-glass-action ...">')`) get the **same host-wraps-button** treatment for consistency and for the same roadmap reason (per-action tooltips as siblings). Host carries the `--close/--minimize/--maximize/--detach` modifier + `onClick` wiring + the `updateDisabledState` disabled-sync; inner `<button>` is the activation surface. Keep the existing modifier classes so `updateDisabledStateOfActionButtons` selectors and the react-bwin contract keep working.
+- **Apply the same shape to `.bw-action`:** the action buttons (`createActions()` in `glass/glass.js`, currently `createDomNode('<button class="bw-action ...">')`) get the **same host-wraps-button** treatment for consistency and for the same roadmap reason (per-action tooltips as siblings). Host carries the `--close/--minimize/--maximize/--detach` modifier + `onClick` wiring + the `updateDisabledState` disabled-sync; inner `<button>` is the activation surface. Keep the existing modifier classes so `updateDisabledStateOfActionButtons` selectors and the react-bwin contract keep working.
 
 ---
 

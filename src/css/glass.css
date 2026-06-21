@@ -76,6 +76,8 @@ bw-glass-header {
   border-top-left-radius: var(--bw-glass-border-radius);
   border-top-right-radius: var(--bw-glass-border-radius);
   background-color: var(--bw-glass-header-bg-color);
+
+  anchor-scope: --bw-action-menu;
 }
 
 bw-glass-title {
@@ -99,91 +101,11 @@ bw-glass-tab-container {
   cursor: pointer;
 
   &:hover {
-    background-color: white;
+    background-color: var(--bw-action-button-bg-color-hover);
   }
 
   &:active {
     transform: translateY(1px);
-  }
-}
-
-bw-glass-action-container {
-  /* always on the right */
-  margin-left: auto;
-  display: flex;
-  flex-shrink: 0;
-  gap: 2px;
-}
-
-.bw-glass-action {
-  font-family: var(--bw-font-family);
-  border: 1px solid var(--bw-glass-border-color);
-  border-radius: var(--bw-glass-border-radius);
-  cursor: pointer;
-
-  &:hover {
-    background-color: white;
-  }
-
-  &:active {
-    transform: scale(0.95);
-  }
-
-  &:disabled {
-    border: 1px solid var(--bw-glass-border-color-disabled);
-    background-color: var(--bw-glass-bg-color-disabled);
-    cursor: not-allowed;
-
-    &:hover {
-      background-color: var(--bw-glass-bg-color-disabled);
-    }
-
-    &:active {
-      transform: scale(1);
-    }
-  }
-}
-
-/* 
-  Action Icon Resources: 
-  https://shapecatcher.com
-  https://www.compart.com/en/unicode/category/So
-  🗖 🗗 ◫ □ ☐ ⊞ ⇱ ▣ ◱ ⿴ ⍇ ⤢ ❐
-*/
-
-.bw-glass-action--minimize {
-  &::before {
-    content: '−';
-  }
-}
-
-.bw-glass-action--detach {
-  &::before {
-    content: '☐';
-  }
-}
-
-.bw-glass-action--attach {
-  &::before {
-    content: '⊞';
-  }
-}
-
-.bw-glass-action--maximize {
-  &::before {
-    content: '🡥';
-  }
-}
-
-bw-pane[maximized] .bw-glass-action--maximize {
-  &::before {
-    content: '🡧';
-  }
-}
-
-.bw-glass-action--close {
-  &::before {
-    content: '✕';
   }
 }
 
@@ -192,7 +114,8 @@ bw-glass-content {
   box-sizing: border-box;
   overflow: auto;
   flex-grow: 1;
-  background-color: white;
+  color: var(--bw-font-color);
+  background-color: var(--bw-glass-bg-color);
   border-bottom-left-radius: var(--bw-glass-border-radius);
   border-bottom-right-radius: var(--bw-glass-border-radius);
 }

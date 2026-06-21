@@ -2,7 +2,6 @@ import crudModule from './crud';
 import activateModule from './activate';
 import moveModule from './move';
 import resizeModule from './resize';
-import restoreModule from './restore';
 
 export {
   DetachedGlass,
@@ -11,10 +10,6 @@ export {
 } from './detached-glass';
 
 export default {
-  enableDetachedGlassFeatures() {
-    restoreModule.enableRestoreFromMinimizedDetachedGlass.call(this);
-  },
-
   enableDetachedGlassStandaloneFeatures() {
     activateModule.enableDetachedGlassActivate();
     moveModule.enableDetachedGlassMove();

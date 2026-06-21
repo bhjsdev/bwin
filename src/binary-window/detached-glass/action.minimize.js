@@ -1,20 +1,22 @@
 import { createDomNode } from '@/utils';
 
 export default {
+  type: 'detached-glass-builtin',
+  placement: 'bar',
   label: '',
-  className: 'bw-glass-action--minimize',
+  className: 'bw-action--minimize',
   onClick: (event, binaryWindow) => {
     const sillEl = binaryWindow.sillElement;
     if (!sillEl) throw new Error(`[bwin] Sill element not found when minimizing`);
 
-    const minimizedDetachedGlassEl = createDomNode('<button class="bw-minimized-detached-glass" />');
-    sillEl.append(minimizedDetachedGlassEl);
+    const potEl = createDomNode('<button class="bw-pot" bw-plant="detached-glass" />');
+    sillEl.append(potEl);
 
     const detachedGlassEl = event.target.closest('bw-glass[detached]');
-    if (!detachedGlassEl) throw new Error(`[bwin] Detached Glass element not found when minimizing`);
+    if (!detachedGlassEl)
+      throw new Error(`[bwin] Detached Glass element not found when minimizing`);
 
-    minimizedDetachedGlassEl.bwDetachedGlassElement = detachedGlassEl;
+    potEl.bwDetachedGlassElement = detachedGlassEl;
     detachedGlassEl.style.display = 'none';
   },
 };
-

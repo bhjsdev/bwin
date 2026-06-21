@@ -23,6 +23,24 @@ export function removeGlassBackdrop(glassId) {
   backdropEl?.remove();
 }
 
+// Matches the `[closing]` animation duration in detached-glass.css (0.18s).
+export const DETACHED_GLASS_CLOSE_DURATION = 180;
+
+// Remove a detached glass element from the DOM after its close animation. CSS
+// can't animate a normal element out, so `[closing]` drives the animation and we
+// defer the actual removal (+ any modal backdrop) by `timeout` to let it play.
+export function removeDetachedGlassElement(
+  detachedGlassEl,
+  timeout = DETACHED_GLASS_CLOSE_DURATION
+) {
+  detachedGlassEl.setAttribute('closing', '');
+
+  setTimeout(() => {
+    detachedGlassEl.remove();
+    removeGlassBackdrop(detachedGlassEl.id);
+  }, timeout);
+}
+
 // Viewport-space top-left of an absolutely-positioned element's containing block.
 export function getContainingBlockOrigin(el) {
   const offsetParentEl = el.offsetParent;
