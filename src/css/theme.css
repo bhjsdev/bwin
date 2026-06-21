@@ -11,7 +11,7 @@ bw-glass[windowless][theme='dark'] {
   --bw-glass-bg-color: hsl(0 0% 16%);
   --bw-glass-bg-color-disabled: hsl(0 0% 16%);
 
-  --bw-glass-action-bg-color-hover: hsl(0 0% 26%);
+  --bw-action-button-bg-color-hover: hsl(0 0% 26%);
   --bw-action-menu-shadow: 0 4px 12px hsl(0 0% 0% / 0.5);
 
   --bw-drop-area-bg-color: hsl(0 0% 100% / 0.1);

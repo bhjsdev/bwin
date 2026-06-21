@@ -1,66 +1,3 @@
-.bw-action-menu-trigger {
-  anchor-name: --bw-action-menu;
-  font-family: var(--bw-font-family);
-  border: 1px solid var(--bw-glass-border-color);
-  border-radius: var(--bw-glass-border-radius);
-  cursor: pointer;
-
-  &::before {
-    content: '☰';
-  }
-
-  &:hover {
-    background-color: var(--bw-glass-action-bg-color-hover);
-  }
-
-  &:active {
-    /* Scale from the bottom-left so the popover's anchor point doesn't move */
-    transform: scale(0.95);
-    transform-origin: bottom left;
-  }
-}
-
-/* DON'T USE `display: flex` on the menu, it breaks show/hide logic */
-bw-action-menu {
-  position-anchor: --bw-action-menu;
-  position-area: bottom span-right;
-  min-width: 80px;
-  flex-direction: column;
-  gap: 4px;
-  margin-top: 8px;
-  background-color: var(--bw-glass-bg-color);
-  border: 1px solid var(--bw-glass-border-color);
-  border-radius: var(--bw-glass-border-radius);
-  box-shadow: var(--bw-action-menu-shadow);
-
-  /* Closed/exit state. `allow-discrete` on display/overlay keeps the menu around
-     long enough for the fade+slide-up to play before it's pulled from the DOM. */
-  opacity: 0;
-  transform: translateY(-8px);
-  transition:
-    opacity 0.15s ease,
-    transform 0.15s ease,
-    display 0.15s allow-discrete,
-    overlay 0.15s allow-discrete;
-
-  &:popover-open {
-    display: flex;
-    opacity: 1;
-    transform: translateY(0);
-
-    /* Entry: slide down + fade in from the closed state */
-    @starting-style {
-      opacity: 0;
-      transform: translateY(-8px);
-    }
-  }
-
-  /* Menu items read as a list, not a row of icons */
-  .bw-action {
-    text-align: left;
-  }
-}
-
 bw-action-bar {
   /* always on the right */
   margin-left: auto;
@@ -69,18 +6,21 @@ bw-action-bar {
   gap: 2px;
 }
 
-.bw-action {
+.bw-action,
+.bw-action-menu-trigger {
   font-family: var(--bw-font-family);
   border: 1px solid var(--bw-glass-border-color);
   border-radius: var(--bw-glass-border-radius);
+  min-width: var(--bw-action-button-min-width);
+  min-height: var(--bw-action-button-min-height);
   cursor: pointer;
 
   &:hover {
-    background-color: var(--bw-glass-action-bg-color-hover);
+    background-color: var(--bw-action-button-bg-color-hover);
   }
 
   &:active {
-    transform: scale(0.95);
+    font-size: var(--bw-action-button-active-scale);
   }
 
   &:disabled {
@@ -93,7 +33,7 @@ bw-action-bar {
     }
 
     &:active {
-      transform: scale(1);
+      font-size: 100%;
     }
   }
 }
@@ -138,5 +78,54 @@ bw-pane[maximized] .bw-action--maximize {
 .bw-action--close {
   &::before {
     content: '✕';
+  }
+}
+
+.bw-action-menu-trigger {
+  anchor-name: --bw-action-menu;
+
+  &::before {
+    content: '☰';
+  }
+}
+
+/* DON'T USE `display: flex` on the menu, it breaks show/hide logic */
+bw-action-menu {
+  position-anchor: --bw-action-menu;
+  position-area: bottom span-right;
+  min-width: 80px;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
+  background-color: var(--bw-glass-bg-color);
+  border: 1px solid var(--bw-glass-border-color);
+  border-radius: var(--bw-glass-border-radius);
+  box-shadow: var(--bw-action-menu-shadow);
+
+  /* Closed/exit state. `allow-discrete` on display/overlay keeps the menu around
+     long enough for the fade+slide-up to play before it's pulled from the DOM. */
+  opacity: 0;
+  transform: translateY(-8px);
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease,
+    display 0.15s allow-discrete,
+    overlay 0.15s allow-discrete;
+
+  &:popover-open {
+    display: flex;
+    opacity: 1;
+    transform: translateY(0);
+
+    /* Entry: slide down + fade in from the closed state */
+    @starting-style {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+  }
+
+  /* Menu items read as a list, not a row of icons */
+  .bw-action {
+    text-align: left;
   }
 }
