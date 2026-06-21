@@ -29,7 +29,7 @@ export function transferGlass(sourceGlassElement, targetGlassElement) {
   const sourceActionBarEl = sourceHeaderEl.querySelector('bw-action-bar');
   const targetActionBarEl = targetHeaderEl.querySelector('bw-action-bar');
   const customActionEls = [...(sourceActionBarEl?.children ?? [])].filter(
-    (actionEl) => !actionEl.bwActionType?.includes('builtin')
+    (actionEl) => !actionEl.getAttribute('bw-action-type')?.includes('builtin')
   );
   if (customActionEls.length > 0) targetActionBarEl.prepend(...customActionEls);
 
