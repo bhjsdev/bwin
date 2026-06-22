@@ -181,9 +181,9 @@ export class BinaryWindow extends Frame {
    */
   static removeWindowlessGlass(windowlessGlassId, { animateClose = true } = {}) {
     const glassEl = document.getElementById(windowlessGlassId);
-
-    // Unregister + animated removal (which also clears the modal backdrop).
-    return detachedGlassManager.removeDetachedGlassByElement(glassEl, { animateClose });
+    removeDetachedGlassElement(glassEl, animateClose);
+    detachedGlassManager.removeDetachedGlassByElement(glassEl);
+    return glassEl;
   }
 }
 

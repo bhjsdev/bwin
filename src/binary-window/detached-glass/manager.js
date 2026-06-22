@@ -1,19 +1,17 @@
-import { removeDetachedGlassElement } from './utils';
-
 class DetachedGlassManager {
   constructor() {
-    this.glasses = [];
+    this.detachedGlassElements = [];
     // Rising counter so the most recently grabbed glass stacks on top, like an OS window.
     this.topZIndex = 1;
   }
 
   addDetachedGlassByElement(glassEl) {
-    this.glasses.push(glassEl);
+    this.detachedGlassElements.push(glassEl);
   }
 
   // The front-most glass owns the [active] marker (set in bringToFront).
   getActiveDetachedGlass() {
-    return this.glasses.find((glassEl) => glassEl.hasAttribute('active')) ?? null;
+    return this.detachedGlassElements.find((glassEl) => glassEl.hasAttribute('active')) ?? null;
   }
 
   bringToFront(glassEl) {
@@ -27,30 +25,26 @@ class DetachedGlassManager {
     // Only the front-most glass keeps [active]; it drives the stronger shadow in CSS.
     // Cleared across all managed glasses, so a detached and a windowless glass
     // (different parents) can't both look active at once.
-    this.glasses.forEach((el) => el !== glassEl && el.removeAttribute('active'));
+    this.detachedGlassElements.forEach((el) => el !== glassEl && el.removeAttribute('active'));
     glassEl.setAttribute('active', '');
 
     return this.topZIndex;
   }
 
   removeDetachedGlassById(id) {
-    const index = this.glasses.findIndex((glassEl) => glassEl.id === id);
+    const index = this.detachedGlassElements.findIndex((glassEl) => glassEl.id === id);
 
     if (index !== -1) {
-      const [removedGlassEl] = this.glasses.splice(index, 1);
+      const [removedGlassEl] = this.detachedGlassElements.splice(index, 1);
       return removedGlassEl;
     }
 
     return null;
   }
 
-  // Unregister, then remove the element from the DOM with its close animation.
-  removeDetachedGlassByElement(glassEl, { animateClose = true } = {}) {
+  removeDetachedGlassByElement(glassEl) {
     if (!glassEl) return null;
-
     this.removeDetachedGlassById(glassEl.id);
-    removeDetachedGlassElement(glassEl, animateClose);
-
     return glassEl;
   }
 }
