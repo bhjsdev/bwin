@@ -39,13 +39,13 @@ document.querySelector('#update-pane').addEventListener('click', () => {
   }
 
   // Only pass fields the user actually filled in.
-  const props = { id };
+  const props = {};
   if (position) props.position = position;
   if (size) props.size = size;
   if (minWidth) props.minWidth = Number(minWidth);
   if (minHeight) props.minHeight = Number(minHeight);
 
-  frame.updatePane(props);
+  frame.updatePane(id, props);
 });
 
 window.lrFrame = lrFrame;

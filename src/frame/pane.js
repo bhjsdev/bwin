@@ -36,15 +36,15 @@ export default {
    * Update an existing pane's layout: its position (re-places it, keeping its
    * relative size), size, and/or min width/height.
    *
+   * @param {string} id - The Sash ID of the pane to update
    * @param {Object} props
-   * @param {string} props.id - The Sash ID of the pane to update
    * @param {'top'|'right'|'bottom'|'left'} [props.position] - New position of the pane
    * @param {string|number} [props.size] - New size along the split axis (px or fraction)
    * @param {number} [props.minWidth] - New min width
    * @param {number} [props.minHeight] - New min height
    * @returns {Sash} - The updated sash
    */
-  updatePane({ id, position, size, minWidth, minHeight }) {
+  updatePane(id, { position, size, minWidth, minHeight }) {
     const sash = this.rootSash.getById(id);
     if (!sash) throw new Error(`[bwin] No sash found with id ${id} when updating pane`);
 

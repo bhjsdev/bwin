@@ -9,6 +9,7 @@ import detachedGlassModule, {
 } from './detached-glass';
 import { detachedGlassManager } from './detached-glass/manager';
 import { normActions } from './utils';
+import { updateGlass } from './glass/utils';
 
 export class BinaryWindow extends Frame {
   sillElement = null;
@@ -69,20 +70,21 @@ export class BinaryWindow extends Frame {
     return paneSash;
   }
 
-  /**
-   * Set the window theme.
-   *
-   * @param {string} theme - The theme name, set as the `theme` attribute on the `bw-window` element
-   */
-  setTheme(theme) {
-    if (!theme) {
-      this.theme = '';
-      this.windowElement.removeAttribute('theme');
-      return;
+  // TODO: support updating glass `actions` (rebuild the action bar/menu in place).
+  updatePane({ position, size, id, minWidth, minHeight, title, content }) {
+    const sash = this.rootSash.getById(id);
+    if (!sash) throw new Error(`[bwin] No sash found with id ${id} when updating pane`);
+
+    if (position || size || minWidth || minHeight) {
+      super.updatePane(id, { position, size, minWidth, minHeight });
     }
 
-    this.theme = theme;
-    this.windowElement.setAttribute('theme', theme);
+    if (title || content) {
+      const glassEl = sash.domNode.querySelector('bw-glass');
+      if (!glassEl)
+        throw new Error(`[bwin] No glass found in pane with id ${id} when updating pane`);
+      updateGlass(glassEl, { title, content });
+    }
   }
 
   removePane(paneSashId) {
@@ -98,6 +100,22 @@ export class BinaryWindow extends Frame {
     if (potEl) {
       potEl.remove();
     }
+  }
+
+  /**
+   * Set the window theme.
+   *
+   * @param {string} theme - The theme name, set as the `theme` attribute on the `bw-window` element
+   */
+  setTheme(theme) {
+    if (!theme) {
+      this.theme = '';
+      this.windowElement.removeAttribute('theme');
+      return;
+    }
+
+    this.theme = theme;
+    this.windowElement.setAttribute('theme', theme);
   }
 
   /**
