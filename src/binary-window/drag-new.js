@@ -53,6 +53,7 @@ export default {
         offsetY: top,
         width: glassRect.width,
         height: glassRect.height,
+        animateOpen: false,
       });
 
       originGlassEl = glassEl;

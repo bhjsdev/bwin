@@ -26,8 +26,10 @@ export default {
       if (!glassEl) return;
 
       event.preventDefault();
-      // setPointerCapture keeps move events flowing when the pointer leaves the header.
-      headerEl.setPointerCapture(event.pointerId);
+      // Capture on the actually-pressed element so it keeps move events and its own
+      // drag cursor: header → `move`, attach indicator → `copy`.
+      const captureEl = event.target.closest('bw-attach-indicator') || headerEl;
+      captureEl.setPointerCapture(event.pointerId);
 
       activeMoveGlassEl = glassEl;
       moveStartX = event.pageX;

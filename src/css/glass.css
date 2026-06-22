@@ -95,16 +95,20 @@ bw-attach-indicator {
   position: absolute;
   top: 0;
   left: 0;
-
-  height: var(--bw-attach-indicator-size);
   width: var(--bw-attach-indicator-size);
-  cursor: copy;
+  height: var(--bw-glass-header-height);
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: start;
+  justify-content: start;
+  /* Adjust icon position */
+  line-height: 0.8;
 
   &:before {
     content: '◸';
+  }
+
+  &:active {
+    cursor: copy;
   }
 }
 
@@ -112,7 +116,7 @@ bw-glass-title {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-left: var(--bw-attach-indicator-size, 0);
+  margin-left: var(--bw-attach-indicator-size);
 }
 
 bw-glass-tab-container {
