@@ -39,6 +39,8 @@ export default {
       ? {}
       : getCascadedPlacement(this.windowElement, { width, height });
 
+// handle add/rmove in detachedGlassManager
+
     const glass = new DetachedGlass({
       actions: this.actions[1],
       binaryWindow: this,
