@@ -1,6 +1,6 @@
 import { DetachedGlass } from './detached-glass';
 import { detachedGlassManager } from './manager';
-import { removeDetachedGlassElement } from './utils';
+import { animateDetachedGlassOpen, removeDetachedGlassElement } from './utils';
 
 const DEFAULT_GLASS_WIDTH = 200;
 const DEFAULT_GLASS_HEIGHT = 200;
@@ -27,12 +27,15 @@ function getCascadedPlacement(windowEl, { width, height }) {
 
 export default {
   addDetachedGlass(options = {}) {
+    // Play the open animation unless the caller opts out.
+    const { animateOpen = true, ...glassOptions } = options;
+
     // Guard size here so the constructor never falls back to its 222 debug default.
-    const width = options.width ?? DEFAULT_GLASS_WIDTH;
-    const height = options.height ?? DEFAULT_GLASS_HEIGHT;
+    const width = glassOptions.width ?? DEFAULT_GLASS_WIDTH;
+    const height = glassOptions.height ?? DEFAULT_GLASS_HEIGHT;
 
     // An explicit position wins; otherwise cascade from the active glass.
-    const { position, offsetX, offsetY } = options.position
+    const { position, offsetX, offsetY } = glassOptions.position
       ? {}
       : getCascadedPlacement(this.windowElement, { width, height });
 
@@ -43,7 +46,7 @@ export default {
       position,
       offsetX,
       offsetY,
-      ...options,
+      ...glassOptions,
       width,
       height,
     });
@@ -52,12 +55,14 @@ export default {
     detachedGlassManager.addDetachedGlassByElement(glass.domNode);
     detachedGlassManager.bringToFront(glass.domNode);
 
+    if (animateOpen) animateDetachedGlassOpen(glass.domNode);
+
     return glass;
   },
 
-  removeDetachedGlass(detachedGlassId) {
+  removeDetachedGlass(detachedGlassId, animateClose = true) {
     const removedGlassEl = detachedGlassManager.removeDetachedGlassById(detachedGlassId);
-    removedGlassEl && removeDetachedGlassElement(removedGlassEl);
+    removedGlassEl && removeDetachedGlassElement(removedGlassEl, animateClose);
     return removedGlassEl;
   },
 };

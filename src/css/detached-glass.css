@@ -3,8 +3,11 @@ bw-glass[detached] {
 
   /* OS-style open: scale up from slightly small + fade in. Only `transform`/
      `opacity` so it never fights move/resize (which set top/left/width/height).
-     Runs once on insert (and on restore from the sill, when display flips back). */
-  animation: bw-detached-glass-open 0.18s ease-out;
+     Driven by `[opening]` (set in JS), which is cleared once the animation ends.
+     Set on insert and on restore from the sill (when display flips back). */
+  &[opening] {
+    animation: bw-detached-glass-open 0.18s ease-out;
+  }
 
   /* OS-style close: reverse of open. Driven by `[closing]` (set in JS), which
      defers DOM removal by the same duration — CSS can't animate an element out. */
