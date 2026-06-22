@@ -1,7 +1,12 @@
 import { genBrightColor, genId, createDomNode, swapChildNodes } from '../utils.js';
 import { Position } from '../position.js';
 import { Sash } from '../sash.js';
-import { createPaneElement, addPaneSash, updatePaneElement } from './pane-utils.js';
+import {
+  createPaneElement,
+  addPaneSash,
+  updatePanePosition,
+  updatePaneSize,
+} from './pane-utils.js';
 import { getSashIdFromPane } from '../frame/frame-utils';
 
 export default {
@@ -27,8 +32,31 @@ export default {
     }
   },
 
-  updatePane(sash) {
-    return updatePaneElement(sash);
+  /**
+   * Update an existing pane's layout: its position (re-places it, keeping its
+   * relative size), size, and/or min width/height.
+   *
+   * @param {Object} props
+   * @param {string} props.id - The Sash ID of the pane to update
+   * @param {'top'|'right'|'bottom'|'left'} [props.position] - New position of the pane
+   * @param {string|number} [props.size] - New size along the split axis (px or fraction)
+   * @param {number} [props.minWidth] - New min width
+   * @param {number} [props.minHeight] - New min height
+   * @returns {Sash} - The updated sash
+   */
+  updatePane({ id, position, size, minWidth, minHeight }) {
+    const sash = this.rootSash.getById(id);
+    if (!sash) throw new Error(`[bwin] No sash found with id ${id} when updating pane`);
+
+    if (minWidth != null) sash.minWidth = minWidth;
+    if (minHeight != null) sash.minHeight = minHeight;
+    if (position) updatePanePosition(sash, position);
+    if (size != null) updatePaneSize(sash, size);
+
+    // `update` reconciles the DOM and calls `onPaneUpdate` for each existing pane.
+    this.update();
+
+    return sash;
   },
 
   // Intended to be overridden

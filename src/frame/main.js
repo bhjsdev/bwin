@@ -1,3 +1,5 @@
+import { updatePaneElement } from './pane-utils.js';
+
 export default {
   createWindow({ theme } = {}) {
     const windowEl = document.createElement('bw-window');
@@ -66,7 +68,7 @@ export default {
           this.windowElement.prepend(sash.domNode);
         }
         else {
-          this.updatePane(sash);
+          updatePaneElement(sash);
           this.onPaneUpdate(sash.domNode, sash);
         }
       }

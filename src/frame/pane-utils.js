@@ -1,5 +1,5 @@
 import { parseSize, genId } from '../utils.js';
-import { Position } from '../position.js';
+import { Position, getOppositePosition } from '../position.js';
 import { Sash } from '../sash.js';
 
 export function createPaneElement(sash) {
@@ -23,6 +23,122 @@ export function updatePaneElement(sash) {
   paneEl.setAttribute('position', sash.position);
 
   return paneEl;
+}
+
+// Re-place a pane at `position`, keeping its current relative size. Same-axis
+// change swaps it with its sibling; cross-axis change reorients the split.
+export function updatePanePosition(sash, position) {
+  const parent = sash.parent;
+  if (!parent) return;
+
+  const sibling = parent.getChildSiblingById(sash.id);
+  if (!sibling) return;
+
+  const parentRect = {
+    top: parent.top,
+    left: parent.left,
+    width: parent.width,
+    height: parent.height,
+  };
+
+  const fraction = sash.getRelativeSize();
+  const wasLeftRight = parent.isLeftRightSplit();
+  const willBeLeftRight = position === Position.Left || position === Position.Right;
+  const axisChanged = wasLeftRight !== willBeLeftRight;
+
+  sash.position = position;
+  sibling.position = getOppositePosition(position);
+
+  if (position === Position.Left || position === Position.Right) {
+    const sashWidth = parentRect.width * fraction;
+
+    sash.top = parentRect.top;
+    sibling.top = parentRect.top;
+    sash.height = parentRect.height;
+    sibling.height = parentRect.height;
+    sash.width = sashWidth;
+    sibling.width = parentRect.width - sashWidth;
+
+    if (position === Position.Left) {
+      sash.left = parentRect.left;
+      sibling.left = parentRect.left + sashWidth;
+    }
+    else {
+      sibling.left = parentRect.left;
+      sash.left = parentRect.left + sibling.width;
+    }
+  }
+  else {
+    const sashHeight = parentRect.height * fraction;
+
+    sash.left = parentRect.left;
+    sibling.left = parentRect.left;
+    sash.width = parentRect.width;
+    sibling.width = parentRect.width;
+    sash.height = sashHeight;
+    sibling.height = parentRect.height - sashHeight;
+
+    if (position === Position.Top) {
+      sash.top = parentRect.top;
+      sibling.top = parentRect.top + sashHeight;
+    }
+    else {
+      sibling.top = parentRect.top;
+      sash.top = parentRect.top + sibling.height;
+    }
+  }
+
+  // The muntin's orientation lives in its `vertical`/`horizontal` attribute, which
+  // `updateMuntin` doesn't toggle. Force a fresh muntin on axis flip via `update`.
+  if (axisChanged) {
+    parent.id = genId();
+  }
+}
+
+// Resize a pane to `size` along its current split axis, shrinking/growing the
+// sibling to fill the parent. Mirrors the muntin-drag math in `resizable.js`.
+export function updatePaneSize(sash, size) {
+  const parent = sash.parent;
+  if (!parent) return;
+
+  const sibling = parent.getChildSiblingById(sash.id);
+  if (!sibling) return;
+
+  const parsed = parseSize(size);
+  if (isNaN(parsed)) return;
+
+  const parentRect = {
+    top: parent.top,
+    left: parent.left,
+    width: parent.width,
+    height: parent.height,
+  };
+
+  const isLeftRight = parent.isLeftRightSplit();
+  const parentSize = isLeftRight ? parentRect.width : parentRect.height;
+  const newSize = parsed < 1 ? parentSize * parsed : parsed;
+  const siblingSize = parentSize - newSize;
+
+  if (isLeftRight) {
+    sash.width = newSize;
+    sibling.width = siblingSize;
+    if (sash.position === Position.Left) {
+      sibling.left = parentRect.left + newSize;
+    }
+    else {
+      sash.left = parentRect.left + siblingSize;
+    }
+  }
+  else {
+    sash.height = newSize;
+    sibling.height = siblingSize;
+    if (sash.position === Position.Top) {
+      sibling.top = parentRect.top + newSize;
+    }
+    else {
+      sash.top = parentRect.top + siblingSize;
+    }
+  }
 }
 
 function addPaneSashToLeft(targetPaneSash, { size, id, minWidth, minHeight }) {
