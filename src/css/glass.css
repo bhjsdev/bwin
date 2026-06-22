@@ -91,13 +91,13 @@ bw-glass-header {
 }
 
 /* TODO: add CSS variable for attach indicator size */
-bw-glass-attach-indicator {
+bw-attach-indicator {
   position: absolute;
   top: 0;
   left: 0;
 
-  height: var(--bw-glass-attach-indicator-size);
-  width: var(--bw-glass-attach-indicator-size);
+  height: var(--bw-attach-indicator-size);
+  width: var(--bw-attach-indicator-size);
   cursor: copy;
   display: flex;
   align-items: center;
@@ -112,7 +112,7 @@ bw-glass-title {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-left: var(--bw-glass-attach-indicator-size, 0);
+  margin-left: var(--bw-attach-indicator-size, 0);
 }
 
 bw-glass-tab-container {

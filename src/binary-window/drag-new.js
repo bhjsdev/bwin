@@ -28,7 +28,7 @@ export default {
 
       // Drag from the header, but not its buttons or the attach indicator.
       const headerEl = event.target.closest('bw-glass-header');
-      if (!headerEl || event.target.closest('bw-glass-action-container, bw-glass-attach-indicator')) return;
+      if (!headerEl || event.target.closest('bw-action-bar, bw-attach-indicator')) return;
       if (headerEl.getAttribute('can-drag') === 'false') return;
 
       // Attached glass only — detached glass moving is handled elsewhere.
@@ -62,7 +62,8 @@ export default {
 
       // Stamp origin so the attach action can re-dock to the same spot (see action.detach.js).
       const paneSash = this.rootSash.getById(originPaneSashId);
-      detachedGlassEl.bwOriginalSiblingSashId = paneSash.parent.getChildSiblingById(originPaneSashId).id;
+      detachedGlassEl.bwOriginalSiblingSashId =
+        paneSash.parent.getChildSiblingById(originPaneSashId).id;
       detachedGlassEl.bwOriginalPosition = paneEl.getAttribute('position');
       detachedGlassEl.bwOriginalRelativeSize = paneSash.getRelativeSize();
 

@@ -29,7 +29,7 @@ export class Glass {
   build() {
     const headerEl = document.createElement('bw-glass-header');
 
-    headerEl.append(document.createElement('bw-glass-attach-indicator'));
+    headerEl.append(document.createElement('bw-attach-indicator'));
 
     const listActions = Array.isArray(this.actions)
       ? this.actions.filter((action) => action.placement === 'list')

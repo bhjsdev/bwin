@@ -23,22 +23,33 @@ export function removeGlassBackdrop(glassId) {
   backdropEl?.remove();
 }
 
-// Matches the `[closing]` animation duration in detached-glass.css (0.18s).
-export const DETACHED_GLASS_CLOSE_DURATION = 180;
+// Play the open animation by setting `[opening]` (see detached-glass.css), then
+// clear it once the animation ends so it can re-run on the next restore.
+export function animateDetachedGlassOpen(detachedGlassEl) {
+  detachedGlassEl.setAttribute('opening', '');
+  detachedGlassEl.addEventListener(
+    'animationend',
+    () => detachedGlassEl.removeAttribute('opening'),
+    { once: true }
+  );
+}
 
-// Remove a detached glass element from the DOM after its close animation. CSS
-// can't animate a normal element out, so `[closing]` drives the animation and we
-// defer the actual removal (+ any modal backdrop) by `timeout` to let it play.
-export function removeDetachedGlassElement(
-  detachedGlassEl,
-  timeout = DETACHED_GLASS_CLOSE_DURATION
-) {
-  detachedGlassEl.setAttribute('closing', '');
-
-  setTimeout(() => {
+// Remove a detached glass element from the DOM (+ any modal backdrop). CSS can't
+// animate a normal element out, so `[closing]` drives the close animation and we
+// defer the actual removal until it ends. Pass `animateClose: false` to remove now.
+export function removeDetachedGlassElement(detachedGlassEl, animateClose = true) {
+  const remove = () => {
     detachedGlassEl.remove();
     removeGlassBackdrop(detachedGlassEl.id);
-  }, timeout);
+  };
+
+  if (!animateClose) {
+    remove();
+    return;
+  }
+
+  detachedGlassEl.setAttribute('closing', '');
+  detachedGlassEl.addEventListener('animationend', remove, { once: true });
 }
 
 // Viewport-space top-left of an absolutely-positioned element's containing block.
