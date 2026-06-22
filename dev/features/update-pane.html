@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script type="module" src="./update-pane.js"></script>
+  </head>
+  <body>
+    <main>
+      <h2>Frame - update pane</h2>
+      <p>
+        Left/right window panes: <code>lr-a</code>, <code>lr-b</code>. Top/bottom window panes:
+        <code>tb-a</code>, <code>tb-b</code>.
+      </p>
+
+      <label>Sash ID <input id="sash-id" type="text" placeholder="e.g. lr-a" /></label>
+      <fieldset style="display: inline-block">
+        <legend>position</legend>
+        <label><input type="radio" name="sash-position" value="" checked />(unchanged)</label>
+        <label><input type="radio" name="sash-position" value="left" />left</label>
+        <label><input type="radio" name="sash-position" value="right" />right</label>
+        <label><input type="radio" name="sash-position" value="top" />top</label>
+        <label><input type="radio" name="sash-position" value="bottom" />bottom</label>
+      </fieldset>
+      <br />
+      <label>size <input id="size" type="text" placeholder="e.g. 0.3 or 200px" /></label>
+      <label>min width <input id="min-width" type="number" placeholder="px" /></label>
+      <label>min height <input id="min-height" type="number" placeholder="px" /></label>
+      <button id="update-pane">Update pane</button>
+
+      <h3>Left / right</h3>
+      <section id="container-lr" style="margin-bottom: 350px"></section>
+      <h3>Top / bottom</h3>
+      <section id="container-tb"></section>
+    </main>
+  </body>
+</html>
