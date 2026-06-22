@@ -119,7 +119,7 @@ export class Glass {
       const buttonEl = createDomNode(`<button class="${className}">${label}</button>`);
 
       // Stamp the type so transferGlass can tell custom actions from builtins.
-      if (action.type) buttonEl.bwActionType = action.type;
+      if (action.type) buttonEl.setAttribute('bw-action-type', action.type);
 
       if (typeof action.onClick === 'function') {
         buttonEl.addEventListener('click', (event) => {

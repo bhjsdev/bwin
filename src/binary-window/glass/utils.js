@@ -1,3 +1,5 @@
+import { createDomNode } from '@/utils';
+
 // Moves the action menu, title/tabs and content children from one glass to
 // another, keeping the target's own header actions. Used when detaching/attaching.
 export function transferGlass(sourceGlassElement, targetGlassElement) {
@@ -29,7 +31,7 @@ export function transferGlass(sourceGlassElement, targetGlassElement) {
   const sourceActionBarEl = sourceHeaderEl.querySelector('bw-action-bar');
   const targetActionBarEl = targetHeaderEl.querySelector('bw-action-bar');
   const customActionEls = [...(sourceActionBarEl?.children ?? [])].filter(
-    (actionEl) => !actionEl.bwActionType?.includes('builtin')
+    (actionEl) => !actionEl.getAttribute('bw-action-type')?.includes('builtin')
   );
   if (customActionEls.length > 0) targetActionBarEl.prepend(...customActionEls);
 
@@ -37,4 +39,32 @@ export function transferGlass(sourceGlassElement, targetGlassElement) {
   const sourceContentEl = sourceGlassElement.querySelector('bw-glass-content');
   const targetContentEl = targetGlassElement.querySelector('bw-glass-content');
   targetContentEl.append(...sourceContentEl.childNodes);
+}
+
+export function updateGlassTitle(glassElement, title) {
+  const titleEl = glassElement.querySelector('bw-glass-title');
+  if (!titleEl) return;
+
+  titleEl.replaceChildren();
+  const titleNode = createDomNode(title);
+  if (titleNode) titleEl.append(titleNode);
+}
+
+export function updateGlassContent(glassElement, content) {
+  const contentEl = glassElement.querySelector('bw-glass-content');
+  if (!contentEl) return;
+
+  contentEl.replaceChildren();
+  const contentNode = createDomNode(content);
+  if (contentNode) contentEl.append(contentNode);
+}
+
+// Update an existing glass's header title and/or content in place.
+export function updateGlass(glassElement, { title, content }) {
+  if (title != null) {
+    updateGlassTitle(glassElement, title);
+  }
+  if (content != null) {
+    updateGlassContent(glassElement, content);
+  }
 }
