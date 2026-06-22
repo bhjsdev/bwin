@@ -33,4 +33,4 @@ Full detail + rationale in [`docs/context/conventions.md`](docs/context/conventi
 ## Dev pages (`dev/`)
 
 - Treat `dev/` as test scaffolding for manually exercising features/bugs, not shippable library source.
-- Put interactive testing items (buttons, inputs, forms, selects, etc.) in the `.html` file, not the `.js`. The paired `.js` queries them with `document.querySelector(...)` and wires up behavior with `addEventListener`. See `dev/features/add-remove-pane.html` / `add-remove-pane.js` for the pattern.
+- Put interactive testing items (buttons, inputs, forms, selects, etc.) in the `.html` file, not the `.js`. The paired `.js` queries them with `document.querySelector(...)` and wires up behavior with `addEventListener`. See `dev/frame/add-remove-pane.html` / `add-remove-pane.js` for the pattern.
