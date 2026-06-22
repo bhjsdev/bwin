@@ -8,6 +8,7 @@ import detachedGlassModule, {
   DEFAULT_WINDOWLESS_GLASS_ACTIONS,
 } from './detached-glass';
 import { detachedGlassManager } from './detached-glass/manager';
+import { animateDetachedGlassOpen } from './detached-glass/utils';
 import { normActions } from './utils';
 import { updateGlass } from './glass/utils';
 
@@ -138,10 +139,11 @@ export class BinaryWindow extends Frame {
    * @param {string|Node} [options.content] - Glass body content.
    * @param {Object[]} [options.tabs] - Header tabs (shown instead of `title`).
    * @param {boolean} [options.draggable=true] - Whether the header can be dragged to move the glass.
+   * @param {boolean} [options.animateOpen=true] - Whether to play the open animation on insert.
    * @returns {DetachedGlass}
    */
   static addWindowlessGlass(options = {}) {
-    const { modal, ...glassOptions } = options;
+    const { modal, animateOpen = true, ...glassOptions } = options;
 
     const glass = new DetachedGlass({
       actions: DEFAULT_WINDOWLESS_GLASS_ACTIONS,
@@ -163,6 +165,8 @@ export class BinaryWindow extends Frame {
       document.body.append(backdropEl);
     }
 
+    if (animateOpen) animateDetachedGlassOpen(glass.domNode);
+
     return glass;
   }
 
@@ -171,13 +175,15 @@ export class BinaryWindow extends Frame {
    * and detaching it from `document.body`. Also removes its modal backdrop, if any.
    *
    * @param {string} windowlessGlassId - The id of the `bw-glass[windowless]` to remove
+   * @param {Object} [options]
+   * @param {boolean} [options.animateClose=true] - Whether to play the close animation before removal.
    * @returns {Element|null} - The removed element, or null if no glass had that id
    */
-  static removeWindowlessGlass(windowlessGlassId) {
+  static removeWindowlessGlass(windowlessGlassId, { animateClose = true } = {}) {
     const glassEl = document.getElementById(windowlessGlassId);
 
     // Unregister + animated removal (which also clears the modal backdrop).
-    return detachedGlassManager.removeDetachedGlassByElement(glassEl);
+    return detachedGlassManager.removeDetachedGlassByElement(glassEl, { animateClose });
   }
 }
 

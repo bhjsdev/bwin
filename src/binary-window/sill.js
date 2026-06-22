@@ -2,6 +2,7 @@ import { getMetricsFromElement } from '@/utils';
 import { getIntersectRect } from '@/rect';
 import { Position } from '@/position';
 import { detachedGlassManager } from './detached-glass/manager';
+import { animateDetachedGlassOpen } from './detached-glass/utils';
 
 export default {
   enableSillFeatures() {
@@ -30,6 +31,7 @@ export default {
       if (!detachedGlassEl) return;
 
       detachedGlassEl.style.display = '';
+      animateDetachedGlassOpen(detachedGlassEl);
       potEl.remove();
       detachedGlassManager.bringToFront(detachedGlassEl);
     });
