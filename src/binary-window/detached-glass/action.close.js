@@ -1,4 +1,5 @@
 import { detachedGlassManager } from './manager';
+import { removeDetachedGlassElement } from './utils';
 
 export default {
   type: 'detached-glass-builtin',
@@ -11,5 +12,6 @@ export default {
 
     // Manager handles both detached and windowless glass (no binaryWindow needed).
     detachedGlassManager.removeDetachedGlassByElement(glassEl);
+    removeDetachedGlassElement(glassEl, true);
   },
 };
