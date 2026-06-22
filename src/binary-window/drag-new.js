@@ -11,13 +11,16 @@ const DRAGGING_ORIGIN_CLASS = 'bw-glass--dimmed';
 // Detach mode: a pointer drag on an attached glass header peels it into a temporary
 // detached glass that mirrors the origin exactly. Releasing while still mostly
 // overlapping the origin snaps back; dragging clear commits the detach and lets the
-// sibling pane reclaim the space.
+// sibling pane reclaim the space. The attach indicator peels the same way but always
+// commits — a plain click on it detaches in place, no snap-back.
 export default {
   enableGlassDetachDrag() {
     let originGlassEl = null;
     let originPaneSashId = null;
     let detachedGlassEl = null;
     let detachedHeaderEl = null;
+    let detachedCaptureEl = null;
+    let fromAttachIndicator = false;
     let startX = 0;
     let startY = 0;
     let startLeft = 0;
@@ -26,10 +29,13 @@ export default {
     this.windowElement.addEventListener('pointerdown', (event) => {
       if (event.button !== 0) return;
 
-      // Drag from the header, but not its buttons or the attach indicator.
+      // Drag from the header, but not its buttons. The attach indicator peels too,
+      // and a plain click on it commits the detach (see pointerup).
       const headerEl = event.target.closest('bw-glass-header');
-      if (!headerEl || event.target.closest('bw-action-bar, bw-attach-indicator')) return;
+      if (!headerEl || event.target.closest('bw-action-bar, .bw-action-menu-trigger')) return;
       if (headerEl.getAttribute('can-drag') === 'false') return;
+
+      const attachIndicatorEl = event.target.closest('bw-attach-indicator');
 
       // Attached glass only — detached glass moving is handled elsewhere.
       const glassEl = headerEl.closest('bw-glass:not([detached])');
@@ -60,6 +66,7 @@ export default {
       originPaneSashId = paneEl.getAttribute('sash-id');
       detachedGlassEl = detached.domNode;
       detachedHeaderEl = detached.headerElement;
+      fromAttachIndicator = Boolean(attachIndicatorEl);
 
       // Stamp origin so the attach action can re-dock to the same spot (see action.detach.js).
       const paneSash = this.rootSash.getById(originPaneSashId);
@@ -77,8 +84,12 @@ export default {
       startLeft = left;
       startTop = top;
 
-      // setPointerCapture keeps move events flowing when the pointer leaves the header.
-      detachedHeaderEl.setPointerCapture(event.pointerId);
+      // Capture keeps move events flowing when the pointer leaves the grabbed element.
+      // Capturing the indicator (vs the header) keeps its `copy` cursor through the drag.
+      detachedCaptureEl =
+        (fromAttachIndicator && detachedHeaderEl.querySelector('bw-attach-indicator')) ||
+        detachedHeaderEl;
+      detachedCaptureEl.setPointerCapture(event.pointerId);
     });
 
     this.windowElement.addEventListener('pointermove', (event) => {
@@ -96,8 +107,8 @@ export default {
     this.windowElement.addEventListener('pointerup', (event) => {
       if (!detachedGlassEl) return;
 
-      if (detachedHeaderEl.hasPointerCapture?.(event.pointerId)) {
-        detachedHeaderEl.releasePointerCapture(event.pointerId);
+      if (detachedCaptureEl.hasPointerCapture?.(event.pointerId)) {
+        detachedCaptureEl.releasePointerCapture(event.pointerId);
       }
 
       const originRect = originGlassEl.getBoundingClientRect();
@@ -107,7 +118,8 @@ export default {
       const floatArea = floatRect.width * floatRect.height;
       const overlapRatio = floatArea > 0 ? intersectArea / floatArea : 0;
 
-      if (overlapRatio >= SNAP_BACK_OVERLAP_RATIO) {
+      // An indicator peel always commits — a plain click on it should detach, not snap back.
+      if (!fromAttachIndicator && overlapRatio >= SNAP_BACK_OVERLAP_RATIO) {
         // Barely moved → undo the peel.
         transferGlass(detachedGlassEl, originGlassEl);
         originGlassEl.classList.remove(DRAGGING_ORIGIN_CLASS);
@@ -122,6 +134,8 @@ export default {
       originPaneSashId = null;
       detachedGlassEl = null;
       detachedHeaderEl = null;
+      detachedCaptureEl = null;
+      fromAttachIndicator = false;
     });
   },
 };
