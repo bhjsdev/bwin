@@ -33,6 +33,7 @@ export default {
 
     transferGlass(detachedGlassEl, paneSash.domNode);
 
-    binaryWindow.removeDetachedGlass(detachedGlassEl.id);
+    // Skip the close animation: the glass is being moved into a pane, not dismissed.
+    binaryWindow.removeDetachedGlass(detachedGlassEl.id, false);
   },
 };

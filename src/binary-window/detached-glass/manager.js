@@ -45,11 +45,11 @@ class DetachedGlassManager {
   }
 
   // Unregister, then remove the element from the DOM with its close animation.
-  removeDetachedGlassByElement(glassEl) {
+  removeDetachedGlassByElement(glassEl, { animateClose = true } = {}) {
     if (!glassEl) return null;
 
     this.removeDetachedGlassById(glassEl.id);
-    removeDetachedGlassElement(glassEl);
+    removeDetachedGlassElement(glassEl, animateClose);
 
     return glassEl;
   }
