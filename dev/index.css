@@ -4,14 +4,49 @@ body {
   display: flex;
 }
 
+nav {
+  width: 160px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+#_toggle-theme {
+  margin: 6px;
+}
+
 ._menu {
   margin: 0;
   padding: 0;
-  width: 130px;
-  height: 100vh;
+  flex: 1;
   list-style: none;
   overflow-y: auto;
   background-color: hsl(0, 0%, 90%);
+
+  ._group {
+    margin: 0;
+    background: none;
+
+    summary {
+      padding: 6px 8px;
+      font-size: 14px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+
+      a {
+        padding-left: 18px;
+      }
+    }
+  }
 
   li {
     margin: 2px;
@@ -20,7 +55,7 @@ body {
 
   a {
     padding: 4px 8px;
-    font-size: 14px;
+    font-size: 16px;
     display: block;
     color: black;
     text-decoration: none;

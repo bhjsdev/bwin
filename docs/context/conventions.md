@@ -99,5 +99,5 @@ Preferred patterns for **new** pointer-driven interaction features:
 
 `dev/` is **test scaffolding** for manually exercising features and bugs — not shippable library source.
 
-- **Interactive testing items (buttons, inputs, forms, selects, etc.) go in the `.html` file**, not the `.js`. The paired `.js` queries them with `document.querySelector(...)` and wires behavior with `addEventListener`. Canonical example: `dev/features/add-remove-pane.html` / `add-remove-pane.js`.
+- **Interactive testing items (buttons, inputs, forms, selects, etc.) go in the `.html` file**, not the `.js`. The paired `.js` queries them with `document.querySelector(...)` and wires behavior with `addEventListener`. Canonical example: `dev/frame/add-remove-pane.html` / `add-remove-pane.js`.
 - **Commits that only touch `dev/` are plain `chore:`** — never `feat:`/`fix:`, no `(dev)` scope. It's scaffolding, not library source.
