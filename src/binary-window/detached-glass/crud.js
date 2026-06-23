@@ -1,6 +1,4 @@
-import { DetachedGlass } from './detached-glass';
 import { detachedGlassManager } from './manager';
-import { animateDetachedGlassOpen, removeDetachedGlassElement } from './utils';
 
 const DEFAULT_GLASS_WIDTH = 200;
 const DEFAULT_GLASS_HEIGHT = 200;
@@ -27,42 +25,39 @@ function getCascadedPlacement(windowEl, { width, height }) {
 
 export default {
   addDetachedGlass(options = {}) {
-    // Play the open animation unless the caller opts out.
-    const { animateOpen = true, ...glassOptions } = options;
+    const { width: optWidth, height: optHeight, position: optPosition } = options;
 
     // Guard size here so the constructor never falls back to its 222 debug default.
-    const width = glassOptions.width ?? DEFAULT_GLASS_WIDTH;
-    const height = glassOptions.height ?? DEFAULT_GLASS_HEIGHT;
+    const width = optWidth ?? DEFAULT_GLASS_WIDTH;
+    const height = optHeight ?? DEFAULT_GLASS_HEIGHT;
 
     // An explicit position wins; otherwise cascade from the active glass.
-    const { position, offsetX, offsetY } = glassOptions.position
+    const { position, offsetX, offsetY } = optPosition
       ? {}
       : getCascadedPlacement(this.windowElement, { width, height });
 
-    const glass = new DetachedGlass({
+    const glassEl = detachedGlassManager.addDetachedGlass({
       actions: this.actions[1],
       binaryWindow: this,
       // Placement first so caller options can override it; size last so it always wins.
       position,
       offsetX,
       offsetY,
-      ...glassOptions,
+      ...options,
       width,
       height,
     });
 
-    this.windowElement.append(glass.domNode);
-    detachedGlassManager.addDetachedGlassByElement(glass.domNode);
-    detachedGlassManager.bringToFront(glass.domNode);
+    this.windowElement.append(glassEl);
 
-    if (animateOpen) animateDetachedGlassOpen(glass.domNode);
-
-    return glass;
+    return glassEl;
   },
 
   removeDetachedGlass(detachedGlassId, animateClose = true) {
-    const removedGlassEl = detachedGlassManager.removeDetachedGlassById(detachedGlassId);
-    removedGlassEl && removeDetachedGlassElement(removedGlassEl, animateClose);
-    return removedGlassEl;
+    return detachedGlassManager.removeDetachedGlass(detachedGlassId, { animateClose });
+  },
+
+  updateDetachedGlass(detachedGlassId, options) {
+    return detachedGlassManager.updateDetachedGlass(detachedGlassId, options);
   },
 };
