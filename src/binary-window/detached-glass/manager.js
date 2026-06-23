@@ -1,3 +1,6 @@
+import { DetachedGlass } from './detached-glass';
+import { animateDetachedGlassOpen, removeDetachedGlassElement } from './utils';
+
 class DetachedGlassManager {
   constructor() {
     this.detachedGlassElements = [];
@@ -5,8 +8,28 @@ class DetachedGlassManager {
     this.topZIndex = 1;
   }
 
-  addDetachedGlassByElement(glassEl) {
+  // Caller owns only the DOM `append` (parent differs: `bw-window` vs. `document.body`)
+  // and reads the returned element's `style.zIndex` for the windowless modal backdrop.
+  addDetachedGlass(options = {}) {
+    const { animateOpen = true, ...glassOptions } = options;
+
+    const glassEl = new DetachedGlass(glassOptions).domNode;
+
+    // Ids must be unique in the stack: remove/update/backdrop all key off the id.
+    if (this.getDetachedGlassById(glassEl.id)) {
+      throw new Error(`[bwin] A detached glass with id "${glassEl.id}" already exists`);
+    }
+
     this.detachedGlassElements.push(glassEl);
+    this.bringToFront(glassEl);
+
+    if (animateOpen) animateDetachedGlassOpen(glassEl);
+
+    return glassEl;
+  }
+
+  getDetachedGlassById(id) {
+    return this.detachedGlassElements.find((glassEl) => glassEl.id === id) ?? null;
   }
 
   // The front-most glass owns the [active] marker (set in bringToFront).
@@ -18,34 +41,32 @@ class DetachedGlassManager {
     // Already front-most (it owns the [active] marker) → nothing to raise.
     if (glassEl.hasAttribute('active')) return;
 
-    // Reserve 1 for modal on windowless glass
+    // Step by 2 (not 1) so the odd slot just below stays free for a windowless modal backdrop.
     this.topZIndex += 2;
     glassEl.style.zIndex = this.topZIndex;
 
-    // Only the front-most glass keeps [active]; it drives the stronger shadow in CSS.
-    // Cleared across all managed glasses, so a detached and a windowless glass
-    // (different parents) can't both look active at once.
+    // Only the front-most glass keeps [active] (drives the stronger shadow); cleared
+    // across all so a detached + a windowless glass can't both look active at once.
     this.detachedGlassElements.forEach((el) => el !== glassEl && el.removeAttribute('active'));
     glassEl.setAttribute('active', '');
 
     return this.topZIndex;
   }
 
-  removeDetachedGlassById(id) {
+  // Unregister and tear down: splice from the registry AND remove the DOM node
+  // (animated by default) plus any modal backdrop.
+  removeDetachedGlass(id, { animateClose = true } = {}) {
     const index = this.detachedGlassElements.findIndex((glassEl) => glassEl.id === id);
+    if (index === -1) return null;
 
-    if (index !== -1) {
-      const [removedGlassEl] = this.detachedGlassElements.splice(index, 1);
-      return removedGlassEl;
-    }
-
-    return null;
+    const [removedGlassEl] = this.detachedGlassElements.splice(index, 1);
+    removeDetachedGlassElement(removedGlassEl, animateClose);
+    return removedGlassEl;
   }
 
-  removeDetachedGlassByElement(glassEl) {
-    if (!glassEl) return null;
-    this.removeDetachedGlassById(glassEl.id);
-    return glassEl;
+  // Tentative: in-place update of an existing detached glass (title/content/etc.).
+  updateDetachedGlass(id, options) {
+    throw new Error('[bwin] updateDetachedGlass is not implemented yet');
   }
 }
 

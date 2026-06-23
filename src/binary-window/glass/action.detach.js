@@ -16,17 +16,17 @@ export default {
     const windowRect = binaryWindow.windowElement.getBoundingClientRect();
     const width = windowRect.width - DETACHED_GLASS_INSET * 2;
     const height = windowRect.height - DETACHED_GLASS_INSET * 2;
-    const detachedGlass = binaryWindow.addDetachedGlass({ position: 'center', width, height });
+    const detachedGlassEl = binaryWindow.addDetachedGlass({ position: 'center', width, height });
 
     const paneSashId = paneEl.getAttribute('sash-id');
     const paneSash = binaryWindow.rootSash.getById(paneSashId);
     const siblingSashId = paneSash.parent.getChildSiblingById(paneSashId).id;
 
-    detachedGlass.domNode.bwOriginalSiblingSashId = siblingSashId;
-    detachedGlass.domNode.bwOriginalPosition = paneEl.getAttribute('position');
-    detachedGlass.domNode.bwOriginalRelativeSize = paneSash.getRelativeSize();
+    detachedGlassEl.bwOriginalSiblingSashId = siblingSashId;
+    detachedGlassEl.bwOriginalPosition = paneEl.getAttribute('position');
+    detachedGlassEl.bwOriginalRelativeSize = paneSash.getRelativeSize();
 
-    transferGlass(glassEl, detachedGlass.domNode);
+    transferGlass(glassEl, detachedGlassEl);
 
     binaryWindow.removePane(paneSashId);
   },

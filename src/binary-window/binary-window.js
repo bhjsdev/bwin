@@ -3,12 +3,8 @@ import glassModule, { Glass } from './glass';
 import { createDomNode } from '../utils';
 import trimModule from './trim';
 import sillModule from './sill';
-import detachedGlassModule, {
-  DetachedGlass,
-  DEFAULT_WINDOWLESS_GLASS_ACTIONS,
-} from './detached-glass';
+import detachedGlassModule, { DEFAULT_WINDOWLESS_GLASS_ACTIONS } from './detached-glass';
 import { detachedGlassManager } from './detached-glass/manager';
-import { animateDetachedGlassOpen } from './detached-glass/utils';
 import { normActions } from './utils';
 import { updateGlass } from './glass/utils';
 
@@ -140,34 +136,29 @@ export class BinaryWindow extends Frame {
    * @param {Object[]} [options.tabs] - Header tabs (shown instead of `title`).
    * @param {boolean} [options.draggable=true] - Whether the header can be dragged to move the glass.
    * @param {boolean} [options.animateOpen=true] - Whether to play the open animation on insert.
-   * @returns {DetachedGlass}
+   * @returns {Element} - The `bw-glass[detached][windowless]` element
    */
   static addWindowlessGlass(options = {}) {
-    const { modal, animateOpen = true, ...glassOptions } = options;
+    const { modal, ...glassOptions } = options;
 
-    const glass = new DetachedGlass({
+    const glassEl = detachedGlassManager.addDetachedGlass({
       actions: DEFAULT_WINDOWLESS_GLASS_ACTIONS,
       position: 'center',
       ...glassOptions,
     });
 
-    glass.domNode.setAttribute('windowless', '');
-
-    document.body.append(glass.domNode);
-    detachedGlassManager.addDetachedGlassByElement(glass.domNode);
-    // bringToFront reserves the z-index slot just below the glass for this backdrop.
-    const glassZIndex = detachedGlassManager.bringToFront(glass.domNode);
+    glassEl.setAttribute('windowless', '');
+    document.body.append(glassEl);
 
     if (modal) {
       const backdropEl = document.createElement('bw-glass-backdrop');
-      backdropEl.setAttribute('for', glass.domNode.id);
-      backdropEl.style.zIndex = glassZIndex - 1;
+      backdropEl.setAttribute('for', glassEl.id);
+      // addDetachedGlass reserved the slot just below the glass (`topZIndex += 2`).
+      backdropEl.style.zIndex = Number(glassEl.style.zIndex) - 1;
       document.body.append(backdropEl);
     }
 
-    if (animateOpen) animateDetachedGlassOpen(glass.domNode);
-
-    return glass;
+    return glassEl;
   }
 
   /**
@@ -180,10 +171,7 @@ export class BinaryWindow extends Frame {
    * @returns {Element|null} - The removed element, or null if no glass had that id
    */
   static removeWindowlessGlass(windowlessGlassId, { animateClose = true } = {}) {
-    const glassEl = document.getElementById(windowlessGlassId);
-    removeDetachedGlassElement(glassEl, animateClose);
-    detachedGlassManager.removeDetachedGlassByElement(glassEl);
-    return glassEl;
+    return detachedGlassManager.removeDetachedGlass(windowlessGlassId, { animateClose });
   }
 }
 
