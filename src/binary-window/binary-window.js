@@ -68,18 +68,18 @@ export class BinaryWindow extends Frame {
   }
 
   // TODO: support updating glass `actions` (rebuild the action bar/menu in place).
-  updatePane({ position, size, id, minWidth, minHeight, title, content }) {
-    const sash = this.rootSash.getById(id);
-    if (!sash) throw new Error(`[bwin] No sash found with id ${id} when updating pane`);
+  updatePane(paneSashId, { position, size, minWidth, minHeight, title, content } = {}) {
+    const sash = this.rootSash.getById(paneSashId);
+    if (!sash) throw new Error(`[bwin] No sash found with id ${paneSashId} when updating pane`);
 
     if (position || size || minWidth || minHeight) {
-      super.updatePane(id, { position, size, minWidth, minHeight });
+      super.updatePane(paneSashId, { position, size, minWidth, minHeight });
     }
 
     if (title || content) {
       const glassEl = sash.domNode.querySelector('bw-glass');
       if (!glassEl)
-        throw new Error(`[bwin] No glass found in pane with id ${id} when updating pane`);
+        throw new Error(`[bwin] No glass found in pane with id ${paneSashId} when updating pane`);
       updateGlass(glassEl, { title, content });
     }
   }
