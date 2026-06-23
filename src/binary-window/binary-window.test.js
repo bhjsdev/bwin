@@ -1,56 +1,66 @@
-import { describe, it, expect } from 'vitest';
-import { normActions } from './utils';
-import { DEFAULT_GLASS_ACTIONS } from './glass';
-import { DEFAULT_DETACHED_GLASS_ACTIONS } from './detached-glass';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { BinaryWindow } from './binary-window';
 
-describe('normActions', () => {
-  it('returns the builtin actions when actions is undefined', () => {
-    expect(normActions(undefined)).toEqual([DEFAULT_GLASS_ACTIONS, DEFAULT_DETACHED_GLASS_ACTIONS]);
+describe('BinaryWindow#updatePane', () => {
+  let containerEl;
+  let bwin;
+
+  beforeEach(() => {
+    containerEl = document.createElement('div');
+    document.body.append(containerEl);
+
+    bwin = new BinaryWindow({
+      width: 444,
+      height: 333,
+      children: [
+        { position: 'left', size: '40%', id: 'a', title: 'a', content: 'Pane a' },
+        { position: 'right', size: '60%', id: 'b', title: 'b', content: 'Pane b' },
+      ],
+    });
+    bwin.mount(containerEl);
   });
 
-  it('returns [[], []] when actions is null, empty, or not an array', () => {
-    expect(normActions(null)).toEqual([[], []]);
-    expect(normActions('a')).toEqual([[], []]);
-    expect(normActions({})).toEqual([[], []]);
-    expect(normActions([])).toEqual([[], []]);
+  afterEach(() => {
+    containerEl.remove();
   });
 
-  it('returns [glassActions, DEFAULT_DETACHED_GLASS_ACTIONS] for a single grouped array', () => {
-    const a = { label: 'A' };
+  function getPaneEl(sashId) {
+    return bwin.windowElement.querySelector(`[sash-id="${sashId}"]`);
+  }
 
-    expect(normActions([[a]])).toEqual([[a], DEFAULT_DETACHED_GLASS_ACTIONS]);
+  it('takes the pane sash id as the first positional argument', () => {
+    bwin.updatePane('a', { title: 'updated a', content: 'updated content a' });
+
+    const titleEl = getPaneEl('a').querySelector('bw-glass-title');
+    const contentEl = getPaneEl('a').querySelector('bw-glass-content');
+
+    expect(titleEl.textContent).toBe('updated a');
+    expect(contentEl.textContent).toBe('updated content a');
   });
 
-  it('returns [actions, DEFAULT_DETACHED_GLASS_ACTIONS] when actions is a flat array', () => {
-    const a = { label: 'A' };
-    const b = { label: 'B' };
+  it('updates only the targeted pane, leaving siblings untouched', () => {
+    bwin.updatePane('a', { title: 'updated a' });
 
-    expect(normActions([a, b])).toEqual([[a, b], DEFAULT_DETACHED_GLASS_ACTIONS]);
+    expect(getPaneEl('a').querySelector('bw-glass-title').textContent).toBe('updated a');
+    expect(getPaneEl('b').querySelector('bw-glass-title').textContent).toBe('b');
   });
 
-  it('returns [[], detachedGlassActions] when first group is absent', () => {
-    const b = { label: 'B' };
+  it('updates the pane size via the layout path', () => {
+    bwin.updatePane('a', { size: '20%' });
 
-    expect(normActions([undefined, [b]])).toEqual([[], [b]]);
-    expect(normActions([null, [b]])).toEqual([[], [b]]);
+    // The split is horizontal (left/right), so size maps to width.
+    const sashA = bwin.rootSash.getById('a');
+    const sashB = bwin.rootSash.getById('b');
+    expect(sashA.width).toBeLessThan(sashB.width);
   });
 
-  it('returns [glassActions, []] when second group is absent', () => {
-    const a = { label: 'A' };
-
-    expect(normActions([[a], undefined])).toEqual([[a], []]);
-    expect(normActions([[a], null])).toEqual([[a], []]);
+  it('throws when no sash matches the given id', () => {
+    expect(() => bwin.updatePane('nope', { title: 'x' })).toThrow(
+      '[bwin] No sash found with id nope when updating pane'
+    );
   });
 
-  it('returns actions as-is when both groups are arrays', () => {
-    const a = { label: 'A' };
-    const b = { label: 'B' };
-    const grouped = [[a], [b]];
-
-    expect(normActions(grouped)).toBe(grouped);
-  });
-
-  it('throws when an array is present but neither of the first two slots is one', () => {
-    expect(() => normActions([null, null, []])).toThrow('[bwin] Invalid actions format');
+  it('does not require an options object', () => {
+    expect(() => bwin.updatePane('a')).not.toThrow();
   });
 });
