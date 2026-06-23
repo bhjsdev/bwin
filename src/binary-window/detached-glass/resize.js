@@ -8,6 +8,10 @@ function hasResizeHandles(glassEl) {
 }
 
 function addResizeHandles(glassEl) {
+  // Opt-out: glasses marked `can-resize="false"` never get handles, so they
+  // can't be resized (the pointerdown handler only fires on a handle element).
+  if (glassEl.getAttribute('can-resize') === 'false') return;
+
   if (!hasResizeHandles(glassEl)) {
     glassEl.append(...createResizeHandles());
   }

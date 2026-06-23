@@ -31,15 +31,26 @@ document.querySelector('#add-positioned').addEventListener('click', () => {
 });
 
 // Windowless glass filling the viewport with a 20px inset on every edge.
+// A fullscreen popup shouldn't be resized, so `resizable: false` suppresses the handles.
 document.querySelector('#add-fullscreen').addEventListener('click', () => {
   const EDGE = 20;
   BinaryWindow.addWindowlessGlass({
     title: 'Fullscreen popup',
     draggable: false,
+    resizable: false,
     position: 'top-left',
     offset: EDGE,
     width: document.documentElement.clientWidth - EDGE * 2,
     height: document.documentElement.clientHeight - EDGE * 2,
     content: createContent('fullscreen'),
+  });
+});
+
+// `resizable: false` keeps resize handles from ever appearing on hover.
+document.querySelector('#add-non-resizable').addEventListener('click', () => {
+  BinaryWindow.addWindowlessGlass({
+    title: 'Non-resizable glass',
+    resizable: false,
+    content: createContent('non-resizable'),
   });
 });

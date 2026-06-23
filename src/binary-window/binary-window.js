@@ -135,6 +135,7 @@ export class BinaryWindow extends Frame {
    * @param {string|Node} [options.content] - Glass body content.
    * @param {Object[]} [options.tabs] - Header tabs (shown instead of `title`).
    * @param {boolean} [options.draggable=true] - Whether the header can be dragged to move the glass.
+   * @param {boolean} [options.resizable=true] - Whether resize handles appear on hover so the glass can be resized.
    * @param {boolean} [options.animateOpen=true] - Whether to play the open animation on insert.
    * @returns {Element} - The `bw-glass[detached][windowless]` element
    */
