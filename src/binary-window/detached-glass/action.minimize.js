@@ -1,4 +1,5 @@
 import { createDomNode } from '@/utils';
+import { animateElementToElement } from '@/animate';
 
 export default {
   type: 'detached-glass-builtin',
@@ -17,6 +18,8 @@ export default {
       throw new Error(`[bwin] Detached Glass element not found when minimizing`);
 
     potEl.bwDetachedGlassElement = detachedGlassEl;
-    detachedGlassEl.style.display = 'none';
+    animateElementToElement(detachedGlassEl, potEl, () => {
+      detachedGlassEl.style.display = 'none';
+    });
   },
 };
