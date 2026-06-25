@@ -42,9 +42,9 @@ export default {
 
       // Drag starts on the header bar itself or the title, but not on action
       // buttons, tabs, or the action menu — those live inside the header too.
-      const onHeaderBar = event.target.matches('bw-glass-header');
-      const onTitle = event.target.closest('bw-glass-title') !== null;
-      if (!onHeaderBar && !onTitle) return;
+      if (!event.target.matches('bw-glass-header') && !event.target.closest('bw-glass-title')) {
+        return;
+      }
 
       const headerEl = event.target.closest('bw-glass-header');
       if (headerEl.getAttribute('can-drag') === 'false') {
