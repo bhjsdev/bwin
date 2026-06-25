@@ -36,9 +36,10 @@ Use plain "glass" by default; say "attached glass" only when contrasting with "d
 
 - **Comment only when it adds something the code doesn't already say.** No restating the obvious.
 - **Keep comments terse: ≤2 lines, ≤100 chars per line.** If one genuinely must run longer, prefix it with `RATIONAL:` so the length is clearly deliberate.
+- **When a long comment covers more than one concern, lead with a one-line summary, then split the concerns into `-` bullets** — one concern per bullet rather than a single dense paragraph. Each bullet stands alone and is easier to amend or drop as the code changes.
 - **Wrap code keywords in backticks** — API/method names, variable names, identifiers (e.g. `` `addPane` ``, `` `activeDragGlassEl` ``).
 
-**Why:** terse, high-signal comments. Long unexplained comment blocks read as noise; the `RATIONAL:` prefix marks the rare case where the prose really is load-bearing.
+**Why:** terse, high-signal comments. Long unexplained comment blocks read as noise; the `RATIONAL:` prefix marks the rare case where the prose really is load-bearing, and bulleting its concerns keeps even that case scannable.
 
 ---
 
