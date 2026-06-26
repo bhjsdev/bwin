@@ -60,6 +60,8 @@ export class BinaryWindow extends Frame {
   addPane(targetPaneSashId, props) {
     const { position, size, id, minWidth, minHeight, withGlass = true, ...glassProps } = props;
     const paneSash = super.addPane(targetPaneSashId, { position, size, id, minWidth, minHeight });
+    if (!paneSash) return null;
+
     if (withGlass) {
       const glass = new Glass({ ...glassProps, sash: paneSash, binaryWindow: this });
       paneSash.domNode.append(glass.domNode);
@@ -85,15 +87,11 @@ export class BinaryWindow extends Frame {
   }
 
   removePane(paneSashId) {
-    const paneEl = this.windowElement.querySelector(`[sash-id="${paneSashId}"]`);
-
-    if (paneEl) {
-      super.removePane(paneSashId);
-      return;
-    }
+    super.removePane(paneSashId);
 
     // Remove the glass's sill pot if it was minimized
     const potEl = this.getPotElementBySashId(paneSashId);
+
     if (potEl) {
       potEl.remove();
     }
