@@ -12,8 +12,6 @@ const children1 = [
   ],
 ];
 
-const children2 = [{ id: 'top-pane', size: 0.5, position: 'top' }, { id: 'bottom-pane' }];
-
 const settings = {
   width: 600,
   height: 400,
@@ -22,6 +20,26 @@ const settings = {
 
 const bwin = new BinaryWindow(settings);
 bwin.mount(document.querySelector('#container'));
+
+bwin.onBeforePaneRemove = (paneSash) => {
+  console.log('onBeforePaneRemove:', paneSash);
+  console.log('onBeforePaneRemove - domNode: ', paneSash.domNode);
+  return true;
+};
+
+bwin.onPaneRemove = (paneSash) => {
+  console.log('onPaneRemove:', paneSash);
+  console.log('onPaneRemove - domNode: ', paneSash.domNode);
+};
+
+bwin.onBeforePaneAdd = (targetPaneSash) => {
+  console.log('onBeforePaneAdd:', targetPaneSash);
+  return true;
+};
+
+bwin.onPaneAdd = (targetPaneSash) => {
+  console.log('onPaneAdd:', targetPaneSash);
+};
 
 document.querySelector('#add-pane').addEventListener('click', () => {
   const parentId = document.querySelector('#sash-id').value.trim();
