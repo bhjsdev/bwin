@@ -29,12 +29,12 @@ export class Glass {
   build() {
     const headerEl = document.createElement('bw-glass-header');
 
-    const listActions = Array.isArray(this.actions)
-      ? this.actions.filter((action) => action.placement === 'list')
+    const menuActions = Array.isArray(this.actions)
+      ? this.actions.filter((action) => action.placement === 'menu')
       : [];
 
-    if (listActions.length > 0) {
-      headerEl.append(this.createActionMenu(listActions));
+    if (menuActions.length > 0) {
+      headerEl.append(this.createActionMenu(menuActions));
     }
 
     if (Array.isArray(this.tabs) && this.tabs.length > 0) {

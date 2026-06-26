@@ -15,21 +15,21 @@ const updateAction = {
 const dropdownActions = [
   {
     label: 'Action 1',
-    placement: 'list',
+    placement: 'menu',
     onClick: () => {
       alert('Action 1 clicked');
     },
   },
   {
     label: 'Dummy action',
-    placement: 'list',
+    placement: 'menu',
     onClick: () => {
       alert('Dummy action clicked');
     },
   },
   {
     label: 'Dummy action 2',
-    placement: 'list',
+    placement: 'menu',
     onClick: () => {
       alert('Dummy action 2 clicked');
     },
@@ -55,7 +55,7 @@ const settings = {
           actions: [
             {
               label: 'A 10',
-              placement: 'list',
+              placement: 'menu',
               onClick: () => {
                 alert('Another action clicked');
               },
