@@ -100,7 +100,7 @@ BinaryWindow.assemble(glassModule, detachedGlassModule, trimModule, sillModule);
 
 **Consequence — namespace your mixin methods.** Because all module methods share one namespace, a new feature must not reuse an existing method name. `frame/resizable.js` already owns `enableResize`, so the detached-glass resize feature is `enableDetachedGlassResize`, _not_ `enableResize`. When adding a feature, prefix its methods with the feature name.
 
-**Override via composition.** Modules later in the `assemble()` list can't silently clobber (strictAssign throws), so genuine overrides happen through subclassing: `BinaryWindow.onPaneCreate` overrides `Frame`'s, `binary-window/glass/drag.js`'s `onPaneDrop` overrides the empty stub in `frame/droppable.js`, and `trimModule.onMuntinCreate` wraps muntin creation. The base modules leave `onPaneCreate`/`onPaneDrop`/`onMuntinCreate` — plus the pane add/remove lifecycle hooks (`onBeforePaneAdd`/`onPaneAdd`/`onBeforePaneRemove`/`onPaneRemove`, see §7) — as empty "intended to be overridden" hooks.
+**Override via composition.** Modules later in the `assemble()` list can't silently clobber (strictAssign throws), so genuine overrides happen through subclassing: `BinaryWindow.onPaneCreate` overrides `Frame`'s, `binary-window/glass/drag.js`'s `onPaneDrop` overrides the empty stub in `frame/droppable.js`, and `trimModule.onMuntinCreate` wraps muntin creation. The base modules leave `onPaneCreate`/`onPaneDrop`/`onMuntinCreate` as empty "intended to be overridden" hooks. (The pane add/remove **lifecycle is observed via events**, not override hooks — see §7.)
 
 ---
 
@@ -252,16 +252,16 @@ Because Sash IDs are stable across an operation (e.g. `removePane` promotes a si
 
 `createPaneElement`/`updatePaneElement` write `top/left/width/height` styles and `sash-id`/`position` attributes. `addPaneSash` (+ the four `addPaneSashTo{Left,Right,Top,Bottom}` helpers) performs the **tree surgery** for a split: it converts the target leaf into a split parent (target gets a fresh muntin ID, `domNode = null`), creates the two child sashes (one inherits the target's old ID + `domNode`), and returns the new sash. Sizing honors `size` as fraction or px.
 
-### Pane add/remove lifecycle hooks (`frame/pane.js`)
+### Pane add/remove lifecycle events (`frame/event.js` + `frame/pane.js`)
 
-`addPane`/`removePane` (the `paneModule` mixin) fire four empty, overridable hooks around the tree mutation + `update()`. They're no-ops by default, intended to be set by consumer code (or a subclass); like the other lifecycle hooks they live undifferentiated on the instance (see §3).
+`addPane`/`removePane` (the `paneModule` mixin) **emit events** around the tree mutation + `update()`. The `eventModule` mixin (`frame/event.js`) provides `on`/`off`/`emit` — a minimal per-instance emitter (a `Map` of event name → `Set` of listeners, lazily created on first `on`/`emit`, so each `Frame`/`BinaryWindow` keeps its own listeners). `detail` is the relevant `Sash`.
 
-- `onBeforePaneAdd(targetPaneSash)` — before the split. Returning `false` **vetoes** the add: no tree surgery runs and `addPane` returns `null`. `BinaryWindow.addPane` short-circuits to `null` in turn (no placeholder `Glass` is seeded).
-- `onPaneAdd(newPaneSash)` — after `update()`, with the new sash rendered.
-- `onBeforePaneRemove(paneSash)` — before the removal. Returning `false` **vetoes** the remove: `removePane` bails out before touching the tree.
-- `onPaneRemove(paneSash)` — after `update()`. At this point `paneSash.domNode` still exists but has already been **detached from the DOM** during `update()`, so it's a handle to the removed (orphaned) node, not a live element.
+- `before-pane-add` — `(targetPaneSash)`, before the split. A listener returning `false` **vetoes** the add: no tree surgery runs and `addPane` returns `null`. `BinaryWindow.addPane` short-circuits to `null` in turn (no placeholder `Glass` is seeded).
+- `pane-add` — `(newPaneSash)`, after `update()`, with the new sash rendered.
+- `before-pane-remove` — `(paneSash)`, before the removal. A listener returning `false` **vetoes** the remove: `removePane` bails out before touching the tree.
+- `pane-remove` — `(paneSash)`, after `update()`. At this point `paneSash.domNode` still exists but has already been **detached from the DOM** during `update()`, so it's a handle to the removed (orphaned) node, not a live element.
 
-A hook returning `false` is the only veto signal — any other return value (including `undefined`, the no-op default) proceeds.
+`emit` runs **every** listener, then reports a veto if **any** of them returned `false` (so veto is order-independent and all listeners still see the event). Returning `false` is the only veto signal — any other return value (including `undefined`) proceeds. Only the `before-*` events are vetoable.
 
 ### Muntins (`frame/muntin.js` + `binary-window/trim.js`)
 
@@ -362,8 +362,9 @@ Exports: `Frame`, `BinaryWindow`, `Sash`, `SashConfig`, `ConfigRoot`, `Position`
 Key methods on `BinaryWindow`:
 
 - `mount(containerEl)` / `frame()` / `enableFeatures()` — lifecycle.
-- `addPane(targetSashId, { position, size, id, ...glassProps })` — split a pane and attach a glass. Returns `null` if the `onBeforePaneAdd` hook vetoed the add (§7).
-- `removePane(sashId)` — remove a pane (and clean up a minimized sill pot if present). A no-op if the `onBeforePaneRemove` hook vetoed the remove (§7).
+- `addPane(targetSashId, { position, size, id, ...glassProps })` — split a pane and attach a glass. Returns `null` if a `before-pane-add` listener vetoed the add (§7).
+- `removePane(sashId)` — remove a pane (and clean up a minimized sill pot if present). A no-op if a `before-pane-remove` listener vetoed the remove (§7).
+- `on(eventName, listener)` / `off(eventName, listener)` — subscribe/unsubscribe to lifecycle events (§7).
 - `addDetachedGlass(options)` / `removeDetachedGlass(id)` — floating panels inside the window.
 - `addWindowlessGlass(options)` / `removeWindowlessGlass(id)` — _static_ floating panels on `document.body`, with no owning window (§8.6).
 - `setTheme(theme)` / `fit()`.

@@ -7,6 +7,7 @@ import muntinModule from './muntin';
 import fitContainerModule from './fit-container';
 import resizableModule from './resizable';
 import droppableModule from './droppable';
+import eventModule from './event';
 
 const DEBUG = import.meta.env.VITE_DEBUG == 'true' ? true : false;
 
@@ -70,5 +71,6 @@ Frame.assemble(
   paneModule,
   fitContainerModule,
   droppableModule,
-  resizableModule
+  resizableModule,
+  eventModule
 );
