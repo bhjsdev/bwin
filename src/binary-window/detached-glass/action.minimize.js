@@ -21,5 +21,7 @@ export default {
     animateElementToElement(detachedGlassEl, potEl, () => {
       detachedGlassEl.style.display = 'none';
     });
+
+    binaryWindow.emit('minimize', detachedGlassEl);
   },
 };

@@ -24,7 +24,7 @@ bwin.mount(document.querySelector('#container'));
 bwin.on('before-pane-add', (targetPaneSash) => {
   console.log('before-pane-add (target):', targetPaneSash);
   // return false to veto the add
-  return false;
+  // return false;
 });
 
 bwin.on('pane-add', (newPaneSash) => {

@@ -5,11 +5,13 @@ export default {
   placement: 'bar',
   label: '',
   className: 'bw-action--close',
-  onClick: (event) => {
+  onClick: (event, binaryWindow) => {
     const glassEl = event.target.closest('bw-glass[detached]');
     if (!glassEl) return;
 
     // Manager handles both detached and windowless glass (no binaryWindow needed).
     detachedGlassManager.removeDetachedGlass(glassEl.id, { animateClose: true });
+
+    binaryWindow.emit('close', glassEl);
   },
 };

@@ -29,5 +29,6 @@ export default {
     transferGlass(glassEl, detachedGlassEl);
 
     binaryWindow.removePane(paneSashId);
+    binaryWindow.emit('detach', detachedGlassEl);
   },
 };

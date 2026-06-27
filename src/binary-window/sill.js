@@ -34,6 +34,7 @@ export default {
       animateDetachedGlassOpen(detachedGlassEl);
       potEl.remove();
       detachedGlassManager.bringToFront(detachedGlassEl);
+      this.emit('restore', detachedGlassEl);
     });
   },
 
@@ -89,6 +90,7 @@ export default {
         withGlass: false,
       });
       newSashPane.domNode.append(potEl.bwGlassElement);
+      this.emit('restore', potEl.bwGlassElement);
     }
   },
 

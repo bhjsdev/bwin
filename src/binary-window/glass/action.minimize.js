@@ -24,5 +24,7 @@ export default {
     potEl.bwOriginalSashId = paneSashId;
 
     sillEl.append(potEl);
+
+    binaryWindow.emit('minimize', glassEl);
   },
 };

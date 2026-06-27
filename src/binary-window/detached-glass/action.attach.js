@@ -35,5 +35,7 @@ export default {
 
     // Skip the close animation: the glass is being moved into a pane, not dismissed.
     binaryWindow.removeDetachedGlass(detachedGlassEl.id, false);
+
+    binaryWindow.emit('attach', paneSash.domNode.querySelector('bw-glass'));
   },
 };
