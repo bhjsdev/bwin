@@ -55,12 +55,12 @@ class DetachedGlassManager {
 
   // Unregister and tear down: splice from the registry AND remove the DOM node
   // (animated by default) plus any modal backdrop.
-  removeDetachedGlass(id, { animateClose = true, onComplete = () => {} } = {}) {
+  removeDetachedGlass(id, { animate = true, onComplete = () => {} } = {}) {
     const index = this.detachedGlassElements.findIndex((glassEl) => glassEl.id === id);
     if (index === -1) return null;
 
     const [removedGlassEl] = this.detachedGlassElements.splice(index, 1);
-    removeDetachedGlassElement(removedGlassEl, animateClose, onComplete);
+    removeDetachedGlassElement(removedGlassEl, animate, onComplete);
     return removedGlassEl;
   }
 

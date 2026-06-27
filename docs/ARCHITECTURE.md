@@ -328,7 +328,7 @@ Floating `<bw-glass detached>` panels that mimic OS windows, appended directly t
 **Manager owns the lifecycle; the caller only owns the DOM `append`.** `detachedGlassManager` is the single point for add/remove/update:
 
 - `addDetachedGlass(options)` — **builds the `DetachedGlass`, registers + `bringToFront`s it, and plays the open animation** (`animateDetachedGlassOpen`, unless `animateOpen: false`). Returns the glass **element** (`glass.domNode`), not the instance. The **only** thing left to the caller is the DOM `append`, because the parent differs (`crud.js` → `windowElement`, `addWindowlessGlass` → `document.body`); the windowless modal backdrop reads the returned element's `style.zIndex` (set by `bringToFront`) and sits at `z − 1`. `crud.js` pre-computes cascade placement + the size guard, then forwards everything as options.
-- `removeDetachedGlass(id, { animateClose = true } = {})` — **owns the full teardown.** Splices from the array **and** removes the DOM node + modal backdrop via `removeDetachedGlassElement` (`utils.js`, `[closing]` attr + deferred `.remove()`). The **close** action, `binaryWindow.removeDetachedGlass`, and `removeWindowlessGlass` all route through it.
+- `removeDetachedGlass(id, { animate = true } = {})` — **owns the full teardown.** Splices from the array **and** removes the DOM node + modal backdrop via `removeDetachedGlassElement` (`utils.js`, `[closing]` attr + deferred `.remove()`). The **close** action, `binaryWindow.removeDetachedGlass`, and `removeWindowlessGlass` all route through it.
 - `updateDetachedGlass(id, options)` — tentative stub (throws) for a future in-place update path.
 
 `bringToFront` / `getActiveDetachedGlass` stay agnostic about whether a glass lives in a `bw-window` or on `document.body`.

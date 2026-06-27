@@ -8,7 +8,7 @@ export default {
     if (!glassEl) return;
 
     binaryWindow.removeDetachedGlass(glassEl.id, {
-      animateClose: true,
+      animate: true,
       onComplete: () => binaryWindow.emit('close', glassEl),
     });
   },

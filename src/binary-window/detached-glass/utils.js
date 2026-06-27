@@ -34,11 +34,7 @@ export function animateDetachedGlassOpen(detachedGlassEl) {
   );
 }
 
-export function removeDetachedGlassElement(
-  detachedGlassEl,
-  animateClose = true,
-  onComplete = () => {}
-) {
+export function removeDetachedGlassElement(detachedGlassEl, animate = true, onComplete = () => {}) {
   const handleRemove = () => {
     detachedGlassEl.remove();
     detachedGlassEl.removeAttribute('closing');
@@ -46,7 +42,7 @@ export function removeDetachedGlassElement(
     onComplete();
   };
 
-  if (!animateClose) {
+  if (!animate) {
     handleRemove();
     return;
   }

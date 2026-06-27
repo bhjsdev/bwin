@@ -27,7 +27,7 @@ export default {
     }
 
     binaryWindow.removeDetachedGlass(detachedGlassEl.id, {
-      animateClose: true,
+      animate: true,
       onComplete: () => {
         const paneSash = binaryWindow.addPane(targetSashId, {
           position,
