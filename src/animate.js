@@ -1,7 +1,7 @@
 // FLIP-style flight: shrink and fly `sourceEl` onto `targetEl`, then fade out.
 // Both must be laid out (in the DOM, not `display:none`) so their rects measure.
-// Runs `onComplete` when the flight ends (e.g. to hide/remove the source).
-export function animateElementToElement(sourceEl, targetEl, onComplete) {
+// Resolves when the flight ends (e.g. to then hide/remove the source).
+export function animateElementToElement(sourceEl, targetEl) {
   const SHRINK_FLIGHT_DURATION = 200;
 
   const sourceRect = sourceEl.getBoundingClientRect();
@@ -28,13 +28,8 @@ export function animateElementToElement(sourceEl, targetEl, onComplete) {
   // top-left origin so the translate/scale maps the source corner onto the target corner
   sourceEl.style.transformOrigin = 'top left';
 
-  animation.addEventListener(
-    'finish',
-    () => {
-      sourceEl.style.pointerEvents = '';
-      sourceEl.style.transformOrigin = '';
-      onComplete?.();
-    },
-    { once: true }
-  );
+  return animation.finished.then(() => {
+    sourceEl.style.pointerEvents = '';
+    sourceEl.style.transformOrigin = '';
+  });
 }
