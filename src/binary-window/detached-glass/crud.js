@@ -53,11 +53,11 @@ export default {
     return glassEl;
   },
 
-  removeDetachedGlass(detachedGlassId, animateClose = true) {
-    return detachedGlassManager.removeDetachedGlass(detachedGlassId, { animateClose });
+  removeDetachedGlass(...args) {
+    return detachedGlassManager.removeDetachedGlass(...args);
   },
 
-  updateDetachedGlass(detachedGlassId, options) {
-    return detachedGlassManager.updateDetachedGlass(detachedGlassId, options);
+  updateDetachedGlass(...args) {
+    return detachedGlassManager.updateDetachedGlass(...args);
   },
 };

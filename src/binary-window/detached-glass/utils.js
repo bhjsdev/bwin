@@ -34,22 +34,25 @@ export function animateDetachedGlassOpen(detachedGlassEl) {
   );
 }
 
-// Remove a detached glass element from the DOM (+ any modal backdrop). CSS can't
-// animate a normal element out, so `[closing]` drives the close animation and we
-// defer the actual removal until it ends. Pass `animateClose: false` to remove now.
-export function removeDetachedGlassElement(detachedGlassEl, animateClose = true) {
-  const remove = () => {
+export function removeDetachedGlassElement(
+  detachedGlassEl,
+  animateClose = true,
+  onComplete = () => {}
+) {
+  const handleRemove = () => {
     detachedGlassEl.remove();
+    detachedGlassEl.removeAttribute('closing');
     removeGlassBackdrop(detachedGlassEl.id);
+    onComplete();
   };
 
   if (!animateClose) {
-    remove();
+    handleRemove();
     return;
   }
 
   detachedGlassEl.setAttribute('closing', '');
-  detachedGlassEl.addEventListener('animationend', remove, { once: true });
+  detachedGlassEl.addEventListener('animationend', handleRemove, { once: true });
 }
 
 // Viewport-space top-left of an absolutely-positioned element's containing block.
