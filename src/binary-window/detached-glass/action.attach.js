@@ -26,17 +26,17 @@ export default {
       size = 0.5;
     }
 
-    const paneSash = binaryWindow.addPane(targetSashId, {
-      position,
-      size,
-    });
-
-    transferGlass(detachedGlassEl, paneSash.domNode);
-
-    // Skip the close animation: the glass is being moved into a pane, not dismissed.
     binaryWindow.removeDetachedGlass(detachedGlassEl.id, {
-      animateClose: false,
-      onComplete: () => binaryWindow.emit('attach', paneSash.domNode.querySelector('bw-glass')),
+      animateClose: true,
+      onComplete: () => {
+        const paneSash = binaryWindow.addPane(targetSashId, {
+          position,
+          size,
+        });
+
+        transferGlass(detachedGlassEl, paneSash.domNode);
+        binaryWindow.emit('attach', paneSash.domNode.querySelector('bw-glass'));
+      },
     });
   },
 };
