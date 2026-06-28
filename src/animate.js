@@ -1,3 +1,18 @@
+// Drive a CSS animation by toggling `attribute` on `element`: set it (which the
+// stylesheet keys the animation off), then clear it on `animationend` and run
+// `onComplete`. The cleared attribute lets the animation re-run on the next call.
+export function animateElementByAttribute(element, attribute, onComplete) {
+  element.setAttribute(attribute, '');
+  element.addEventListener(
+    'animationend',
+    () => {
+      element.removeAttribute(attribute);
+      onComplete?.();
+    },
+    { once: true }
+  );
+}
+
 // FLIP-style flight: shrink and fly `sourceEl` onto `targetEl`, then fade out.
 // Both must be laid out (in the DOM, not `display:none`) so their rects measure.
 // Resolves when the flight ends (e.g. to then hide/remove the source).

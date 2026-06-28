@@ -1,3 +1,5 @@
+import { animateElementByAttribute } from '@/animate';
+
 // Edges first, corners last so corner handles paint on top of the edge handles
 const RESIZE_DIRECTIONS = ['n', 's', 'e', 'w', 'ne', 'nw', 'se', 'sw'];
 
@@ -17,13 +19,6 @@ export function getResizeHandleOverhang(glassEl) {
   return (parseFloat(size) || 0) / 2;
 }
 
-export function animateGlassBackdropOpen(backdropEl) {
-  backdropEl.setAttribute('opening', '');
-  backdropEl.addEventListener('animationend', () => backdropEl.removeAttribute('opening'), {
-    once: true,
-  });
-}
-
 export function removeGlassBackdrop(glassId, animate = false) {
   const backdropEl = document.querySelector(`bw-glass-backdrop[for="${glassId}"]`);
   if (!backdropEl) return;
@@ -33,32 +28,7 @@ export function removeGlassBackdrop(glassId, animate = false) {
     return;
   }
 
-  backdropEl.setAttribute('closing', '');
-  backdropEl.addEventListener('animationend', () => backdropEl.remove(), { once: true });
-}
-
-export function animateDetachedGlassOpen(detachedGlassEl, onComplete) {
-  detachedGlassEl.setAttribute('opening', '');
-  detachedGlassEl.addEventListener(
-    'animationend',
-    () => {
-      detachedGlassEl.removeAttribute('opening');
-      onComplete?.();
-    },
-    { once: true }
-  );
-}
-
-export function animateDetachedGlassClose(detachedGlassEl, onComplete) {
-  detachedGlassEl.setAttribute('closing', '');
-  detachedGlassEl.addEventListener(
-    'animationend',
-    () => {
-      detachedGlassEl.removeAttribute('closing');
-      onComplete?.();
-    },
-    { once: true }
-  );
+  animateElementByAttribute(backdropEl, 'closing', () => backdropEl.remove());
 }
 
 export function removeDetachedGlassElement(detachedGlassEl, animate = true, onComplete) {
@@ -74,7 +44,7 @@ export function removeDetachedGlassElement(detachedGlassEl, animate = true, onCo
     return;
   }
 
-  animateDetachedGlassClose(detachedGlassEl, handleRemove);
+  animateElementByAttribute(detachedGlassEl, 'closing', handleRemove);
 }
 
 // Viewport-space top-left of an absolutely-positioned element's containing block.

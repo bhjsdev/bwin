@@ -1,6 +1,7 @@
 import { detachedGlassManager } from './manager';
-import { removeDetachedGlassElement, animateDetachedGlassOpen } from './utils';
+import { removeDetachedGlassElement } from './utils';
 import { transferGlass } from '../glass/utils';
+import { animateElementByAttribute } from '@/animate';
 
 const DEFAULT_GLASS_WIDTH = 200;
 const DEFAULT_GLASS_HEIGHT = 200;
@@ -55,7 +56,9 @@ export default {
 
     if (!animate) return Promise.resolve(glassEl);
 
-    return new Promise((resolve) => animateDetachedGlassOpen(glassEl, () => resolve(glassEl)));
+    return new Promise((resolve) =>
+      animateElementByAttribute(glassEl, 'opening', () => resolve(glassEl))
+    );
   },
 
   removeDetachedGlass(id, { animate = true } = {}) {
