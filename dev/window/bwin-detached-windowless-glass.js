@@ -19,6 +19,16 @@ document.querySelector('#add-modal').addEventListener('click', () => {
   });
 });
 
+// Modal that dismisses itself when the backdrop (not the glass) is clicked.
+document.querySelector('#add-modal-close-on-backdrop').addEventListener('click', () => {
+  BinaryWindow.addWindowlessGlass({
+    modal: true,
+    closeOnBackdropClick: true,
+    title: 'Modal (click backdrop to close)',
+    content: createContent('click outside me'),
+  });
+});
+
 // Placed relative to the body's top-left via offsetX/offsetY.
 document.querySelector('#add-positioned').addEventListener('click', () => {
   BinaryWindow.addWindowlessGlass({
