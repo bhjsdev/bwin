@@ -1,5 +1,3 @@
-import { transferGlass } from './utils';
-
 const DETACHED_GLASS_INSET = 15;
 
 export default {
@@ -7,16 +5,19 @@ export default {
   placement: 'bar',
   label: '',
   className: 'bw-action--detach',
-  onClick: (event, binaryWindow) => {
-    if (!binaryWindow.addDetachedGlass) throw new Error('[bwin] Failed to detach glass from pane');
-
+  onClick: async (event, binaryWindow) => {
     const paneEl = event.target.closest('bw-pane');
     const glassEl = paneEl.querySelector('bw-glass');
 
     const windowRect = binaryWindow.windowElement.getBoundingClientRect();
     const width = windowRect.width - DETACHED_GLASS_INSET * 2;
     const height = windowRect.height - DETACHED_GLASS_INSET * 2;
-    const detachedGlassEl = binaryWindow.addDetachedGlass({ position: 'center', width, height });
+    const detachedGlassEl = await binaryWindow.addDetachedGlass({
+      position: 'center',
+      width,
+      height,
+      originalGlassElement: glassEl,
+    });
 
     const paneSashId = paneEl.getAttribute('sash-id');
     const paneSash = binaryWindow.rootSash.getById(paneSashId);
@@ -25,8 +26,6 @@ export default {
     detachedGlassEl.bwOriginalSiblingSashId = siblingSashId;
     detachedGlassEl.bwOriginalPosition = paneEl.getAttribute('position');
     detachedGlassEl.bwOriginalRelativeSize = paneSash.getRelativeSize();
-
-    transferGlass(glassEl, detachedGlassEl);
 
     binaryWindow.removePane(paneSashId);
     binaryWindow.emit('detach', detachedGlassEl);

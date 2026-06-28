@@ -2,7 +2,7 @@
 // Both must be laid out (in the DOM, not `display:none`) so their rects measure.
 // Resolves when the flight ends (e.g. to then hide/remove the source).
 export function animateElementToElement(sourceEl, targetEl) {
-  const SHRINK_FLIGHT_DURATION = 200;
+  const SHRINK_FLIGHT_DURATION = 180;
 
   const sourceRect = sourceEl.getBoundingClientRect();
   const targetRect = targetEl.getBoundingClientRect();

@@ -63,6 +63,12 @@ export class Frame {
       strictAssign(this.prototype, module);
     });
   }
+
+  static assembleStatic(...modules) {
+    modules.forEach((module) => {
+      strictAssign(this, module);
+    });
+  }
 }
 
 Frame.assemble(

@@ -1,5 +1,4 @@
 import { DetachedGlass } from './detached-glass';
-import { animateDetachedGlassOpen, removeDetachedGlassElement } from './utils';
 
 class DetachedGlassManager {
   constructor() {
@@ -10,10 +9,8 @@ class DetachedGlassManager {
 
   // Caller owns only the DOM `append` (parent differs: `bw-window` vs. `document.body`)
   // and reads the returned element's `style.zIndex` for the windowless modal backdrop.
-  addDetachedGlass(options = {}) {
-    const { animateOpen = true, ...glassOptions } = options;
-
-    const glassEl = new DetachedGlass(glassOptions).domNode;
+  addDetachedGlass(options) {
+    const glassEl = new DetachedGlass(options).domNode;
 
     // Ids must be unique in the stack: remove/update/backdrop all key off the id.
     if (this.getDetachedGlassById(glassEl.id)) {
@@ -22,8 +19,6 @@ class DetachedGlassManager {
 
     this.detachedGlassElements.push(glassEl);
     this.bringToFront(glassEl);
-
-    if (animateOpen) animateDetachedGlassOpen(glassEl);
 
     return glassEl;
   }

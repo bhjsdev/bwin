@@ -1,5 +1,6 @@
 import { detachedGlassManager } from './manager';
-import { removeDetachedGlassElement } from './utils';
+import { removeDetachedGlassElement, animateDetachedGlassOpen } from './utils';
+import { transferGlass } from '../glass/utils';
 
 const DEFAULT_GLASS_WIDTH = 200;
 const DEFAULT_GLASS_HEIGHT = 200;
@@ -25,15 +26,12 @@ function getCascadedPlacement(windowEl, { width, height }) {
 }
 
 export default {
-  addDetachedGlass(options = {}) {
-    const { width: optWidth, height: optHeight, position: optPosition } = options;
-
-    // Guard size here so the constructor never falls back to its 222 debug default.
-    const width = optWidth ?? DEFAULT_GLASS_WIDTH;
-    const height = optHeight ?? DEFAULT_GLASS_HEIGHT;
+  addDetachedGlass({ animate = true, originalGlassElement, ...glassOptions } = {}) {
+    const width = glassOptions.width ?? DEFAULT_GLASS_WIDTH;
+    const height = glassOptions.height ?? DEFAULT_GLASS_HEIGHT;
 
     // An explicit position wins; otherwise cascade from the active glass.
-    const { position, offsetX, offsetY } = optPosition
+    const { position, offsetX, offsetY } = glassOptions.position
       ? {}
       : getCascadedPlacement(this.windowElement, { width, height });
 
@@ -44,14 +42,20 @@ export default {
       position,
       offsetX,
       offsetY,
-      ...options,
+      ...glassOptions,
       width,
       height,
     });
 
+    if (originalGlassElement) {
+      transferGlass(originalGlassElement, glassEl);
+    }
+
     this.windowElement.append(glassEl);
 
-    return glassEl;
+    if (!animate) return Promise.resolve(glassEl);
+
+    return new Promise((resolve) => animateDetachedGlassOpen(glassEl, () => resolve(glassEl)));
   },
 
   removeDetachedGlass(id, { animate = true } = {}) {
