@@ -1,4 +1,5 @@
 import { detachedGlassManager } from './manager';
+import { removeDetachedGlassElement } from './utils';
 
 const DEFAULT_GLASS_WIDTH = 200;
 const DEFAULT_GLASS_HEIGHT = 200;
@@ -53,8 +54,12 @@ export default {
     return glassEl;
   },
 
-  removeDetachedGlass(...args) {
-    return detachedGlassManager.removeDetachedGlass(...args);
+  removeDetachedGlass(id, { animate = true } = {}) {
+    const removedGlassEl = detachedGlassManager.removeDetachedGlass(id);
+
+    return new Promise((resolve) =>
+      removeDetachedGlassElement(removedGlassEl, animate, () => resolve(removedGlassEl))
+    );
   },
 
   updateDetachedGlass(...args) {

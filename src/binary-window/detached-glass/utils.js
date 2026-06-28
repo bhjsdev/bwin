@@ -25,21 +25,35 @@ export function removeGlassBackdrop(glassId) {
 
 // Play the open animation by setting `[opening]` (see detached-glass.css), then
 // clear it once the animation ends so it can re-run on the next restore.
-export function animateDetachedGlassOpen(detachedGlassEl) {
+export function animateDetachedGlassOpen(detachedGlassEl, onComplete) {
   detachedGlassEl.setAttribute('opening', '');
   detachedGlassEl.addEventListener(
     'animationend',
-    () => detachedGlassEl.removeAttribute('opening'),
+    () => {
+      detachedGlassEl.removeAttribute('opening');
+      onComplete?.();
+    },
     { once: true }
   );
 }
 
-export function removeDetachedGlassElement(detachedGlassEl, animate = true, onComplete = () => {}) {
+export function animateDetachedGlassClose(detachedGlassEl, onComplete) {
+  detachedGlassEl.setAttribute('closing', '');
+  detachedGlassEl.addEventListener(
+    'animationend',
+    () => {
+      detachedGlassEl.removeAttribute('closing');
+      onComplete?.();
+    },
+    { once: true }
+  );
+}
+
+export function removeDetachedGlassElement(detachedGlassEl, animate = true, onComplete) {
   const handleRemove = () => {
     detachedGlassEl.remove();
-    detachedGlassEl.removeAttribute('closing');
     removeGlassBackdrop(detachedGlassEl.id);
-    onComplete();
+    onComplete?.();
   };
 
   if (!animate) {
@@ -47,8 +61,7 @@ export function removeDetachedGlassElement(detachedGlassEl, animate = true, onCo
     return;
   }
 
-  detachedGlassEl.setAttribute('closing', '');
-  detachedGlassEl.addEventListener('animationend', handleRemove, { once: true });
+  animateDetachedGlassClose(detachedGlassEl, handleRemove);
 }
 
 // Viewport-space top-left of an absolutely-positioned element's containing block.
