@@ -43,6 +43,7 @@ document.querySelector('#add-fullscreen').addEventListener('click', () => {
     width: document.documentElement.clientWidth - EDGE * 2,
     height: document.documentElement.clientHeight - EDGE * 2,
     content: createContent('fullscreen'),
+    modal: true,
   });
 });
 
