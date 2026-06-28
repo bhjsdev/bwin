@@ -17,10 +17,28 @@ export function getResizeHandleOverhang(glassEl) {
   return (parseFloat(size) || 0) / 2;
 }
 
+// Play the backdrop fade-in by setting `[opening]` (see detached-glass.css), then
+// clear it once the animation ends.
+export function animateGlassBackdropOpen(backdropEl) {
+  backdropEl.setAttribute('opening', '');
+  backdropEl.addEventListener('animationend', () => backdropEl.removeAttribute('opening'), {
+    once: true,
+  });
+}
+
 // Remove the modal backdrop tied to a glass id, if one exists (windowless modal glass).
-export function removeGlassBackdrop(glassId) {
+// When `animate`, fade it out (in sync with the glass close) before removing.
+export function removeGlassBackdrop(glassId, animate = false) {
   const backdropEl = document.querySelector(`bw-glass-backdrop[for="${glassId}"]`);
-  backdropEl?.remove();
+  if (!backdropEl) return;
+
+  if (!animate) {
+    backdropEl.remove();
+    return;
+  }
+
+  backdropEl.setAttribute('closing', '');
+  backdropEl.addEventListener('animationend', () => backdropEl.remove(), { once: true });
 }
 
 // Play the open animation by setting `[opening]` (see detached-glass.css), then
@@ -50,9 +68,11 @@ export function animateDetachedGlassClose(detachedGlassEl, onComplete) {
 }
 
 export function removeDetachedGlassElement(detachedGlassEl, animate = true, onComplete) {
+  // Fade the backdrop out in sync with the glass close; both share the same duration.
+  removeGlassBackdrop(detachedGlassEl.id, animate);
+
   const handleRemove = () => {
     detachedGlassEl.remove();
-    removeGlassBackdrop(detachedGlassEl.id);
     onComplete?.();
   };
 

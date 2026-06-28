@@ -51,6 +51,34 @@ bw-glass-backdrop {
   position: fixed;
   inset: 0;
   background: var(--bw-glass-backdrop-color);
+
+  &[opening] {
+    animation: bw-glass-backdrop-open 0.28s ease-out;
+  }
+
+  &[closing] {
+    animation: bw-glass-backdrop-close 0.28s ease-in forwards;
+  }
+}
+
+@keyframes bw-glass-backdrop-open {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes bw-glass-backdrop-close {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
 }
 
 bw-glass-resize-handle {

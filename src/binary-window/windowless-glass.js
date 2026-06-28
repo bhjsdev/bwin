@@ -1,6 +1,10 @@
 import { DEFAULT_WINDOWLESS_GLASS_ACTIONS } from './detached-glass';
 import { detachedGlassManager } from './detached-glass/manager';
-import { animateDetachedGlassOpen, removeDetachedGlassElement } from './detached-glass/utils';
+import {
+  animateDetachedGlassOpen,
+  animateGlassBackdropOpen,
+  removeDetachedGlassElement,
+} from './detached-glass/utils';
 
 export default {
   /**
@@ -43,6 +47,7 @@ export default {
       // addDetachedGlass reserved the slot just below the glass (`topZIndex += 2`).
       backdropEl.style.zIndex = Number(glassEl.style.zIndex) - 1;
       document.body.append(backdropEl);
+      if (animate) animateGlassBackdropOpen(backdropEl);
     }
 
     if (!animate) return Promise.resolve(glassEl);
