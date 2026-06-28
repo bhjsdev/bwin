@@ -3,13 +3,11 @@ export default {
   placement: 'bar',
   label: '',
   className: 'bw-action--close',
-  onClick: (event, binaryWindow) => {
+  onClick: async (event, binaryWindow) => {
     const glassEl = event.target.closest('bw-glass[detached]');
     if (!glassEl) return;
 
-    binaryWindow.removeDetachedGlass(glassEl.id, {
-      animate: true,
-      onComplete: () => binaryWindow.emit('close', glassEl),
-    });
+    await binaryWindow.removeDetachedGlass(glassEl.id);
+    binaryWindow.emit('close', glassEl);
   },
 };

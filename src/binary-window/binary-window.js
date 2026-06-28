@@ -167,10 +167,11 @@ export class BinaryWindow extends Frame {
    * @param {string} windowlessGlassId - The id of the `bw-glass[windowless]` to remove
    * @param {Object} [options]
    * @param {boolean} [options.animate=true] - Whether to play the close animation before removal.
-   * @returns {Element|null} - The removed element, or null if no glass had that id
+   * @returns {Promise<Element|null>} - Resolves with the removed element (after the close
+   *   animation, if any), or null if no glass had that id
    */
-  static removeWindowlessGlass(windowlessGlassId, { animate = true } = {}) {
-    return detachedGlassManager.removeDetachedGlass(windowlessGlassId, { animate });
+  static removeWindowlessGlass(...args) {
+    return detachedGlassManager.removeDetachedGlass(...args);
   }
 }
 

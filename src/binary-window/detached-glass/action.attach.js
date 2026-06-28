@@ -5,7 +5,7 @@ export default {
   placement: 'bar',
   label: '',
   className: 'bw-action--attach',
-  onClick: (event, binaryWindow) => {
+  onClick: async (event, binaryWindow) => {
     const detachedGlassEl = event.target.closest('bw-glass[detached]');
     const originalPosition = detachedGlassEl.bwOriginalPosition;
     const originalSiblingSashId = detachedGlassEl.bwOriginalSiblingSashId;
@@ -26,17 +26,14 @@ export default {
       size = 0.5;
     }
 
-    binaryWindow.removeDetachedGlass(detachedGlassEl.id, {
-      animate: true,
-      onComplete: () => {
-        const paneSash = binaryWindow.addPane(targetSashId, {
-          position,
-          size,
-        });
+    await binaryWindow.removeDetachedGlass(detachedGlassEl.id);
 
-        transferGlass(detachedGlassEl, paneSash.domNode);
-        binaryWindow.emit('attach', paneSash.domNode.querySelector('bw-glass'));
-      },
+    const paneSash = binaryWindow.addPane(targetSashId, {
+      position,
+      size,
     });
+
+    transferGlass(detachedGlassEl, paneSash.domNode);
+    binaryWindow.emit('attach', paneSash.domNode.querySelector('bw-glass'));
   },
 };
