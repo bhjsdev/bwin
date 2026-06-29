@@ -3,8 +3,15 @@ name: Unit Tests
 on:
   push:
     branches: [main]
+    paths-ignore: &doc-paths
+      - 'docs/**'
+      - 'dev/**'
+      - '**/*.md'
+      - 'LICENSE'
+      - '.prettierrc'
   pull_request:
     types: [opened, synchronize, reopened]
+    paths-ignore: *doc-paths
 
 jobs:
   unit-tests:

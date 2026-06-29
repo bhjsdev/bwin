@@ -1,5 +1,6 @@
 # Binary Window
 
+[![Unit Tests](https://github.com/bhjsdev/bwin/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/bhjsdev/bwin/actions/workflows/unit-tests.yml)
 [![Publish to npm](https://github.com/bhjsdev/bwin/actions/workflows/publish.yml/badge.svg)](https://github.com/bhjsdev/bwin/actions/workflows/publish.yml)
 [![npm version](https://img.shields.io/npm/v/bwin)](https://www.npmjs.com/package/bwin)
 
