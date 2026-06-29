@@ -3,11 +3,11 @@ import glassModule, { Glass } from './glass';
 import { createDomNode } from '../utils';
 import trimModule from './trim';
 import sillModule from './sill';
-import detachedGlassModule, { DEFAULT_WINDOWLESS_GLASS_ACTIONS } from './detached-glass';
-import { detachedGlassManager } from './detached-glass/manager';
+import detachedGlassModule from './detached-glass';
 import { normActions } from './utils';
 import { updateGlass } from './glass/utils';
 import dragNewModule from './drag-new';
+import windowlessGlassStaticModule from './windowless-glass';
 
 export class BinaryWindow extends Frame {
   sillElement = null;
@@ -62,6 +62,8 @@ export class BinaryWindow extends Frame {
   addPane(targetPaneSashId, props) {
     const { position, size, id, minWidth, minHeight, withGlass = true, ...glassProps } = props;
     const paneSash = super.addPane(targetPaneSashId, { position, size, id, minWidth, minHeight });
+    if (!paneSash) return null;
+
     if (withGlass) {
       const glass = new Glass({ ...glassProps, sash: paneSash, binaryWindow: this });
       paneSash.domNode.append(glass.domNode);
@@ -70,32 +72,28 @@ export class BinaryWindow extends Frame {
   }
 
   // TODO: support updating glass `actions` (rebuild the action bar/menu in place).
-  updatePane({ position, size, id, minWidth, minHeight, title, content }) {
-    const sash = this.rootSash.getById(id);
-    if (!sash) throw new Error(`[bwin] No sash found with id ${id} when updating pane`);
+  updatePane(paneSashId, { position, size, minWidth, minHeight, title, content } = {}) {
+    const sash = this.rootSash.getById(paneSashId);
+    if (!sash) throw new Error(`[bwin] No sash found with id ${paneSashId} when updating pane`);
 
     if (position || size || minWidth || minHeight) {
-      super.updatePane(id, { position, size, minWidth, minHeight });
+      super.updatePane(paneSashId, { position, size, minWidth, minHeight });
     }
 
     if (title || content) {
       const glassEl = sash.domNode.querySelector('bw-glass');
       if (!glassEl)
-        throw new Error(`[bwin] No glass found in pane with id ${id} when updating pane`);
+        throw new Error(`[bwin] No glass found in pane with id ${paneSashId} when updating pane`);
       updateGlass(glassEl, { title, content });
     }
   }
 
   removePane(paneSashId) {
-    const paneEl = this.windowElement.querySelector(`[sash-id="${paneSashId}"]`);
-
-    if (paneEl) {
-      super.removePane(paneSashId);
-      return;
-    }
+    super.removePane(paneSashId);
 
     // Remove the glass's sill pot if it was minimized
     const potEl = this.getPotElementBySashId(paneSashId);
+
     if (potEl) {
       potEl.remove();
     }
@@ -116,68 +114,10 @@ export class BinaryWindow extends Frame {
     this.theme = theme;
     this.windowElement.setAttribute('theme', theme);
   }
-
-  /**
-   * Add a windowless glass: a detached glass that floats on `document.body` instead
-   * of inside a `bw-window`, so it isn't owned by any window instance. Managed by the
-   * shared glass manager (z-index/activation) like an in-window detached glass.
-   *
-   * @param {Object} [options]
-   * @param {boolean} [options.modal] - When true, append a `<bw-glass-backdrop for="<glassId>">`
-   *   behind the glass to block interaction with everything underneath.
-   * @param {'center'|'top-left'|'top-right'|'bottom-left'|'bottom-right'} [options.position='center'] - Where to anchor the glass.
-   * @param {number} [options.width] - Glass width in px.
-   * @param {number} [options.height] - Glass height in px.
-   * @param {number} [options.offset=0] - Distance in px from the anchored corner/edge (no effect on `center`).
-   * @param {number} [options.offsetX] - Per-axis override of `offset` on the x-axis.
-   * @param {number} [options.offsetY] - Per-axis override of `offset` on the y-axis.
-   * @param {string} [options.id] - Glass id; auto-generated (suffixed `-F`) when omitted.
-   * @param {Object[]} [options.actions] - Action buttons; defaults to `DEFAULT_WINDOWLESS_GLASS_ACTIONS` (close only).
-   * @param {string|Node} [options.title] - Header title.
-   * @param {string|Node} [options.content] - Glass body content.
-   * @param {Object[]} [options.tabs] - Header tabs (shown instead of `title`).
-   * @param {boolean} [options.draggable=true] - Whether the header can be dragged to move the glass.
-   * @param {boolean} [options.animateOpen=true] - Whether to play the open animation on insert.
-   * @returns {Element} - The `bw-glass[detached][windowless]` element
-   */
-  static addWindowlessGlass(options = {}) {
-    const { modal, ...glassOptions } = options;
-
-    const glassEl = detachedGlassManager.addDetachedGlass({
-      actions: DEFAULT_WINDOWLESS_GLASS_ACTIONS,
-      position: 'center',
-      ...glassOptions,
-    });
-
-    glassEl.setAttribute('windowless', '');
-    document.body.append(glassEl);
-
-    if (modal) {
-      const backdropEl = document.createElement('bw-glass-backdrop');
-      backdropEl.setAttribute('for', glassEl.id);
-      // addDetachedGlass reserved the slot just below the glass (`topZIndex += 2`).
-      backdropEl.style.zIndex = Number(glassEl.style.zIndex) - 1;
-      document.body.append(backdropEl);
-    }
-
-    return glassEl;
-  }
-
-  /**
-   * Remove a windowless glass by id, unregistering it from the shared glass manager
-   * and detaching it from `document.body`. Also removes its modal backdrop, if any.
-   *
-   * @param {string} windowlessGlassId - The id of the `bw-glass[windowless]` to remove
-   * @param {Object} [options]
-   * @param {boolean} [options.animateClose=true] - Whether to play the close animation before removal.
-   * @returns {Element|null} - The removed element, or null if no glass had that id
-   */
-  static removeWindowlessGlass(windowlessGlassId, { animateClose = true } = {}) {
-    return detachedGlassManager.removeDetachedGlass(windowlessGlassId, { animateClose });
-  }
 }
 
 BinaryWindow.assemble(glassModule, detachedGlassModule, trimModule, sillModule, dragNewModule);
+BinaryWindow.assembleStatic(windowlessGlassStaticModule);
 
 // Enable features that do not need a BinaryWindow instance
 // e.g. handle pointer events

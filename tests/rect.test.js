@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getIntersectRect } from './rect';
+import { getIntersectRect } from '@/rect';
 
 describe('getIntersectRect', () => {
   it('returns the intersected rect object 1', () => {

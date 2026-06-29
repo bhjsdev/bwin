@@ -16,7 +16,6 @@ export default {
     this.rootSash.walk((sash) => {
       let elem = null;
 
-      // Prepend the new pane, so muntins are always on top
       if (sash.children.length > 0) {
         elem = this.createMuntin(sash);
         this.onMuntinCreate(elem, sash);
@@ -25,6 +24,7 @@ export default {
       else {
         elem = this.createPane(sash);
         this.onPaneCreate(elem, sash);
+        // Prepend the new pane, so muntins are rendered after panes
         this.windowElement.prepend(elem);
       }
 

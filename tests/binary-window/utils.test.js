@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { normActions } from './utils';
-import { DEFAULT_GLASS_ACTIONS } from './glass';
-import { DEFAULT_DETACHED_GLASS_ACTIONS } from './detached-glass';
+import { normActions } from '@/binary-window/utils';
+import { DEFAULT_GLASS_ACTIONS } from '@/binary-window/glass';
+import { DEFAULT_DETACHED_GLASS_ACTIONS } from '@/binary-window/detached-glass';
 
 describe('normActions', () => {
   it('returns the builtin actions when actions is undefined', () => {

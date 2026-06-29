@@ -5,8 +5,9 @@ export default {
   placement: 'bar',
   label: '',
   className: 'bw-action--maximize',
-  onClick: (event) => {
+  onClick: (event, binaryWindow) => {
     const paneEl = event.target.closest('bw-pane');
+    const glassEl = paneEl.querySelector('bw-glass');
 
     if (paneEl.hasAttribute('maximized')) {
       paneEl.removeAttribute('maximized');
@@ -14,6 +15,7 @@ export default {
       paneEl.style.top = `${paneEl.bwOriginalBoundingRect.top}px`;
       paneEl.style.width = `${paneEl.bwOriginalBoundingRect.width}px`;
       paneEl.style.height = `${paneEl.bwOriginalBoundingRect.height}px`;
+      binaryWindow.emit('unmaximize', glassEl);
     }
     else {
       paneEl.setAttribute('maximized', '');
@@ -22,6 +24,7 @@ export default {
       paneEl.style.top = '0';
       paneEl.style.width = '100%';
       paneEl.style.height = '100%';
+      binaryWindow.emit('maximize', glassEl);
     }
   },
 };

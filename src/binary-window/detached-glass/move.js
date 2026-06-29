@@ -1,6 +1,14 @@
 import { clamp } from '@/utils';
 import { getResizeHandleOverhang, getContainingBlockOrigin } from './utils';
 
+// Clamp to [min, max], but if `prev` is already outside it (off-screen glass),
+// relax that breached edge to `prev`: the glass may move toward the viewport, never further out.
+function clampAxis(value, min, max, prev) {
+  const lo = Math.min(min, prev);
+  const hi = Math.max(max, prev);
+  return clamp(value, lo, hi);
+}
+
 export default {
   enableDetachedGlassMove() {
     let activeMoveGlassEl = null;
@@ -13,6 +21,9 @@ export default {
     let maxMoveLeft = 0;
     let minMoveTop = 0;
     let maxMoveTop = 0;
+    // Last applied position; the out-of-bounds limit for an off-screen glass.
+    let lastMoveLeft = 0;
+    let lastMoveTop = 0;
 
     document.addEventListener('pointerdown', (event) => {
       if (event.button !== 0) return;
@@ -42,24 +53,38 @@ export default {
       moveStartLeft = glassRect.left - origin.left;
       moveStartTop = glassRect.top - origin.top;
 
-      // Bound the move to the viewport so dragging past an edge never grows the
-      // page. clientWidth/Height exclude scrollbars; the handle overhang on the
-      // right/bottom is reserved so hover handles stay on-screen too.
-      const overhang = getResizeHandleOverhang(glassEl);
+      // Bound the move to the viewport, captured once per grab. Concerns:
+      // - Dragging past an edge never grows the page.
+      // - `clientWidth/Height` exclude scrollbars.
+      // - The handle overhang on the right/bottom is reserved so hover handles stay on-screen.
+      // - Bounds are frozen for the drag, so an off-screen glass that shows a scrollbar
+      //   keeps that width reserved as it's dragged back, stopping a scrollbar's width
+      //   short of the true edge until the next grab. Accepted as a minor edge-case cost.
+      const overhangSize = getResizeHandleOverhang(glassEl);
       const viewportWidth = document.documentElement.clientWidth;
       const viewportHeight = document.documentElement.clientHeight;
       minMoveLeft = -origin.left;
-      maxMoveLeft = viewportWidth - glassRect.width - overhang - origin.left;
+      maxMoveLeft = viewportWidth - glassRect.width - overhangSize - origin.left;
       minMoveTop = -origin.top;
-      maxMoveTop = viewportHeight - glassRect.height - overhang - origin.top;
+      maxMoveTop = viewportHeight - glassRect.height - overhangSize - origin.top;
+
+      lastMoveLeft = moveStartLeft;
+      lastMoveTop = moveStartTop;
     });
 
     document.addEventListener('pointermove', (event) => {
       if (!activeMoveGlassEl) return;
 
-      // Clamp to the viewport; a glass larger than the viewport pins to the top-left edge.
-      const left = clamp(moveStartLeft + (event.pageX - moveStartX), minMoveLeft, maxMoveLeft);
-      const top = clamp(moveStartTop + (event.pageY - moveStartY), minMoveTop, maxMoveTop);
+      const targetLeft = moveStartLeft + (event.pageX - moveStartX);
+      const targetTop = moveStartTop + (event.pageY - moveStartY);
+
+      // `lastMove*` guards an off-screen glass to inward-only motion; once back
+      // inside, clampAxis falls through to the normal viewport edge.
+      const left = clampAxis(targetLeft, minMoveLeft, maxMoveLeft, lastMoveLeft);
+      const top = clampAxis(targetTop, minMoveTop, maxMoveTop, lastMoveTop);
+
+      lastMoveLeft = left;
+      lastMoveTop = top;
 
       activeMoveGlassEl.style.right = 'auto';
       activeMoveGlassEl.style.bottom = 'auto';

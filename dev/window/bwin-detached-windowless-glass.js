@@ -19,6 +19,16 @@ document.querySelector('#add-modal').addEventListener('click', () => {
   });
 });
 
+// Modal that dismisses itself when the backdrop (not the glass) is clicked.
+document.querySelector('#add-modal-close-on-backdrop').addEventListener('click', () => {
+  BinaryWindow.addWindowlessGlass({
+    modal: true,
+    closeOnBackdropClick: true,
+    title: 'Modal (click backdrop to close)',
+    content: createContent('click outside me'),
+  });
+});
+
 // Placed relative to the body's top-left via offsetX/offsetY.
 document.querySelector('#add-positioned').addEventListener('click', () => {
   BinaryWindow.addWindowlessGlass({
@@ -31,15 +41,27 @@ document.querySelector('#add-positioned').addEventListener('click', () => {
 });
 
 // Windowless glass filling the viewport with a 20px inset on every edge.
+// A fullscreen popup shouldn't be resized, so `resizable: false` suppresses the handles.
 document.querySelector('#add-fullscreen').addEventListener('click', () => {
   const EDGE = 20;
   BinaryWindow.addWindowlessGlass({
     title: 'Fullscreen popup',
     draggable: false,
+    resizable: false,
     position: 'top-left',
     offset: EDGE,
     width: document.documentElement.clientWidth - EDGE * 2,
     height: document.documentElement.clientHeight - EDGE * 2,
     content: createContent('fullscreen'),
+    modal: true,
+  });
+});
+
+// `resizable: false` keeps resize handles from ever appearing on hover.
+document.querySelector('#add-non-resizable').addEventListener('click', () => {
+  BinaryWindow.addWindowlessGlass({
+    title: 'Non-resizable glass',
+    resizable: false,
+    content: createContent('non-resizable'),
   });
 });

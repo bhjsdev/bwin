@@ -25,13 +25,13 @@ document.querySelector('#update-pane').addEventListener('click', () => {
   const content = document.querySelector('#content').value;
 
   // Only pass fields the user actually filled in.
-  const props = { id };
+  const props = {};
   if (position) props.position = position;
   if (size) props.size = size;
   if (title) props.title = title;
   if (content) props.content = content;
 
-  bwin.updatePane(props);
+  bwin.updatePane(id, props);
 });
 
 window.bwin = bwin;

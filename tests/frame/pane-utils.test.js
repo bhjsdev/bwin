@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { addPaneSash } from './pane-utils';
-import { Sash, DEFAULTS } from '../sash';
-import { Position } from '../position';
+import { addPaneSash } from '@/frame/pane-utils';
+import { Sash, DEFAULTS } from '@/sash';
+import { Position } from '@/position';
 
 function makeTargetSash() {
   return new Sash({

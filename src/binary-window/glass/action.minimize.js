@@ -9,19 +9,22 @@ export default {
     const sillEl = binaryWindow.sillElement;
     if (!sillEl) throw new Error(`[bwin] Sill element not found when minimizing`);
 
-    const potEl = createDomNode('<button class="bw-pot" bw-plant="glass" />');
-    sillEl.append(potEl);
-
     const paneEl = event.target.closest('bw-pane');
     const glassEl = event.target.closest('bw-glass');
     const paneSashId = paneEl.getAttribute('sash-id');
     const panePosition = paneEl.getAttribute('position');
 
+    binaryWindow.removePane(paneSashId);
+
+    // Create the "pot" after `removePane`, which destroys the removed pane's pot
+    const potEl = createDomNode('<button class="bw-pot" bw-plant="glass" />');
     potEl.bwGlassElement = glassEl;
     potEl.bwOriginalPosition = panePosition;
     potEl.bwOriginalBoundingRect = getMetricsFromElement(paneEl);
     potEl.bwOriginalSashId = paneSashId;
 
-    binaryWindow.removePane(paneSashId);
+    sillEl.append(potEl);
+
+    binaryWindow.emit('minimize', glassEl);
   },
 };

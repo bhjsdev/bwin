@@ -1,16 +1,10 @@
 bw-glass[detached] {
   box-shadow: var(--bw-detached-glass-shadow);
 
-  /* OS-style open: scale up from slightly small + fade in. Only `transform`/
-     `opacity` so it never fights move/resize (which set top/left/width/height).
-     Driven by `[opening]` (set in JS), which is cleared once the animation ends.
-     Set on insert and on restore from the sill (when display flips back). */
   &[opening] {
     animation: bw-detached-glass-open 0.18s ease-out;
   }
 
-  /* OS-style close: reverse of open. Driven by `[closing]` (set in JS), which
-     defers DOM removal by the same duration — CSS can't animate an element out. */
   &[closing] {
     animation: bw-detached-glass-close 0.18s ease-in forwards;
     pointer-events: none;
@@ -27,6 +21,7 @@ bw-glass[detached] {
     opacity: 0;
     transform: scale(0.9);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -38,6 +33,7 @@ bw-glass[detached] {
     opacity: 1;
     transform: scale(1);
   }
+
   to {
     opacity: 0;
     transform: scale(0.9);
@@ -55,6 +51,34 @@ bw-glass-backdrop {
   position: fixed;
   inset: 0;
   background: var(--bw-glass-backdrop-color);
+
+  &[opening] {
+    animation: bw-glass-backdrop-open 0.28s ease-out;
+  }
+
+  &[closing] {
+    animation: bw-glass-backdrop-close 0.28s ease-in forwards;
+  }
+}
+
+@keyframes bw-glass-backdrop-open {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes bw-glass-backdrop-close {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
 }
 
 bw-glass-resize-handle {
