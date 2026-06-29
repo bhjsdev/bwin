@@ -59,9 +59,16 @@ bw-glass {
     cursor: move;
     opacity: 0.4;
   }
+
+  /* Origin glass dimmed in place while its content floats detached (detach-drag) */
+  &.bw-glass--dimmed {
+    opacity: 0.3;
+  }
 }
 
 bw-glass-header {
+  anchor-scope: --bw-action-menu;
+
   box-sizing: border-box;
   flex-basis: var(--bw-glass-header-height);
   flex-shrink: 0;
@@ -76,14 +83,40 @@ bw-glass-header {
   border-top-left-radius: var(--bw-glass-border-radius);
   border-top-right-radius: var(--bw-glass-border-radius);
   background-color: var(--bw-glass-header-bg-color);
+  position: relative;
 
-  anchor-scope: --bw-action-menu;
+  &:has(.bw-action-menu-trigger) {
+    padding-left: 22px;
+  }
+}
+
+/* TODO: add CSS variable for attach indicator size */
+bw-attach-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--bw-attach-indicator-size);
+  height: var(--bw-glass-header-height);
+  display: flex;
+  align-items: start;
+  justify-content: start;
+  /* Adjust icon position */
+  line-height: 0.8;
+
+  &:before {
+    content: '◸';
+  }
+
+  &:active {
+    cursor: copy;
+  }
 }
 
 bw-glass-title {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  margin-left: var(--bw-attach-indicator-size);
 }
 
 bw-glass-tab-container {

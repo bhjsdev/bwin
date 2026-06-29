@@ -13,7 +13,7 @@ export const BUILTIN_ACTIONS = [minimizeAction, maximizeAction, detachAction, cl
 export default {
   enableGlassFeatures() {
     this.enableGlassActions();
-    this.enableGlassDrag();
+    // this.enableGlassDrag();
   },
 
   enableGlassStandaloneFeatures() {

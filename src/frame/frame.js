@@ -49,7 +49,7 @@ export class Frame {
   // Features can work independently to each other
   enableFeatures() {
     this.enableResize();
-    this.enableDrop();
+    // this.enableDrop();
     this.fitContainer && this.enableFitContainer();
   }
 

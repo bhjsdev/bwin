@@ -36,4 +36,6 @@
   --bw-glass-backdrop-color: hsl(0, 0%, 0%, 0.4);
 
   --bw-sill-gap: 6px;
+
+  --bw-attach-indicator-size: 24px;
 }

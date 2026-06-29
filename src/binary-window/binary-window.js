@@ -6,6 +6,7 @@ import sillModule from './sill';
 import detachedGlassModule from './detached-glass';
 import { normActions } from './utils';
 import { updateGlass } from './glass/utils';
+import dragNewModule from './drag-new';
 import windowlessGlassStaticModule from './windowless-glass';
 
 export class BinaryWindow extends Frame {
@@ -29,6 +30,7 @@ export class BinaryWindow extends Frame {
     super.enableFeatures();
     this.enableGlassFeatures();
     this.enableSillFeatures();
+    this.enableGlassDetachDrag();
   }
 
   onPaneCreate(paneEl, sash) {
@@ -114,7 +116,7 @@ export class BinaryWindow extends Frame {
   }
 }
 
-BinaryWindow.assemble(glassModule, detachedGlassModule, trimModule, sillModule);
+BinaryWindow.assemble(glassModule, detachedGlassModule, trimModule, sillModule, dragNewModule);
 BinaryWindow.assembleStatic(windowlessGlassStaticModule);
 
 // Enable features that do not need a BinaryWindow instance

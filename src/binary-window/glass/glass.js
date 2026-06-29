@@ -29,6 +29,8 @@ export class Glass {
   build() {
     const headerEl = document.createElement('bw-glass-header');
 
+    headerEl.append(document.createElement('bw-attach-indicator'));
+
     const menuActions = Array.isArray(this.actions)
       ? this.actions.filter((action) => action.placement === 'menu')
       : [];
