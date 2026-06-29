@@ -42,7 +42,7 @@ Drop this into an `.html` file and open it in your browser — no build step req
       bwin.mount(document.getElementById('container'));
     </script>
   </head>
-  <body style="margin: 0">
+  <body>
     <div id="container"></div>
   </body>
 </html>
