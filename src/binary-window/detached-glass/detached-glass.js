@@ -29,7 +29,8 @@ export class DetachedGlass extends Glass {
 
     super({ ...glassOptions, actions });
 
-    this.domNode.setAttribute('id', id || genId() + '-F');
+    // `-D` for "detached"
+    this.domNode.setAttribute('id', id || genId() + '-D');
     this.domNode.setAttribute('detached', '');
     // Mirrors the header's `can-drag`: the resize module skips glasses marked
     // `can-resize="false"`, so handles never appear on them.
