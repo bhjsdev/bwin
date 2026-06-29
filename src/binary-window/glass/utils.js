@@ -35,10 +35,12 @@ export function transferGlass(sourceGlassElement, targetGlassElement) {
   );
   if (customActionEls.length > 0) targetActionBarEl.prepend(...customActionEls);
 
-  // append moves each node out of the source content element
+  // Move the whole `bw-glass-content` element, not just its children, so a
+  // framework owning the content (e.g. react-bwin's portal) keeps a stable
+  // container across detach/attach — its nodes never leave their parent.
   const sourceContentEl = sourceGlassElement.querySelector('bw-glass-content');
   const targetContentEl = targetGlassElement.querySelector('bw-glass-content');
-  targetContentEl.append(...sourceContentEl.childNodes);
+  targetContentEl.replaceWith(sourceContentEl);
 }
 
 export function updateGlassTitle(glassElement, title) {
