@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
     inputs:
       dev_release:
-        description: 'Publish dev release from the selected branch'
+        description: 'Publish dev release from selected branch'
         type: boolean
         default: false
   pull_request:
