@@ -1,4 +1,4 @@
-import { BinaryWindow } from '../binary-window';
+import { removeWindowlessGlass } from '@/binary-window/windowless-glass.js';
 
 export default {
   type: 'detached-glass-builtin',
@@ -10,7 +10,7 @@ export default {
     if (!glassEl) return;
 
     if (glassEl.hasAttribute('windowless')) {
-      await BinaryWindow.removeWindowlessGlass(glassEl.id);
+      await removeWindowlessGlass(glassEl.id);
     }
     else {
       await binaryWindow.removeDetachedGlass(glassEl.id);

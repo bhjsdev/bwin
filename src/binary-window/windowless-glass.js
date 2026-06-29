@@ -3,7 +3,7 @@ import { DEFAULT_WINDOWLESS_GLASS_ACTIONS } from './detached-glass';
 import { detachedGlassManager } from './detached-glass/manager';
 import { removeDetachedGlassElement } from './detached-glass/utils';
 
-function removeWindowlessGlass(id, { animate = true } = {}) {
+export function removeWindowlessGlass(id, { animate = true } = {}) {
   const detachedGlassEl = detachedGlassManager.removeDetachedGlass(id);
 
   if (!animate) {
