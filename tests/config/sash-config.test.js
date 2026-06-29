@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
-import { SashConfig } from './sash-config';
-import { FEAT_DEFAULTS } from './config-root';
+import { SashConfig } from '@/config/sash-config';
+import { FEAT_DEFAULTS } from '@/config/config-root';
 
 test('Instantiate', () => {
   const config = new SashConfig();

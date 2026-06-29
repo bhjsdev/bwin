@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { detachedGlassManager } from './manager';
+import { detachedGlassManager } from '@/binary-window/detached-glass/manager';
 
 // The manager is a shared singleton; reset its state so tests don't leak into each other.
 beforeEach(() => {
@@ -27,13 +27,10 @@ describe('addDetachedGlass', () => {
     expect(Number(glassEl.style.zIndex)).toBeGreaterThan(0);
   });
 
-  it('plays the open animation by default ([opening])', () => {
+  // The manager is a pure registry: it never animates. Open/close animation
+  // (the `opening`/`closing` attributes) lives in the crud layer.
+  it('does not touch the open animation ([opening])', () => {
     const glassEl = addGlass();
-    expect(glassEl.hasAttribute('opening')).toBe(true);
-  });
-
-  it('skips the open animation when animateOpen is false', () => {
-    const glassEl = addGlass({ animateOpen: false });
     expect(glassEl.hasAttribute('opening')).toBe(false);
   });
 
@@ -107,37 +104,29 @@ describe('bringToFront', () => {
 });
 
 describe('removeDetachedGlass', () => {
-  it('unregisters the glass and resolves with the removed element', async () => {
+  // The manager only unregisters and returns the element synchronously; the crud
+  // layer owns DOM removal and the close animation.
+  it('unregisters the glass and returns the removed element', () => {
     const glassEl = addGlass({ id: 'gone' });
 
-    const removed = await detachedGlassManager.removeDetachedGlass('gone', { animate: false });
+    const removed = detachedGlassManager.removeDetachedGlass('gone');
 
     expect(removed).toBe(glassEl);
     expect(detachedGlassManager.detachedGlassElements).not.toContain(glassEl);
   });
 
-  it('removes the node from the DOM when animate is false', () => {
-    const glassEl = addGlass({ id: 'gone' });
-    document.body.append(glassEl);
-
-    detachedGlassManager.removeDetachedGlass('gone', { animate: false });
-
-    expect(glassEl.isConnected).toBe(false);
-  });
-
-  it('resolves with null when no glass has that id', async () => {
-    await expect(detachedGlassManager.removeDetachedGlass('missing')).resolves.toBeNull();
-  });
-
-  it('defaults animate to true (node stays until the close animation ends)', () => {
+  it('leaves the DOM node in place (caller owns removal)', () => {
     const glassEl = addGlass({ id: 'gone' });
     document.body.append(glassEl);
 
     detachedGlassManager.removeDetachedGlass('gone');
 
-    // Unregistered immediately, but the DOM node waits for `animationend` (never fires in jsdom).
-    expect(detachedGlassManager.detachedGlassElements).not.toContain(glassEl);
-    expect(glassEl.hasAttribute('closing')).toBe(true);
+    expect(glassEl.isConnected).toBe(true);
+    glassEl.remove();
+  });
+
+  it('returns null when no glass has that id', () => {
+    expect(detachedGlassManager.removeDetachedGlass('missing')).toBeNull();
   });
 });
 
