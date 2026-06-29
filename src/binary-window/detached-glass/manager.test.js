@@ -107,29 +107,29 @@ describe('bringToFront', () => {
 });
 
 describe('removeDetachedGlass', () => {
-  it('unregisters the glass and returns the removed element', () => {
+  it('unregisters the glass and resolves with the removed element', async () => {
     const glassEl = addGlass({ id: 'gone' });
 
-    const removed = detachedGlassManager.removeDetachedGlass('gone', { animateClose: false });
+    const removed = await detachedGlassManager.removeDetachedGlass('gone', { animate: false });
 
     expect(removed).toBe(glassEl);
     expect(detachedGlassManager.detachedGlassElements).not.toContain(glassEl);
   });
 
-  it('removes the node from the DOM when animateClose is false', () => {
+  it('removes the node from the DOM when animate is false', () => {
     const glassEl = addGlass({ id: 'gone' });
     document.body.append(glassEl);
 
-    detachedGlassManager.removeDetachedGlass('gone', { animateClose: false });
+    detachedGlassManager.removeDetachedGlass('gone', { animate: false });
 
     expect(glassEl.isConnected).toBe(false);
   });
 
-  it('returns null when no glass has that id', () => {
-    expect(detachedGlassManager.removeDetachedGlass('missing')).toBeNull();
+  it('resolves with null when no glass has that id', async () => {
+    await expect(detachedGlassManager.removeDetachedGlass('missing')).resolves.toBeNull();
   });
 
-  it('defaults animateClose to true (node stays until the close animation ends)', () => {
+  it('defaults animate to true (node stays until the close animation ends)', () => {
     const glassEl = addGlass({ id: 'gone' });
     document.body.append(glassEl);
 

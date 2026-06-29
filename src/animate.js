@@ -1,8 +1,23 @@
+// Drive a CSS animation by toggling `attribute` on `element`: set it (which the
+// stylesheet keys the animation off), then clear it on `animationend` and run
+// `onComplete`. The cleared attribute lets the animation re-run on the next call.
+export function animateElementByAttribute(element, attribute, onComplete) {
+  element.setAttribute(attribute, '');
+  element.addEventListener(
+    'animationend',
+    () => {
+      element.removeAttribute(attribute);
+      onComplete?.();
+    },
+    { once: true }
+  );
+}
+
 // FLIP-style flight: shrink and fly `sourceEl` onto `targetEl`, then fade out.
 // Both must be laid out (in the DOM, not `display:none`) so their rects measure.
-// Runs `onDone` when the flight ends (e.g. to hide/remove the source).
-export function animateElementToElement(sourceEl, targetEl, onDone) {
-  const SHRINK_FLIGHT_DURATION = 200;
+// Resolves when the flight ends (e.g. to then hide/remove the source).
+export function animateElementToElement(sourceEl, targetEl) {
+  const SHRINK_FLIGHT_DURATION = 180;
 
   const sourceRect = sourceEl.getBoundingClientRect();
   const targetRect = targetEl.getBoundingClientRect();
@@ -28,13 +43,8 @@ export function animateElementToElement(sourceEl, targetEl, onDone) {
   // top-left origin so the translate/scale maps the source corner onto the target corner
   sourceEl.style.transformOrigin = 'top left';
 
-  animation.addEventListener(
-    'finish',
-    () => {
-      sourceEl.style.pointerEvents = '';
-      sourceEl.style.transformOrigin = '';
-      onDone?.();
-    },
-    { once: true }
-  );
+  return animation.finished.then(() => {
+    sourceEl.style.pointerEvents = '';
+    sourceEl.style.transformOrigin = '';
+  });
 }

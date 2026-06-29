@@ -2,7 +2,7 @@ import { getMetricsFromElement } from '@/utils';
 import { getIntersectRect } from '@/rect';
 import { Position } from '@/position';
 import { detachedGlassManager } from './detached-glass/manager';
-import { animateDetachedGlassOpen } from './detached-glass/utils';
+import { animateElementByAttribute } from '@/animate';
 
 export default {
   enableSillFeatures() {
@@ -31,9 +31,12 @@ export default {
       if (!detachedGlassEl) return;
 
       detachedGlassEl.style.display = '';
-      animateDetachedGlassOpen(detachedGlassEl);
-      potEl.remove();
-      detachedGlassManager.bringToFront(detachedGlassEl);
+
+      animateElementByAttribute(detachedGlassEl, 'opening', () => {
+        potEl.remove();
+        detachedGlassManager.bringToFront(detachedGlassEl);
+        this.emit('restore', detachedGlassEl);
+      });
     });
   },
 
@@ -89,6 +92,7 @@ export default {
         withGlass: false,
       });
       newSashPane.domNode.append(potEl.bwGlassElement);
+      this.emit('restore', potEl.bwGlassElement);
     }
   },
 

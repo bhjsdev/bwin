@@ -21,25 +21,25 @@ const settings = {
 const bwin = new BinaryWindow(settings);
 bwin.mount(document.querySelector('#container'));
 
-bwin.onBeforePaneRemove = (paneSash) => {
-  console.log('onBeforePaneRemove:', paneSash);
-  console.log('onBeforePaneRemove - domNode: ', paneSash.domNode);
-  return true;
-};
+bwin.on('before-pane-add', (targetPaneSash) => {
+  console.log('before-pane-add (target):', targetPaneSash);
+  // return false to veto the add
+  // return false;
+});
 
-bwin.onPaneRemove = (paneSash) => {
-  console.log('onPaneRemove:', paneSash);
-  console.log('onPaneRemove - domNode: ', paneSash.domNode);
-};
+bwin.on('pane-add', (newPaneSash) => {
+  console.log('pane-add (new):', newPaneSash);
+});
 
-bwin.onBeforePaneAdd = (targetPaneSash) => {
-  console.log('onBeforePaneAdd:', targetPaneSash);
-  return true;
-};
+bwin.on('before-pane-remove', (paneSash) => {
+  console.log('before-pane-remove:', paneSash);
+  // return false to veto the removal
+  // return false;
+});
 
-bwin.onPaneAdd = (targetPaneSash) => {
-  console.log('onPaneAdd:', targetPaneSash);
-};
+bwin.on('pane-remove', (paneSash) => {
+  console.log('pane-remove:', paneSash);
+});
 
 document.querySelector('#add-pane').addEventListener('click', () => {
   const parentId = document.querySelector('#sash-id').value.trim();

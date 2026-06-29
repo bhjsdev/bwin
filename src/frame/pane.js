@@ -80,12 +80,13 @@ export default {
     const targetPaneSash = this.rootSash.getById(targetPaneSashId);
     if (!targetPaneSash) throw new Error('[bwin] Parent sash not found when adding pane');
 
-    const mustAdd = this.onBeforePaneAdd(targetPaneSash);
+    const mustAdd = this.emit('before-pane-add', targetPaneSash);
     if (mustAdd === false) return null;
 
     const newPaneSash = addPaneSash(targetPaneSash, { position, size, id, minWidth, minHeight });
     this.update();
-    this.onPaneAdd(newPaneSash);
+
+    this.emit('pane-add', newPaneSash);
     return newPaneSash;
   },
 
@@ -101,7 +102,7 @@ export default {
     const sash = this.rootSash.getById(sashId);
     if (!sash) throw new Error('[bwin] Sash not found when removing pane');
 
-    const mustRemove = this.onBeforePaneRemove(sash);
+    const mustRemove = this.emit('before-pane-remove', sash);
     if (mustRemove === false) return;
 
     const siblingSash = parentSash.getChildSiblingById(sashId);
@@ -137,7 +138,7 @@ export default {
     this.update();
     // `sash.domNode` still exists at this point,
     // but was removed from the DOM during `this.update()`
-    this.onPaneRemove(sash);
+    this.emit('pane-remove', sash);
   },
 
   swapPanes(sourcePaneEl, targetPaneEl) {
@@ -156,12 +157,6 @@ export default {
     sourcePaneEl.setAttribute('can-drop', targetPaneCanDrop);
     targetPaneEl.setAttribute('can-drop', sourcePaneCanDrop);
   },
-
-  // To be overridden by user code
-  onBeforePaneAdd(targetPaneSash) {},
-  onPaneAdd(newPaneSash) {},
-  onBeforePaneRemove(paneSash) {},
-  onPaneRemove(paneSash) {},
 };
 
 function __debug(parentEl) {

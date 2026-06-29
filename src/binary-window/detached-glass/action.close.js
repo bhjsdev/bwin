@@ -1,15 +1,20 @@
-import { detachedGlassManager } from './manager';
+import { BinaryWindow } from '../binary-window';
 
 export default {
   type: 'detached-glass-builtin',
   placement: 'bar',
   label: '',
   className: 'bw-action--close',
-  onClick: (event) => {
+  onClick: async (event, binaryWindow) => {
     const glassEl = event.target.closest('bw-glass[detached]');
     if (!glassEl) return;
 
-    // Manager handles both detached and windowless glass (no binaryWindow needed).
-    detachedGlassManager.removeDetachedGlass(glassEl.id, { animateClose: true });
+    if (glassEl.hasAttribute('windowless')) {
+      await BinaryWindow.removeWindowlessGlass(glassEl.id);
+    }
+    else {
+      await binaryWindow.removeDetachedGlass(glassEl.id);
+      binaryWindow.emit('close', glassEl);
+    }
   },
 };

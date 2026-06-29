@@ -1,5 +1,4 @@
 import { DetachedGlass } from './detached-glass';
-import { animateDetachedGlassOpen, removeDetachedGlassElement } from './utils';
 
 class DetachedGlassManager {
   constructor() {
@@ -10,10 +9,8 @@ class DetachedGlassManager {
 
   // Caller owns only the DOM `append` (parent differs: `bw-window` vs. `document.body`)
   // and reads the returned element's `style.zIndex` for the windowless modal backdrop.
-  addDetachedGlass(options = {}) {
-    const { animateOpen = true, ...glassOptions } = options;
-
-    const glassEl = new DetachedGlass(glassOptions).domNode;
+  addDetachedGlass(options) {
+    const glassEl = new DetachedGlass(options).domNode;
 
     // Ids must be unique in the stack: remove/update/backdrop all key off the id.
     if (this.getDetachedGlassById(glassEl.id)) {
@@ -22,8 +19,6 @@ class DetachedGlassManager {
 
     this.detachedGlassElements.push(glassEl);
     this.bringToFront(glassEl);
-
-    if (animateOpen) animateDetachedGlassOpen(glassEl);
 
     return glassEl;
   }
@@ -53,14 +48,11 @@ class DetachedGlassManager {
     return this.topZIndex;
   }
 
-  // Unregister and tear down: splice from the registry AND remove the DOM node
-  // (animated by default) plus any modal backdrop.
-  removeDetachedGlass(id, { animateClose = true } = {}) {
+  removeDetachedGlass(id) {
     const index = this.detachedGlassElements.findIndex((glassEl) => glassEl.id === id);
     if (index === -1) return null;
 
     const [removedGlassEl] = this.detachedGlassElements.splice(index, 1);
-    removeDetachedGlassElement(removedGlassEl, animateClose);
     return removedGlassEl;
   }
 

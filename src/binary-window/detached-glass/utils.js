@@ -1,3 +1,5 @@
+import { animateElementByAttribute } from '@/animate';
+
 // Edges first, corners last so corner handles paint on top of the edge handles
 const RESIZE_DIRECTIONS = ['n', 's', 'e', 'w', 'ne', 'nw', 'se', 'sw'];
 
@@ -17,39 +19,32 @@ export function getResizeHandleOverhang(glassEl) {
   return (parseFloat(size) || 0) / 2;
 }
 
-// Remove the modal backdrop tied to a glass id, if one exists (windowless modal glass).
-export function removeGlassBackdrop(glassId) {
+export function removeGlassBackdrop(glassId, animate = false) {
   const backdropEl = document.querySelector(`bw-glass-backdrop[for="${glassId}"]`);
-  backdropEl?.remove();
-}
+  if (!backdropEl) return;
 
-// Play the open animation by setting `[opening]` (see detached-glass.css), then
-// clear it once the animation ends so it can re-run on the next restore.
-export function animateDetachedGlassOpen(detachedGlassEl) {
-  detachedGlassEl.setAttribute('opening', '');
-  detachedGlassEl.addEventListener(
-    'animationend',
-    () => detachedGlassEl.removeAttribute('opening'),
-    { once: true }
-  );
-}
-
-// Remove a detached glass element from the DOM (+ any modal backdrop). CSS can't
-// animate a normal element out, so `[closing]` drives the close animation and we
-// defer the actual removal until it ends. Pass `animateClose: false` to remove now.
-export function removeDetachedGlassElement(detachedGlassEl, animateClose = true) {
-  const remove = () => {
-    detachedGlassEl.remove();
-    removeGlassBackdrop(detachedGlassEl.id);
-  };
-
-  if (!animateClose) {
-    remove();
+  if (!animate) {
+    backdropEl.remove();
     return;
   }
 
-  detachedGlassEl.setAttribute('closing', '');
-  detachedGlassEl.addEventListener('animationend', remove, { once: true });
+  animateElementByAttribute(backdropEl, 'closing', () => backdropEl.remove());
+}
+
+export function removeDetachedGlassElement(detachedGlassEl, animate = true, onComplete) {
+  removeGlassBackdrop(detachedGlassEl.id, animate);
+
+  const handleRemove = () => {
+    detachedGlassEl.remove();
+    onComplete?.();
+  };
+
+  if (!animate) {
+    handleRemove();
+    return;
+  }
+
+  animateElementByAttribute(detachedGlassEl, 'closing', handleRemove);
 }
 
 // Viewport-space top-left of an absolutely-positioned element's containing block.

@@ -18,8 +18,9 @@ export default {
       throw new Error(`[bwin] Detached Glass element not found when minimizing`);
 
     potEl.bwDetachedGlassElement = detachedGlassEl;
-    animateElementToElement(detachedGlassEl, potEl, () => {
+    animateElementToElement(detachedGlassEl, potEl).then(() => {
       detachedGlassEl.style.display = 'none';
+      binaryWindow.emit('minimize', detachedGlassEl);
     });
   },
 };
