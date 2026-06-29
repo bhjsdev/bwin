@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import eventModule from './event';
+import eventModule from '@/frame/event';
 
 // Each test gets a fresh emitter, mirroring how `eventModule` is assembled onto
 // a `Frame`/`BinaryWindow` instance (its methods run with `this` as that instance).

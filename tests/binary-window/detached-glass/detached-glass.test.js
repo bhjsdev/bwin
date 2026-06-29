@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { DetachedGlass } from './detached-glass';
+import { DetachedGlass } from '@/binary-window/detached-glass/detached-glass';
 
 const build = (options = {}) => new DetachedGlass({ position: 'center', ...options }).domNode;
 

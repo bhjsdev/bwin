@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { BinaryWindow } from './binary-window';
+import { BinaryWindow } from '@/binary-window/binary-window';
 
 describe('BinaryWindow#updatePane', () => {
   let containerEl;

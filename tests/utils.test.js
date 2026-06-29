@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseSize, strictAssign, createDomNode } from './utils';
+import { parseSize, strictAssign, createDomNode } from '@/utils';
 
 describe('parseSize', () => {
   it('returns the number when a valid number is passed', () => {
