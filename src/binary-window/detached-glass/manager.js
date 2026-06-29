@@ -4,6 +4,7 @@ class DetachedGlassManager {
   constructor() {
     this.detachedGlassElements = [];
     // Rising counter so the most recently grabbed glass stacks on top, like an OS window.
+    // TODO: Can be configured to be on top of other non binary windowed elements 
     this.topZIndex = 1;
   }
 
