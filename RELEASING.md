@@ -5,6 +5,9 @@ Publishing is triggered manually via the **Publish to npm** workflow
 under `latest`, `X.Y.Z-dev.N` under `dev`. The workflow creates and pushes the matching
 `vX.Y.Z` git tag itself — don't tag by hand.
 
+To cut a quick dev build of in-progress branch work, tick the **dev_release** checkbox
+when dispatching — see [Ungated dev release](#ungated-dev-release) below.
+
 ## Steps
 
 1. **Bump the version** in `package.json` via a PR. Either edit it manually, or run an
@@ -24,11 +27,28 @@ under `latest`, `X.Y.Z-dev.N` under `dev`. The workflow creates and pushes the m
      ```sh
      npm version prerelease --preid=dev --no-git-tag-version
      ```
+
 2. **Merge the PR** into `main`.
-3. **Run the workflow** — *Publish to npm* in the Actions tab, or
+3. **Run the workflow** — _Publish to npm_ in the Actions tab, or
    `gh workflow run publish.yml`. It pauses on the `PUBLISH` environment for approval,
    then verifies the tag doesn't exist, builds, publishes, pushes the tag, and (for
    formal releases only) generates release notes.
+
+## Ungated dev release
+
+To publish a `dev`-tagged build straight from a feature branch without the `PUBLISH`
+approval gate:
+
+1. Actions → **Publish to npm** → **Run workflow**.
+2. In the branch dropdown, pick the branch to publish from.
+3. Tick **dev_release**, then run.
+
+This runs the `manual-dev-publish` job: it computes an ephemeral
+`<next-patch>-dev-<short-sha>` version from the branch's `package.json` (no
+`package.json` edit or version bump needed), builds, and publishes under the `dev`
+tag. It does **not** pause on the `PUBLISH` environment, push a git tag, or create
+release notes. With the box unchecked, dispatch behaves exactly as the formal release
+above.
 
 ## Reviewer's job
 
