@@ -33,7 +33,9 @@ export default {
       size,
     });
 
-    transferGlass(detachedGlassEl, paneSash.domNode);
+    const targetGlassEl = paneSash.domNode.querySelector('bw-glass');
+    transferGlass(detachedGlassEl, targetGlassEl);
+
     binaryWindow.emit('attach', paneSash.domNode.querySelector('bw-glass'));
   },
 };
