@@ -1,11 +1,11 @@
 name: Publish to npm
 
-# Three publish paths share this one file because npm trusted publishing (OIDC) allows only one
+# Two publish paths share this one file because npm trusted publishing (OIDC) allows only one
 # workflow filename per package:
-#   - publish (manual)            : workflow_dispatch → stable release under `latest`, gated on PUBLISH env.
-#   - manual-dev-publish (manual) : workflow_dispatch + dev_release checkbox → ephemeral
-#                                   <next-patch>-dev-<sha> under `dev` from the selected branch, ungated.
-#   - dev-publish (auto)          : merged PR to main → ephemeral <next-patch>-dev-<sha> under `dev`, unattended.
+#   - publish (manual)  : workflow_dispatch (dev_release unchecked) → stable release under `latest`, gated on PUBLISH env.
+#   - dev-publish       : merged PR to main (auto, unattended) OR workflow_dispatch with `dev_release`
+#                         checked → ephemeral <next-patch>-dev-<sha> under `dev`. A manual dev run builds
+#                         against whatever branch/tag is picked in the run's "Use workflow from" selector.
 
 on:
   workflow_dispatch:
@@ -97,54 +97,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  # Same ephemeral-version recipe as dev-publish, but fired manually from the selected branch
-  # and intentionally ungated (no `environment:`) — for cutting a dev build of in-progress work.
-  manual-dev-publish:
-    if: github.event_name == 'workflow_dispatch' && inputs.dev_release == true
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
-
-    steps:
-      - name: Check out repository
-        # Checks out the branch chosen in the workflow_dispatch ref picker.
-        uses: actions/checkout@v6
-
-      - name: Set up pnpm
-        uses: pnpm/action-setup@v6
-        with:
-          version: 11
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: '24'
-          registry-url: 'https://registry.npmjs.org'
-          cache: 'pnpm'
-
-      - name: Compute ephemeral dev version
-        run: |
-          base="$(node -p "require('./package.json').version")"
-          # Next patch: split on '.', bump the last field. No semver dependency needed.
-          next="$(node -p "const [a,b,c]=require('./package.json').version.split('.'); [a,b,Number(c)+1].join('.')")"
-          sha="$(git rev-parse --short HEAD)"
-          devver="${next}-dev-${sha}"
-          # Edits the runner's copy only; --no-git-tag-version makes no commit and no tag.
-          npm version --no-git-tag-version "$devver"
-          echo "Publishing manual dev release \`$devver\` from \`${{ github.ref_name }}\` (base $base)" >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Build package
-        run: pnpm build
-
-      - name: Publish to npm
-        run: pnpm publish --no-git-checks --access public --tag dev
-
+  # Intentionally ungated (no `environment:`): auto on merge to main, or manual from the
+  # selected branch via the `dev_release` checkbox — for cutting a dev build of in-progress work.
   dev-publish:
-    if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
+    if: >-
+      (github.event_name == 'pull_request' && github.event.pull_request.merged == true) ||
+      (github.event_name == 'workflow_dispatch' && inputs.dev_release == true)
     runs-on: ubuntu-latest
     permissions:
       contents: read
