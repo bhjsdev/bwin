@@ -97,12 +97,38 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  # Intentionally ungated (no `environment:`): auto on merge to main, or manual from the
-  # selected branch via the `dev_release` checkbox — for cutting a dev build of in-progress work.
-  dev-publish:
+  # Decides whether dev-publish should run. A version bump means a formal release is
+  # being prepared, so a dev pre-release would be wrong — skip it.
+  check-dev-publish:
     if: >-
       (github.event_name == 'pull_request' && github.event.pull_request.merged == true) ||
       (github.event_name == 'workflow_dispatch' && inputs.dev_release == true)
+    runs-on: ubuntu-latest
+    outputs:
+      skip: ${{ steps.guard.outputs.skip }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Detect version bump
+        id: guard
+        if: github.event_name == 'pull_request'
+        run: |
+          head_ver="$(node -p "require('./package.json').version")"
+          git show "${{ github.event.pull_request.base.sha }}:package.json" > /tmp/base-package.json
+          base_ver="$(node -p "require('/tmp/base-package.json').version")"
+          if [ "$base_ver" != "$head_ver" ]; then
+            echo "::notice::package.json version changed ($base_ver -> $head_ver); skipping dev publish."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  # Ungated (no `environment:`): auto on merge to main, or manual via `dev_release`.
+  dev-publish:
+    needs: check-dev-publish
+    if: needs.check-dev-publish.outputs.skip != 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read
