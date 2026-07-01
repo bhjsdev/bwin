@@ -41,6 +41,8 @@ bw-glass[detached] {
 }
 
 bw-glass[detached] > bw-glass-header[can-drag='true'] {
+  touch-action: none;
+
   &:active {
     cursor: move;
   }

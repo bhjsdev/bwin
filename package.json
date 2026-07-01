@@ -2,7 +2,7 @@
   "name": "bwin",
   "description": "A tiling window manager for web browsers",
   "type": "module",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bhjsdev/bwin.git"
@@ -31,7 +31,7 @@
     "./bwin.css": "./dist/bwin.css"
   },
   "scripts": {
-    "dev": "vite --port 7100",
+    "dev": "vite",
     "build": "vite build",
     "build:watch": "vite build --watch",
     "test": "vitest",
