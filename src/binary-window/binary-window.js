@@ -118,7 +118,12 @@ BinaryWindow.assemble(glassModule, detachedGlassModule, trimModule, sillModule);
 BinaryWindow.assembleStatic(windowlessGlassStaticModule);
 
 // Enable features that do not need a BinaryWindow instance
-// e.g. handle pointer events
-glassModule.enableGlassStandaloneFeatures();
-// e.g. detached glass move/resize/activate
-detachedGlassModule.enableDetachedGlassStandaloneFeatures();
+// RATIONAL: these attach document-global listeners at module load, so guard on
+// `document` — importing the package during SSR (e.g. Next.js) has no DOM and
+// would otherwise throw. Re-runs harmlessly once in the browser.
+if (typeof document !== 'undefined') {
+  // e.g. handle pointer events
+  glassModule.enableGlassStandaloneFeatures();
+  // e.g. detached glass move/resize/activate
+  detachedGlassModule.enableDetachedGlassStandaloneFeatures();
+}
