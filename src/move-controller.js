@@ -43,8 +43,6 @@ export class MoveController {
     this.handlePointerUp = this.handlePointerUp.bind(this);
 
     this.isMoveStarted = false;
-    this.captureElement = null;
-    this.capturePointerId = null;
   }
 
   setTarget(element, { edgeReserve = 0 } = {}) {
@@ -56,11 +54,6 @@ export class MoveController {
     if (event.button !== 0 || !this.targetElement) return;
 
     event.preventDefault();
-
-    // setPointerCapture keeps move events flowing when the pointer leaves the pressed element.
-    this.captureElement = event.target;
-    this.capturePointerId = event.pointerId;
-    this.captureElement.setPointerCapture?.(event.pointerId);
 
     this.startX = event.pageX;
     this.startY = event.pageY;
@@ -115,14 +108,7 @@ export class MoveController {
   handlePointerUp(event) {
     if (!this.isMoveStarted) return;
 
-    if (this.captureElement?.hasPointerCapture?.(this.capturePointerId)) {
-      this.captureElement.releasePointerCapture(this.capturePointerId);
-    }
-
     this.isMoveStarted = false;
-    this.captureElement = null;
-    this.capturePointerId = null;
-    // Clear so the next press re-resolves its target (consumer-set or the pressed element).
     this.targetElement = null;
 
     this.onPointerUp?.(event);
