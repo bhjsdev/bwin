@@ -13,6 +13,3 @@ moveController.enable();
 boxEl.addEventListener('pointerdown', () => moveController.setTarget(boxEl)); // moves itself
 aEl.addEventListener('pointerdown', () => moveController.setTarget(bEl)); // A drags B
 bEl.addEventListener('pointerdown', () => moveController.setTarget(aEl)); // B drags A
-
-// Clean up so a press on empty space doesn't drag the last target.
-document.addEventListener('pointerup', () => moveController.setTarget(null));
