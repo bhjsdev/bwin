@@ -1,3 +1,9 @@
+node_modules
+dist
+dist-ssr
+*.local
+temp
+
 # Logs
 logs
 *.log
@@ -17,9 +23,3 @@ lerna-debug.log*
 *.sln
 *.sw?
 
-# Other
-node_modules
-dist
-dist-ssr
-*.local
-temp
