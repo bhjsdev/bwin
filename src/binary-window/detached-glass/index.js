@@ -2,7 +2,6 @@ import crudModule from './crud';
 import activateModule from './activate';
 import moveModule from './move';
 import resizeModule from './resize';
-// import moveModule from './move-new';
 
 export {
   DetachedGlass,
