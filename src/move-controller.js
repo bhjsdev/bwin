@@ -23,11 +23,24 @@ function getContainingBlockOrigin(el) {
 }
 
 export class MoveController {
-  constructor({ target, onPointerDown, onPointerMove, onPointerUp } = {}) {
+  constructor({
+    target,
+    onPointerDown,
+    onPointerMove,
+    onPointerUp,
+    // Px to keep clear on the right/bottom edges (e.g. resize-handle overhang, so hover
+    // handles stay on-screen). Belongs to the target; update it alongside setTarget.
+    targetEdgeReserve = 0,
+    // When no target is set, drag the pressed element. Off for consumers that gate
+    // dragging themselves (setTarget on valid presses, setTarget(null) otherwise).
+    fallbackToPressedElement = true,
+  } = {}) {
     this.targetElement = target;
     this.onPointerDown = onPointerDown;
     this.onPointerMove = onPointerMove;
     this.onPointerUp = onPointerUp;
+    this.targetEdgeReserve = targetEdgeReserve;
+    this.fallbackToPressedElement = fallbackToPressedElement;
 
     this.handlePointerDown = this.handlePointerDown.bind(this);
     this.handlePointerMove = this.handlePointerMove.bind(this);
@@ -38,8 +51,9 @@ export class MoveController {
     this.capturePointerId = null;
   }
 
-  setTarget(element) {
+  setTarget(element, { edgeReserve = 0 } = {}) {
     this.targetElement = element;
+    this.targetEdgeReserve = edgeReserve;
   }
 
   handlePointerDown(event) {
@@ -47,7 +61,9 @@ export class MoveController {
 
     // Fall back to the pressed element so a bare press drags it directly,
     // without a consumer calling setTarget first.
-    this.targetElement = this.targetElement ?? event.target;
+    if (!this.targetElement && this.fallbackToPressedElement) {
+      this.targetElement = event.target;
+    }
     if (!this.targetElement) return;
 
     event.preventDefault();
@@ -68,12 +84,13 @@ export class MoveController {
 
     // Bound the move to the viewport, captured once per grab: `clientWidth/Height`
     // exclude scrollbars, and dragging past an edge never grows the page.
+    // `targetEdgeReserve` keeps clear space on the right/bottom (e.g. resize-handle overhang).
     const viewportWidth = document.documentElement.clientWidth;
     const viewportHeight = document.documentElement.clientHeight;
     this.minLeft = -origin.left;
-    this.maxLeft = viewportWidth - targetRect.width - origin.left;
+    this.maxLeft = viewportWidth - targetRect.width - this.targetEdgeReserve - origin.left;
     this.minTop = -origin.top;
-    this.maxTop = viewportHeight - targetRect.height - origin.top;
+    this.maxTop = viewportHeight - targetRect.height - this.targetEdgeReserve - origin.top;
 
     this.lastLeft = this.startLeft;
     this.lastTop = this.startTop;
