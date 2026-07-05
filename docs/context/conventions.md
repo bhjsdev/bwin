@@ -66,7 +66,7 @@ Preferred patterns for **new** pointer-driven interaction features:
 
 **Why:** correctness (not losing the pointer mid-drag) and performance (listener count, node count when many elements exist) are weighed deliberately.
 
-**Note — existing code diverges:** `frame/resizable.js` and the attached-glass `binary-window/glass/drag.js` still use the older `document` + `mouse*` style. The detached-glass `move.js`/`resize.js` use the modern Pointer Events pattern. Follow the modern pattern for new features; match the surrounding style when editing existing files.
+**Note — existing code diverges:** the attached-glass `binary-window/glass/drag.js` still uses the native HTML DnD API. `frame/resizable.js` and the detached-glass `move.js`/`resize.js` use the modern Pointer Events pattern. Follow the modern pattern for new features; match the surrounding style when editing existing files.
 
 ---
 
