@@ -31,22 +31,18 @@ export class MoveController {
     // Px to keep clear on the right/bottom edges (e.g. resize-handle overhang, so hover
     // handles stay on-screen). Belongs to the target; update it alongside setTarget.
     targetEdgeReserve = 0,
-    // When no target is set, drag the pressed element. Off for consumers that gate
-    // dragging themselves (setTarget on valid presses, setTarget(null) otherwise).
-    fallbackToPressedElement = true,
   } = {}) {
     this.targetElement = target;
     this.onPointerDown = onPointerDown;
     this.onPointerMove = onPointerMove;
     this.onPointerUp = onPointerUp;
     this.targetEdgeReserve = targetEdgeReserve;
-    this.fallbackToPressedElement = fallbackToPressedElement;
 
     this.handlePointerDown = this.handlePointerDown.bind(this);
     this.handlePointerMove = this.handlePointerMove.bind(this);
     this.handlePointerUp = this.handlePointerUp.bind(this);
 
-    this.isMoving = false;
+    this.isMoveStarted = false;
     this.captureElement = null;
     this.capturePointerId = null;
   }
@@ -57,14 +53,7 @@ export class MoveController {
   }
 
   handlePointerDown(event) {
-    if (event.button !== 0) return;
-
-    // Fall back to the pressed element so a bare press drags it directly,
-    // without a consumer calling setTarget first.
-    if (!this.targetElement && this.fallbackToPressedElement) {
-      this.targetElement = event.target;
-    }
-    if (!this.targetElement) return;
+    if (event.button !== 0 || !this.targetElement) return;
 
     event.preventDefault();
 
@@ -95,14 +84,14 @@ export class MoveController {
     this.lastLeft = this.startLeft;
     this.lastTop = this.startTop;
 
-    this.isMoving = true;
+    this.isMoveStarted = true;
 
     this.onPointerDown?.(event);
   }
 
   handlePointerMove(event) {
     // `targetElement` can be cleared mid-drag (e.g. consumer calls setTarget(null)).
-    if (!this.isMoving || !this.targetElement) return;
+    if (!this.isMoveStarted || !this.targetElement) return;
 
     const targetLeft = this.startLeft + (event.pageX - this.startX);
     const targetTop = this.startTop + (event.pageY - this.startY);
@@ -124,13 +113,13 @@ export class MoveController {
   }
 
   handlePointerUp(event) {
-    if (!this.isMoving) return;
+    if (!this.isMoveStarted) return;
 
     if (this.captureElement?.hasPointerCapture?.(this.capturePointerId)) {
       this.captureElement.releasePointerCapture(this.capturePointerId);
     }
 
-    this.isMoving = false;
+    this.isMoveStarted = false;
     this.captureElement = null;
     this.capturePointerId = null;
     // Clear so the next press re-resolves its target (consumer-set or the pressed element).

@@ -8,12 +8,11 @@ const bEl = document.querySelector('#b');
 const moveController = new MoveController();
 moveController.enable();
 
-// #box needs no listener: with no target set, the controller falls back to the
-// pressed element, so it drags itself. A/B override that to move the other box.
 // Set on pointerdown (target phase) so it's in place before the controller's
 // document-level handler runs on the bubble phase.
+boxEl.addEventListener('pointerdown', () => moveController.setTarget(boxEl)); // moves itself
 aEl.addEventListener('pointerdown', () => moveController.setTarget(bEl)); // A drags B
 bEl.addEventListener('pointerdown', () => moveController.setTarget(aEl)); // B drags A
 
-document.querySelector('#enable').addEventListener('click', () => moveController.enable());
-document.querySelector('#disable').addEventListener('click', () => moveController.disable());
+// Clean up so a press on empty space doesn't drag the last target.
+document.addEventListener('pointerup', () => moveController.setTarget(null));

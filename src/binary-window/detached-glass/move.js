@@ -3,9 +3,7 @@ import { getResizeHandleOverhang } from './utils';
 
 export default {
   enableDetachedGlassMove() {
-    const moveController = new MoveController({
-      fallbackToPressedElement: false,
-    });
+    const moveController = new MoveController();
 
     document.addEventListener('pointerdown', (event) => {
       if (event.button !== 0) return;
