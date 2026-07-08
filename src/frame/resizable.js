@@ -5,24 +5,13 @@ export default {
   lastX: 0,
   lastY: 0,
 
-  applyResizeStyles() {
-    if (this.activeMuntinSash.domNode.hasAttribute('vertical')) {
-      document.body.classList.add('body--bw-resize-x');
-    }
-    else if (this.activeMuntinSash.domNode.hasAttribute('horizontal')) {
-      document.body.classList.add('body--bw-resize-y');
-    }
-  },
-
-  revertResizeStyles() {
-    document.body.classList.remove('body--bw-resize-x');
-    document.body.classList.remove('body--bw-resize-y');
-  },
-
   enableResize() {
-    document.addEventListener('mousedown', (event) => {
+    document.addEventListener('pointerdown', (event) => {
       if (event.target.tagName !== 'BW-MUNTIN') return;
       if (event.target.getAttribute('resizable') === 'false') return;
+
+      // Make the cursor style persist even if the pointer leaves muntin or screen during drag
+      event.target.setPointerCapture(event.pointerId);
 
       const sashId = event.target.getAttribute('sash-id');
       this.activeMuntinSash = this.rootSash.getById(sashId);
@@ -32,11 +21,9 @@ export default {
       this.isResizeStarted = true;
       this.lastX = event.pageX;
       this.lastY = event.pageY;
-
-      this.applyResizeStyles();
     });
 
-    document.addEventListener('mousemove', (event) => {
+    document.addEventListener('pointermove', (event) => {
       if (!this.isResizeStarted || !this.activeMuntinSash) return;
 
       const [topChild, rightChild, bottomChild, leftChild] = this.activeMuntinSash.getChildren();
@@ -78,10 +65,11 @@ export default {
       }
     });
 
-    document.addEventListener('mouseup', () => {
+    document.addEventListener('pointerup', (event) => {
       this.isResizeStarted = false;
       this.activeMuntinSash = null;
-      this.revertResizeStyles();
+
+      event.target.releasePointerCapture(event.pointerId);
     });
   },
 };

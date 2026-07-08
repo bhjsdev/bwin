@@ -64,6 +64,9 @@ export default {
   removeDetachedGlass(id, { animate = true } = {}) {
     const removedGlassEl = detachedGlassManager.removeDetachedGlass(id);
 
+    // Already removed (e.g. closed via its action) — no-op so a stale id is harmless.
+    if (!removedGlassEl) return Promise.resolve(null);
+
     return new Promise((resolve) =>
       removeDetachedGlassElement(removedGlassEl, animate, () => resolve(removedGlassEl))
     );

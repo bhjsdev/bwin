@@ -23,12 +23,12 @@ This complements [`ARCHITECTURE.md`](./ARCHITECTURE.md) (how things work) and [`
 
 ---
 
-## [medium] Two coexisting interaction patterns (legacy `mouse*` vs Pointer Events)
+## [medium] Two coexisting interaction patterns (legacy `mouse*`/DnD vs Pointer Events)
 
-- **Where:** `src/frame/resizable.js` and `src/binary-window/glass/drag.js` (legacy) vs `src/binary-window/detached-glass/move.js`/`resize.js` (modern)
-- **What:** Muntin resize and attached-glass drag use document-bound `mousedown`/`mousemove`/`mouseup`. Detached-glass move/resize use the preferred pattern: Pointer Events + `setPointerCapture`, delegated listeners on `windowElement`, affordance DOM created on demand.
-- **Impact:** Two mental models for the same kind of feature. The legacy path is mouse-only (no clean touch/pen), can lose the pointer mid-drag, and binds document-global listeners. New contributors must know which file follows which convention.
-- **Fix direction:** migrate `resizable.js` and `glass/drag.js` to the modern pattern documented in [`context/conventions.md`](./context/conventions.md#interaction-code-drag--resize--pointer-features). Note `glass/drag.js` also relies on the **native HTML DnD** API specifically (for cross-pane drop), so that migration is more involved than resize.
+- **Where:** `src/binary-window/glass/drag.js` (legacy) vs `src/frame/resizable.js` and `src/binary-window/detached-glass/move.js`/`resize.js` (modern)
+- **What:** Attached-glass drag uses the **native HTML DnD** API. Muntin resize and detached-glass move/resize use the preferred pattern: Pointer Events + `setPointerCapture`.
+- **Impact:** Two mental models for the same kind of feature. The legacy path is mouse-only (no clean touch/pen) and can lose the pointer mid-drag. New contributors must know which file follows which convention.
+- **Fix direction:** migrate `glass/drag.js` to the modern pattern documented in [`context/conventions.md`](./context/conventions.md#interaction-code-drag--resize--pointer-features). Note `glass/drag.js` relies on the native HTML DnD API specifically (for cross-pane drop), so that migration is more involved than resize was.
 
 ---
 

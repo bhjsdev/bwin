@@ -40,7 +40,9 @@ export function transferGlass(sourceGlassElement, targetGlassElement) {
   // container across detach/attach — its nodes never leave their parent.
   const sourceContentEl = sourceGlassElement.querySelector('bw-glass-content');
   const targetContentEl = targetGlassElement.querySelector('bw-glass-content');
-  targetContentEl.replaceWith(sourceContentEl);
+
+  targetContentEl?.remove();
+  targetGlassElement.append(sourceContentEl);
 }
 
 export function updateGlassTitle(glassElement, title) {

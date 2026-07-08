@@ -1,5 +1,4 @@
 import './css/vars.css';
-import './css/body.css';
 import './css/frame.css';
 import './css/glass.css';
 import './css/glass.action.css';

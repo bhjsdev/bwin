@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script type="module" src="./move-controller.js"></script>
+    <style>
+      /* Draggable objects driven by one shared MoveController. */
+      .box {
+        position: absolute;
+
+        display: grid;
+        place-items: center;
+
+        border-radius: 8px;
+        color: #fff;
+        font-family: sans-serif;
+        text-align: center;
+
+        cursor: grab;
+        user-select: none;
+        touch-action: none;
+      }
+
+      .box:active {
+        cursor: grabbing;
+      }
+
+      #box {
+        top: 80px;
+        left: 40px;
+        width: 200px;
+        height: 200px;
+        background: #4f6df5;
+      }
+
+      #a {
+        top: 80px;
+        left: 320px;
+        width: 100px;
+        height: 100px;
+        background: #e0625d;
+      }
+
+      #b {
+        top: 220px;
+        left: 460px;
+        width: 100px;
+        height: 100px;
+        background: #2fae72;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h2>Move Controller</h2>
+      <p>
+        One shared <code>MoveController</code> instance. Drag the blue box to move itself. Press A
+        and drag to move B; press B and drag to move A. Movement is confined to the viewport.
+      </p>
+
+      <button id="enable">Enable</button>
+      <button id="disable">Disable</button>
+
+      <div id="box" class="box">trigger + target</div>
+      <div id="a" class="box">A → moves B</div>
+      <div id="b" class="box">B → moves A</div>
+    </main>
+  </body>
+</html>

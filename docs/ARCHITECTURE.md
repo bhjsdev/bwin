@@ -285,7 +285,7 @@ Async teardown is awaited before the event fires where it matters: `detach` awai
 
 ### 8.1 Resize (`frame/resizable.js`)
 
-Drag a muntin to resize its two children. Uses **document-bound `mousedown`/`mousemove`/`mouseup`** (the older pattern — see §11). On `mousedown` over a `<bw-muntin>` (unless `resizable="false"`), records the active muntin sash; on `mousemove`, applies the delta to the two children (clamped by `calcMinWidth`/`calcMinHeight`) and calls `update()`; on `mouseup`, clears state. A `body--bw-resize-x/y` class sets the cursor during the drag.
+Drag a muntin to resize its two children. Uses **Pointer Events + `setPointerCapture`** (the modern pattern — see §11). On `pointerdown` over a `<bw-muntin>` (unless `resizable="false"`), captures the pointer on the muntin and records the active muntin sash; on `pointermove`, applies the delta to the two children (clamped by `calcMinWidth`/`calcMinHeight`) and calls `update()`; on `pointerup`, clears state and releases the capture. The pointer capture keeps move events (and the muntin's `cursor` style) flowing even when the pointer leaves the muntin or the window during the drag.
 
 ### 8.2 Glass drag-and-drop rearrangement (native HTML DnD)
 
@@ -398,7 +398,7 @@ The React wrapper (`../react-bwin`) must own DOM creation, so it bypasses `mount
 
 ## 10. Styling & theming (`src/css/`)
 
-CSS is split by concern: `vars.css` (custom properties — sizes, shadows, colors), `body.css` (resize cursors), `frame.css` (window/pane/muntin), `glass.css` (header/content/actions/tabs), `detached-glass.css` (floating panel + shadows + resize handles), `sill.css` (minimized dock). Theming is an attribute (`theme="…"` on `<bw-window>`, set via `setTheme`); CSS variables key off it. Drop previews, active-glass shadows, and resize cursors are all CSS-driven off attributes the JS toggles (`drop-area`, `[active]`, `maximized`, body classes).
+CSS is split by concern: `vars.css` (custom properties — sizes, shadows, colors), `frame.css` (window/pane/muntin, incl. muntin resize cursors), `glass.css` (header/content/actions/tabs), `detached-glass.css` (floating panel + shadows + resize handles), `sill.css` (minimized dock). Theming is an attribute (`theme="…"` on `<bw-window>`, set via `setTheme`); CSS variables key off it. Drop previews, active-glass shadows, and resize cursors are all CSS-driven off attributes the JS toggles (`drop-area`, `[active]`, `maximized`); the muntin's own `ns-resize`/`ew-resize` cursor persists during a drag via pointer capture.
 
 ---
 
@@ -408,7 +408,7 @@ These are enforced project conventions (see `CLAUDE.md`):
 
 - **Terminology** — use the window-construction metaphor (§1) precisely; don't pick a name whose well-known meaning differs from what the code does.
 - **Naming** — suffix DOM-element variables with `El` and keep the noun specific (`activeGlassEl`, not `activeEl`); name accessors `get<Noun>`. Name constants for their context (`MIN_RESIZE_WIDTH`, not `MIN_WIDTH`).
-- **Interaction code (preferred for new features)** — Pointer Events + `setPointerCapture` (one path for mouse/touch/pen; capture keeps move events flowing and self-releases) over document-bound `mouse*`; **delegated listeners on `windowElement`** (constant listener count); **create affordance DOM on demand** (on hover), not eagerly; scope child queries with `:scope > selector`. _Note:_ existing `resizable.js` and the attached-glass `drag.js` still use the older `document` + `mouse*` style; detached glass `move.js`/`resize.js` use the modern pattern.
+- **Interaction code (preferred for new features)** — Pointer Events + `setPointerCapture` (one path for mouse/touch/pen; capture keeps move events flowing and self-releases) over document-bound `mouse*`; **delegated listeners on `windowElement`** (constant listener count); **create affordance DOM on demand** (on hover), not eagerly; scope child queries with `:scope > selector`. _Note:_ the attached-glass `drag.js` still uses the native HTML DnD API; `resizable.js` and detached glass `move.js`/`resize.js` use the modern Pointer Events pattern.
 - **Comments** — only when they add what the code doesn't say; ≤2 lines / 100 chars; prefix a genuinely longer one with `RATIONAL:`; wrap identifiers in backticks.
 - **Debug sentinels** — repeating-digit literals (`222`, `333`) in default/fallback paths are intentional tripwires, **not** magic numbers. Don't tidy them. If one surfaces downstream, a guard upstream was bypassed — investigate that, don't rename it.
 - **`dev/`** — test scaffolding, not shippable source. Interactive controls go in the `.html`; the paired `.js` queries them and wires behavior. Commits touching only `dev/` are plain `chore:`.

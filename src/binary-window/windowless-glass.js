@@ -6,9 +6,8 @@ import { removeDetachedGlassElement } from './detached-glass/utils';
 export function removeWindowlessGlass(id, { animate = true } = {}) {
   const detachedGlassEl = detachedGlassManager.removeDetachedGlass(id);
 
-  if (!animate) {
-    return Promise.resolve(detachedGlassEl);
-  }
+  // Already removed (e.g. closed via its action) — no-op so a stale id is harmless.
+  if (!detachedGlassEl) return Promise.resolve(null);
 
   return new Promise((resolve) =>
     removeDetachedGlassElement(detachedGlassEl, animate, () => resolve(detachedGlassEl))
