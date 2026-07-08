@@ -65,7 +65,7 @@ describe('constructor', () => {
     const el = makeEl();
     ctrl = new MoveController({ target: el });
     expect(ctrl.targetElement).toBe(el);
-    expect(ctrl.isMoving).toBe(false);
+    expect(ctrl.isMoveStarted).toBe(false);
   });
 
   it('binds handlers so `this` survives being used as a document listener', () => {
@@ -74,7 +74,7 @@ describe('constructor', () => {
     ctrl.enable();
     // If handlers were unbound, `this` would be `document` and this would throw.
     expect(() => fire('pointerdown', { target: el })).not.toThrow();
-    expect(ctrl.isMoving).toBe(true);
+    expect(ctrl.isMoveStarted).toBe(true);
   });
 });
 
@@ -100,28 +100,6 @@ describe('setTarget', () => {
   });
 });
 
-// With no consumer-set target, a bare press drags whatever was pressed, and each
-// release re-resolves — so the same instance can drag any element without wiring.
-describe('bare-press fallback', () => {
-  it('drags the pressed element, then re-resolves after release', () => {
-    const first = makeEl({ left: 100, top: 100, width: 200, height: 200 });
-    const second = makeEl({ left: 400, top: 100, width: 200, height: 200 });
-    ctrl = new MoveController(); // no target, no wiring
-    ctrl.enable();
-
-    fire('pointerdown', { pageX: 0, pageY: 0, target: first });
-    fire('pointermove', { pageX: 20, pageY: 0, target: first });
-    fire('pointerup', { target: first });
-    expect(first.style.left).toBe('120px'); // 100 + 20
-
-    // Next press resolves fresh to the newly-pressed element.
-    fire('pointerdown', { pageX: 0, pageY: 0, target: second });
-    fire('pointermove', { pageX: 30, pageY: 0, target: second });
-    expect(second.style.left).toBe('430px'); // 400 + 30
-    expect(first.style.left).toBe('120px'); // first left where it was
-  });
-});
-
 describe('handlePointerDown', () => {
   let el;
   beforeEach(() => {
@@ -132,37 +110,26 @@ describe('handlePointerDown', () => {
 
   it('starts a drag on the primary button', () => {
     fire('pointerdown', { target: el });
-    expect(ctrl.isMoving).toBe(true);
+    expect(ctrl.isMoveStarted).toBe(true);
   });
 
   it('ignores non-primary buttons', () => {
     fire('pointerdown', { button: 1, target: el }); // middle
-    expect(ctrl.isMoving).toBe(false);
+    expect(ctrl.isMoveStarted).toBe(false);
     fire('pointerdown', { button: 2, target: el }); // right
-    expect(ctrl.isMoving).toBe(false);
+    expect(ctrl.isMoveStarted).toBe(false);
   });
 
-  it('falls back to the pressed element when no target is set', () => {
+  it('ignores a press when no target is set', () => {
     ctrl.setTarget(null);
     fire('pointerdown', { target: el });
-    expect(ctrl.isMoving).toBe(true);
-    expect(ctrl.targetElement).toBe(el);
+    expect(ctrl.isMoveStarted).toBe(false);
+    expect(ctrl.targetElement).toBeNull();
   });
 
   it('prevents the default action so text/selection is not dragged', () => {
     const event = fire('pointerdown', { target: el });
     expect(event.defaultPrevented).toBe(true);
-  });
-
-  it('captures the pointer on the pressed element', () => {
-    fire('pointerdown', { pointerId: 7, target: el });
-    expect(el.setPointerCapture).toHaveBeenCalledWith(7);
-  });
-
-  it('tolerates an element without setPointerCapture', () => {
-    el.setPointerCapture = undefined;
-    expect(() => fire('pointerdown', { target: el })).not.toThrow();
-    expect(ctrl.isMoving).toBe(true);
   });
 });
 
@@ -254,12 +221,10 @@ describe('handlePointerUp', () => {
     ctrl.enable();
   });
 
-  it('ends the drag and clears capture bookkeeping', () => {
+  it('ends the drag', () => {
     fire('pointerdown', { target: el });
     fire('pointerup', { target: el });
-    expect(ctrl.isMoving).toBe(false);
-    expect(ctrl.captureElement).toBeNull();
-    expect(ctrl.capturePointerId).toBeNull();
+    expect(ctrl.isMoveStarted).toBe(false);
   });
 
   it('clears the target so the next press re-resolves it', () => {
@@ -268,22 +233,9 @@ describe('handlePointerUp', () => {
     expect(ctrl.targetElement).toBeNull();
   });
 
-  it('releases the pointer capture it took', () => {
-    fire('pointerdown', { pointerId: 3, target: el });
-    fire('pointerup', { pointerId: 3, target: el });
-    expect(el.releasePointerCapture).toHaveBeenCalledWith(3);
-  });
-
-  it('does not release capture it no longer holds', () => {
-    el.hasPointerCapture = vi.fn(() => false);
-    fire('pointerdown', { target: el });
-    fire('pointerup', { target: el });
-    expect(el.releasePointerCapture).not.toHaveBeenCalled();
-  });
-
   it('bails when an up arrives with no prior press', () => {
     expect(() => fire('pointerup', { target: el })).not.toThrow();
-    expect(ctrl.isMoving).toBe(false);
+    expect(ctrl.isMoveStarted).toBe(false);
   });
 
   it('stops movement after the drag ends', () => {
@@ -370,7 +322,7 @@ describe('lifecycle hooks', () => {
     let movingWhenCalled = null;
     ctrl = new MoveController({
       target: el,
-      onPointerDown: () => (movingWhenCalled = ctrl.isMoving),
+      onPointerDown: () => (movingWhenCalled = ctrl.isMoveStarted),
     });
     ctrl.enable();
     fire('pointerdown', { target: el });
@@ -399,7 +351,7 @@ describe('enable / disable', () => {
     ctrl.enable();
     ctrl.disable();
     fire('pointerdown', { target: el });
-    expect(ctrl.isMoving).toBe(false);
+    expect(ctrl.isMoveStarted).toBe(false);
   });
 
   it('freezes an in-flight drag when disabled mid-drag', () => {
@@ -427,6 +379,6 @@ describe('enable / disable', () => {
     ctrl.disable();
     ctrl.enable();
     fire('pointerdown', { target: el });
-    expect(ctrl.isMoving).toBe(true);
+    expect(ctrl.isMoveStarted).toBe(true);
   });
 });
