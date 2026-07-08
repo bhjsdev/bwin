@@ -1,11 +1,12 @@
 import { clamp } from '@/utils';
 
-// Clamp to [min, max], but if `prev` is already outside it (off-screen target),
-// relax that breached edge to `prev`: the target may move toward the viewport, never further out.
-function clampAxis(value, min, max, prev) {
-  const lo = Math.min(min, prev);
-  const hi = Math.max(max, prev);
-  return clamp(value, lo, hi);
+// Clamp `next` to [min, max], but if `previous` is already outside it (off-screen
+// target), relax that breached edge out to `previous`. So the target may move back
+// toward the viewport but never further out than where it already is.
+function clampAxis(next, min, max, previous) {
+  const relaxedMin = Math.min(min, previous);
+  const relaxedMax = Math.max(max, previous);
+  return clamp(next, relaxedMin, relaxedMax);
 }
 
 // Viewport-space top-left of an absolutely-positioned element's containing block.
