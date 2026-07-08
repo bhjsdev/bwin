@@ -8,6 +8,7 @@ import './css/theme.css';
 
 export { Frame } from './frame/frame';
 export { BinaryWindow } from './binary-window/binary-window';
+export { detachedGlassManager } from './binary-window/detached-glass/manager';
 export { DEFAULT_GLASS_ACTIONS } from './binary-window/glass';
 export {
   DEFAULT_DETACHED_GLASS_ACTIONS,

@@ -3,6 +3,7 @@ import {
   DEFAULT_GLASS_ACTIONS,
   BUILTIN_ACTIONS,
   DEFAULT_DETACHED_GLASS_ACTIONS,
+  detachedGlassManager,
 } from '../../src';
 
 const elem = document.createElement('div');
