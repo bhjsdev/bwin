@@ -7,6 +7,10 @@ class DetachedGlassManager {
     this.topZIndex = 1;
   }
 
+  setBaseZIndex(zIndex) {
+    this.topZIndex = zIndex;
+  }
+
   // Caller owns only the DOM `append` (parent differs: `bw-window` vs. `document.body`)
   // and reads the returned element's `style.zIndex` for the windowless modal backdrop.
   addDetachedGlass(options) {
