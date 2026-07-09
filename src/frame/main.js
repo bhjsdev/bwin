@@ -1,14 +1,11 @@
 import { updatePaneElement } from './pane-utils.js';
 
 export default {
-  createWindow({ theme } = {}) {
+  createWindow() {
     const windowEl = document.createElement('bw-window');
     windowEl.style.width = `${this.rootSash.width}px`;
     windowEl.style.height = `${this.rootSash.height}px`;
     windowEl.setAttribute('root-sash-id', this.rootSash.id);
-    if (theme) {
-      windowEl.setAttribute('theme', theme);
-    }
     return windowEl;
   },
 
