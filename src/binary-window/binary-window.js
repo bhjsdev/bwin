@@ -7,12 +7,17 @@ import detachedGlassModule from './detached-glass';
 import { normActions } from './utils';
 import { updateGlass } from './glass/utils';
 import windowlessGlassStaticModule from './windowless-glass';
+import { getPureSashConfig } from '../config/utils';
 
 export class BinaryWindow extends Frame {
   sillElement = null;
 
   constructor(settings) {
     super(settings);
+  }
+
+  setup(settings) {
+    super.setup(settings);
 
     this.theme = settings.theme || '';
     this.actions = normActions(settings.actions);
@@ -24,6 +29,17 @@ export class BinaryWindow extends Frame {
     const sillEl = createDomNode('<bw-sill />');
     this.windowElement.append(sillEl);
     this.sillElement = sillEl;
+  }
+
+  exportConfig() {
+    const pureSashConfig = getPureSashConfig(this.rootSash);
+
+    return {
+      ...pureSashConfig,
+      fitContainer: this.fitContainer,
+      theme: this.theme,
+      actions: this.actions,
+    };
   }
 
   enableFeatures() {

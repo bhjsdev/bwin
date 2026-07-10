@@ -17,6 +17,7 @@ export {
 export { Sash } from './sash';
 export { SashConfig } from './config/sash-config';
 export { ConfigRoot } from './config/config-root';
+export { mergeConfig } from './config/utils';
 export { Position } from './position';
 
 // @deprecated - backwards compatibility only

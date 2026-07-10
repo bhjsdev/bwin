@@ -1,6 +1,6 @@
-import { SashConfig } from '../config/sash-config';
 import { ConfigRoot } from '../config/config-root';
 import { strictAssign } from '../utils';
+import { Sash } from '../sash';
 import paneModule from './pane';
 import renderModule from './render';
 import muntinModule from './muntin';
@@ -28,7 +28,7 @@ export class Frame {
   }
 
   setup(settings) {
-    if (settings instanceof SashConfig) {
+    if (settings instanceof Sash) {
       this.rootSash = settings;
       this.fitContainer = settings.fitContainer;
       return;
