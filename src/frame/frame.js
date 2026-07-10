@@ -41,7 +41,7 @@ export class Frame {
   frame(containerEl) {
     this.containerElement = containerEl;
 
-    this.windowElement = this.createWindow({ theme: this.theme });
+    this.windowElement = this.createWindow();
     this.glaze();
     this.containerElement.append(this.windowElement);
   }

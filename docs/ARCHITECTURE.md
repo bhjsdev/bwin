@@ -10,16 +10,16 @@
 
 bwin borrows real window-construction vocabulary. Matching it in code, comments, and docs is a hard project convention:
 
-| Term                           | Meaning                                                                                                                                      | Renders as                                            |
-| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
-| **Window**                     | The whole layout; the root config node. Carries window-level props (`width`, `height`, `fitContainer`, `theme`).                             | `<bw-window>`                                         |
-| **Sash**                       | A node in the binary tree that organizes panes. Identified by a **Sash ID** (e.g. `AB-123`).                                                 | — (model only)                                        |
-| **Pane**                       | A _leaf_ sash. Holds a single glass.                                                                                                         | `<bw-pane sash-id="…">`                               |
-| **Muntin**                     | An _internal_ (parent) sash: the draggable divider used to resize the two children.                                                          | `<bw-muntin sash-id="…">`                             |
-| **Glass** / **attached glass** | The content inside a pane: header (title/tabs + action buttons) + content.                                                                   | `<bw-glass>` inside a `<bw-pane>`                     |
-| **Detached glass**             | The same glass component floating free outside any pane (the OS-window-like panel produced by the detach action).                            | `<bw-glass detached>` appended to `<bw-window>`       |
-| **Windowless glass**           | A detached glass with _no owning window_ — it floats on `document.body` instead of inside a `<bw-window>`. Created via `addWindowlessGlass`. | `<bw-glass detached windowless>` appended to `<body>` |
-| **Sill**                       | The dock at the bottom of the window holding minimized glasses.                                                                              | `<bw-sill>`                                           |
+| Term                           | Meaning                                                                                                                                                 | Renders as                                            |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| **Window**                     | The whole layout; the root config node. Carries window-level props (`width`, `height`, `fitContainer`). `theme` is applied at the `BinaryWindow` layer. | `<bw-window>`                                         |
+| **Sash**                       | A node in the binary tree that organizes panes. Identified by a **Sash ID** (e.g. `AB-123`).                                                            | — (model only)                                        |
+| **Pane**                       | A _leaf_ sash. Holds a single glass.                                                                                                                    | `<bw-pane sash-id="…">`                               |
+| **Muntin**                     | An _internal_ (parent) sash: the draggable divider used to resize the two children.                                                                     | `<bw-muntin sash-id="…">`                             |
+| **Glass** / **attached glass** | The content inside a pane: header (title/tabs + action buttons) + content.                                                                              | `<bw-glass>` inside a `<bw-pane>`                     |
+| **Detached glass**             | The same glass component floating free outside any pane (the OS-window-like panel produced by the detach action).                                       | `<bw-glass detached>` appended to `<bw-window>`       |
+| **Windowless glass**           | A detached glass with _no owning window_ — it floats on `document.body` instead of inside a `<bw-window>`. Created via `addWindowlessGlass`.            | `<bw-glass detached windowless>` appended to `<body>` |
+| **Sill**                       | The dock at the bottom of the window holding minimized glasses.                                                                                         | `<bw-sill>`                                           |
 
 ---
 
@@ -143,7 +143,7 @@ ConfigRoot(settings)                       config-root.js
 ```
 
 - **`ConfigNode`** does geometry math up front: `getPosition`, `getSize`, and `setBounds` compute absolute `left/top/width/height` from the parent rect and the position/size. Sibling inference and validation live in `getPosition`/`getSize` (e.g. "sum of sibling sizes must equal 1 / parent dimension").
-- **`ConfigRoot`** is the entry; defaults `width/height` to the `333` debug sentinel (if it surfaces downstream, a real dimension failed to reach it). It strips `fitContainer`/`theme` as feature flags and forwards the rest.
+- **`ConfigRoot`** is the entry; defaults `width/height` to the `333` debug sentinel (if it surfaces downstream, a real dimension failed to reach it). It strips `fitContainer` as a feature flag and forwards the rest. (`theme` is not a config concern — `BinaryWindow` reads it straight from settings.)
 - **`SashConfig`** (`config/sash-config.js`) is an alternate entry: a pre-built `Sash` subtree can be passed directly to `Frame`/`BinaryWindow` instead of a config object — `Frame`'s constructor branches on `settings instanceof SashConfig`.
 
 ### `parseSize` (`src/utils.js`)

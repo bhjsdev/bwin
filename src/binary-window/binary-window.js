@@ -20,6 +20,7 @@ export class BinaryWindow extends Frame {
 
   frame() {
     super.frame(...arguments);
+    this.setTheme(this.theme);
     const sillEl = createDomNode('<bw-sill />');
     this.windowElement.append(sillEl);
     this.sillElement = sillEl;
