@@ -2,14 +2,28 @@ import { BinaryWindow, ConfigRoot, mergeConfig } from '../../src';
 
 const originalConfig = {
   id: 'root',
-  width: 444,
-  height: 333,
+  width: 555,
+  height: 444,
   children: [
-    { id: 'pane-1', position: 'left', size: '40%', title: 'Pane 1' },
+    {
+      position: 'left',
+      size: '40%',
+      children: [
+        { id: 'pane-1', position: 'top', size: '50%', title: 'Pane 1' },
+        { id: 'pane-2', position: 'bottom', size: '50%', title: 'Pane 2' },
+      ],
+    },
     {
       children: [
-        { id: 'pane-2', position: 'top', size: '30%', title: 'Pane 2' },
-        { id: 'pane-3', position: 'bottom', size: '70%', title: 'Pane 3' },
+        { id: 'pane-3', position: 'top', size: '30%', title: 'Pane 3' },
+        {
+          position: 'bottom',
+          size: '70%',
+          children: [
+            { id: 'pane-4', position: 'left', size: '50%', title: 'Pane 4' },
+            { id: 'pane-5', position: 'right', size: '50%', title: 'Pane 5' },
+          ],
+        },
       ],
     },
   ],
