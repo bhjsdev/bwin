@@ -44,7 +44,7 @@ export default {
         rightChild.width = newRightChildWidth;
         rightChild.left = rightChild.left + distX;
 
-        this.update();
+        this.reglaze();
         this.lastX = event.pageX;
       }
       else if (isHorizontalMuntin && topChild && bottomChild) {
@@ -60,7 +60,7 @@ export default {
         bottomChild.height = newBottomChildHeight;
         bottomChild.top = bottomChild.top + distY;
 
-        this.update();
+        this.reglaze();
         this.lastY = event.pageY;
       }
     });

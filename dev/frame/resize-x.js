@@ -74,8 +74,8 @@ sash2.children.push(pane3, sash3);
 
 sashTree.children.push(sash1, sash2);
 
-const layout = new Frame(sashTree);
-layout.mount(document.querySelector('#resize-x'));
+const frame = new Frame(sashTree);
+frame.mount(document.querySelector('#resize-x'));
 
 document.querySelector('#left').addEventListener('click', () => {
   const step = -8;
@@ -88,7 +88,7 @@ document.querySelector('#left').addEventListener('click', () => {
   // pane5.left += step;
   // pane5.width -= step;
 
-  layout.update();
+  frame.reglaze();
 });
 
 document.querySelector('#right').addEventListener('click', () => {
@@ -102,5 +102,5 @@ document.querySelector('#right').addEventListener('click', () => {
   // pane5.left += step;
   // pane5.width -= step;
 
-  layout.update();
+  frame.reglaze();
 });

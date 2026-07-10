@@ -40,7 +40,6 @@ export class Frame {
 
   frame(containerEl) {
     this.containerElement = containerEl;
-
     this.windowElement = this.createWindow();
     this.glaze();
     this.containerElement.append(this.windowElement);

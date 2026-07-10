@@ -42,7 +42,7 @@ bwin separates a **model** from **two stacked view layers**. The model is the si
 
   ──>  config compiles to the sash tree; the two view layers render it to DOM.
   Example flow: drag a muntin ─> update the sash tree ─> re-create the layout
-  (update()). Every interaction follows this shape: mutate the tree, re-render.
+  (reglaze()). Every interaction follows this shape: mutate the tree, re-render.
 ```
 
 **Model — `Sash`** (`src/sash.js`)
@@ -64,7 +64,7 @@ The view layer that _mirrors the model_. Renders the structure, owns resizing.
 - Renders a **glass** into each pane (`onPaneCreate`) — this layer is where "windows" (glasses) live; the Frame layer underneath only knows panes.
 - Adds glass drag-and-drop rearrangement, the minimize/maximize/close/detach actions, **detached** (floating) glasses, and the **sill**.
 
-Rendering is one-directional in both layers: sash tree → DOM, via `glaze()` (initial render) and `update()` (incremental reconcile). An interaction in either layer mutates the sash tree and calls `update()`; the DOM follows. Features are mixed onto each class's prototype via `assemble()` and attached to the live DOM in `enableFeatures()`.
+Rendering is one-directional in both layers: sash tree → DOM, via `glaze()` (initial render) and `reglaze()` (incremental reconcile). An interaction in either layer mutates the sash tree and calls `reglaze()`; the DOM follows. Features are mixed onto each class's prototype via `assemble()` and attached to the live DOM in `enableFeatures()`.
 
 ### The `mount()` lifecycle
 
@@ -240,15 +240,15 @@ A default parameter fires **only on `undefined`**. This is relied on by docs and
 - leaf sash → `createPane` + `onPaneCreate`, **prepended**.
 - each sash's `domNode` is set to its element.
 
-### `update()` — incremental reconcile (`frame/render.js`)
+### `reglaze()` — incremental reconcile (`frame/render.js`)
 
-After any tree mutation (resize, add/remove/swap pane), `update()` reconciles DOM to model:
+After any tree mutation (resize, add/remove/swap pane), `reglaze()` reconciles DOM to model:
 
 1. Resize `<bw-window>` to the root sash.
 2. Remove DOM elements whose `sash-id` is no longer in `rootSash.getAllIds()`.
 3. `walk` the tree: for each sash, **create** its element if new, else **update** position/size in place (`updatePane`/`updateMuntin`) and fire the `on*Update` hooks.
 
-Because Sash IDs are stable across an operation (e.g. `removePane` promotes a sibling's ID into its parent; splits hand the new muntin a fresh `genId`), `update()` can tell apart "moved" from "new/removed".
+Because Sash IDs are stable across an operation (e.g. `removePane` promotes a sibling's ID into its parent; splits hand the new muntin a fresh `genId`), `reglaze()` can tell apart "moved" from "new/removed".
 
 ### Pane geometry (`frame/pane-utils.js`)
 
@@ -256,12 +256,12 @@ Because Sash IDs are stable across an operation (e.g. `removePane` promotes a si
 
 ### Pane add/remove lifecycle events (`frame/event.js` + `frame/pane.js`)
 
-`addPane`/`removePane` (the `paneModule` mixin) **emit events** around the tree mutation + `update()`. The `eventModule` mixin (`frame/event.js`) provides `on`/`off`/`emit` — a minimal per-instance emitter (a `Map` of event name → `Set` of listeners, lazily created on first `on`/`emit`, so each `Frame`/`BinaryWindow` keeps its own listeners). `detail` is the relevant `Sash`.
+`addPane`/`removePane` (the `paneModule` mixin) **emit events** around the tree mutation + `reglaze()`. The `eventModule` mixin (`frame/event.js`) provides `on`/`off`/`emit` — a minimal per-instance emitter (a `Map` of event name → `Set` of listeners, lazily created on first `on`/`emit`, so each `Frame`/`BinaryWindow` keeps its own listeners). `detail` is the relevant `Sash`.
 
 - `before-pane-add` — `(targetPaneSash)`, before the split. A listener returning `false` **vetoes** the add: no tree surgery runs and `addPane` returns `null`. `BinaryWindow.addPane` short-circuits to `null` in turn (no placeholder `Glass` is seeded).
-- `pane-add` — `(newPaneSash)`, after `update()`, with the new sash rendered.
+- `pane-add` — `(newPaneSash)`, after `reglaze()`, with the new sash rendered.
 - `before-pane-remove` — `(paneSash)`, before the removal. A listener returning `false` **vetoes** the remove: `removePane` bails out before touching the tree.
-- `pane-remove` — `(paneSash)`, after `update()`. At this point `paneSash.domNode` still exists but has already been **detached from the DOM** during `update()`, so it's a handle to the removed (orphaned) node, not a live element.
+- `pane-remove` — `(paneSash)`, after `reglaze()`. At this point `paneSash.domNode` still exists but has already been **detached from the DOM** during `reglaze()`, so it's a handle to the removed (orphaned) node, not a live element.
 
 `emit` runs **every** listener, then reports a veto if **any** of them returned `false` (so veto is order-independent and all listeners still see the event). Returning `false` is the only veto signal — any other return value (including `undefined`) proceeds. Only the `before-*` events are vetoable.
 
@@ -285,7 +285,7 @@ Async teardown is awaited before the event fires where it matters: `detach` awai
 
 ### 8.1 Resize (`frame/resizable.js`)
 
-Drag a muntin to resize its two children. Uses **Pointer Events + `setPointerCapture`** (the modern pattern — see §11). On `pointerdown` over a `<bw-muntin>` (unless `resizable="false"`), captures the pointer on the muntin and records the active muntin sash; on `pointermove`, applies the delta to the two children (clamped by `calcMinWidth`/`calcMinHeight`) and calls `update()`; on `pointerup`, clears state and releases the capture. The pointer capture keeps move events (and the muntin's `cursor` style) flowing even when the pointer leaves the muntin or the window during the drag.
+Drag a muntin to resize its two children. Uses **Pointer Events + `setPointerCapture`** (the modern pattern — see §11). On `pointerdown` over a `<bw-muntin>` (unless `resizable="false"`), captures the pointer on the muntin and records the active muntin sash; on `pointermove`, applies the delta to the two children (clamped by `calcMinWidth`/`calcMinHeight`) and calls `reglaze()`; on `pointerup`, clears state and releases the capture. The pointer capture keeps move events (and the muntin's `cursor` style) flowing even when the pointer leaves the muntin or the window during the drag.
 
 ### 8.2 Glass drag-and-drop rearrangement (native HTML DnD)
 
@@ -304,7 +304,7 @@ Dragging an attached glass and dropping it on a pane rearranges the layout. Spli
 
 ### 8.3 Fit container (`frame/fit-container.js`)
 
-When `fitContainer` is set, a `ResizeObserver` on the container calls `fit()` (inside `requestAnimationFrame`), which sets the root sash to the container's client size and `update()`s. `fit()` is also exposed as a public method.
+When `fitContainer` is set, a `ResizeObserver` on the container calls `fit()` (inside `requestAnimationFrame`), which sets the root sash to the container's client size and `reglaze()`s. `fit()` is also exposed as a public method.
 
 ### 8.4 Glass actions (`binary-window/glass/`)
 

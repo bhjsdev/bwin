@@ -79,8 +79,8 @@ sash_1.children.push(sash_1_1, sash_1_2);
 sash_1_2.children.push(sash_1_2_1, sash_1_2_2);
 sash_2.children.push(sash_2_1, sash_2_2);
 
-const layout = new Frame(rootSash);
-layout.mount(document.querySelector('#resize-y'));
+const frame = new Frame(rootSash);
+frame.mount(document.querySelector('#resize-y'));
 
 document.querySelector('#up').addEventListener('click', () => {
   const step = 8;
@@ -93,7 +93,7 @@ document.querySelector('#up').addEventListener('click', () => {
   // sash_1_2.height += step;
   // sash_1_2.top -= step;
 
-  layout.update();
+  frame.reglaze();
 });
 
 document.querySelector('#down').addEventListener('click', () => {
@@ -107,5 +107,5 @@ document.querySelector('#down').addEventListener('click', () => {
   // sash_1_2.height += step;
   // sash_1_2.top -= step;
 
-  layout.update();
+  frame.reglaze();
 });
