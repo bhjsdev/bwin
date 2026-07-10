@@ -84,7 +84,7 @@ bwin avoids deep class hierarchies for features. Instead, `Frame`/`BinaryWindow`
 ```js
 // src/frame/frame.js
 Frame.assemble(
-  mainModule,
+  renderModule,
   muntinModule,
   paneModule,
   fitContainerModule,
@@ -232,7 +232,7 @@ A default parameter fires **only on `undefined`**. This is relied on by docs and
 
 ## 7. The view: rendering & reconciliation (`src/frame/`)
 
-### `glaze()` — initial render (`frame/main.js`)
+### `glaze()` — initial render (`frame/render.js`)
 
 `rootSash.walk(...)` (post-order) over the whole tree:
 
@@ -240,7 +240,7 @@ A default parameter fires **only on `undefined`**. This is relied on by docs and
 - leaf sash → `createPane` + `onPaneCreate`, **prepended**.
 - each sash's `domNode` is set to its element.
 
-### `update()` — incremental reconcile (`frame/main.js`)
+### `update()` — incremental reconcile (`frame/render.js`)
 
 After any tree mutation (resize, add/remove/swap pane), `update()` reconciles DOM to model:
 

@@ -2,7 +2,7 @@ import { SashConfig } from '../config/sash-config';
 import { ConfigRoot } from '../config/config-root';
 import { strictAssign } from '../utils';
 import paneModule from './pane';
-import mainModule from './main';
+import renderModule from './render';
 import muntinModule from './muntin';
 import fitContainerModule from './fit-container';
 import resizableModule from './resizable';
@@ -72,7 +72,7 @@ export class Frame {
 }
 
 Frame.assemble(
-  mainModule,
+  renderModule,
   muntinModule,
   paneModule,
   fitContainerModule,
