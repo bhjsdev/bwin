@@ -38,13 +38,3 @@ export function getPureSashConfig(rootSash) {
     children: rootSash.children.map(getPureSashConfig),
   };
 }
-
-export function isSashLike(object) {
-  return (
-    'top' in object &&
-    'left' in object &&
-    'width' in object &&
-    'height' in object &&
-    'position' in object
-  );
-}
