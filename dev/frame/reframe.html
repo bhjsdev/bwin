@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script type="module" src="./reframe.js"></script>
+  </head>
+  <body>
+    <main>
+      <h2>Reframe</h2>
+      <p>
+        Rebuilds the whole window from new settings (deglaze &rarr; setup &rarr; glaze) on the same
+        mounted element.
+      </p>
+      <form onsubmit="event.preventDefault()">
+        <button id="reframe-two">Two panes</button>
+        <button id="reframe-three">Three panes</button>
+        <button id="reframe-nested">Nested</button>
+        <button id="reframe-sash">From SashConfig</button>
+      </form>
+      <form onsubmit="event.preventDefault()">
+        <textarea id="custom-settings" rows="8" cols="48" spellcheck="false"></textarea>
+        <br />
+        <input type="submit" id="reframe-custom" value="Reframe from JSON" />
+        <span id="error"></span>
+      </form>
+      <section id="container"></section>
+    </main>
+  </body>
+</html>

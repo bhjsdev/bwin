@@ -24,17 +24,18 @@ export class Frame {
   debug = DEBUG;
 
   constructor(settings) {
-    let config = null;
+    this.setup(settings);
+  }
 
+  setup(settings) {
     if (settings instanceof SashConfig) {
-      config = settings;
       this.rootSash = settings;
-    }
-    else {
-      config = new ConfigRoot(settings);
-      this.rootSash = config.buildSashTree({ resizeStrategy: config.resizeStrategy });
+      this.fitContainer = settings.fitContainer;
+      return;
     }
 
+    const config = new ConfigRoot(settings);
+    this.rootSash = config.buildSashTree({ resizeStrategy: config.resizeStrategy });
     this.fitContainer = config.fitContainer;
   }
 
@@ -43,6 +44,12 @@ export class Frame {
     this.windowElement = this.createWindow();
     this.glaze();
     this.containerElement.append(this.windowElement);
+  }
+
+  reframe(settings) {
+    this.deglaze();
+    this.setup(settings);
+    this.glaze();
   }
 
   // Features can work independently to each other
