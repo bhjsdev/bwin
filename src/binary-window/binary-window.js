@@ -15,19 +15,19 @@ export class BinaryWindow extends Frame {
     super(settings);
   }
 
-  setup(settings) {
-    super.setup(settings);
-
-    this.theme = settings.theme || '';
-    this.actions = normActions(settings.actions);
-  }
-
   frame() {
     super.frame(...arguments);
     this.setTheme(this.theme);
     const sillEl = createDomNode('<bw-sill />');
     this.windowElement.append(sillEl);
     this.sillElement = sillEl;
+  }
+
+  resolveConfig(settings) {
+    super.resolveConfig(settings);
+
+    this.theme = settings.theme || '';
+    this.actions = normActions(settings.actions);
   }
 
   exportConfig() {

@@ -15,7 +15,6 @@ export {
   DEFAULT_WINDOWLESS_GLASS_ACTIONS,
 } from './binary-window/detached-glass';
 export { Sash } from './sash';
-export { SashConfig } from './config/sash-config';
 export { ConfigRoot } from './config/config-root';
 export { mergeConfig } from './config/utils';
 export { Position } from './position';

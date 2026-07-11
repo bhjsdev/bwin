@@ -1,19 +1,19 @@
 import { ConfigRoot } from './config-root';
 import { Sash } from '../sash';
 
-export function mergeConfig(sashConfigObject, configRootObject) {
+export function mergeConfig(sashLikeObject, configRootLikeObject) {
   const glassPropsById = new Map();
-  const configRoot = new ConfigRoot(configRootObject);
+  const configRoot = new ConfigRoot(configRootLikeObject);
 
   configRoot.buildSashTree().walk((sash) => {
     glassPropsById.set(sash.id, sash.store);
   });
 
-  const pureSashConfig = getPureSashConfig(sashConfigObject);
-  const newSashConfig = new Sash(pureSashConfig);
+  const sashLikeTree = trimSashLikeTree(sashLikeObject);
+  const newSashTree = new Sash(sashLikeTree);
 
   // Assign each node the glass props from its matching `configRoot` node.
-  newSashConfig.walk((sash) => {
+  newSashTree.walk((sash) => {
     const glassProps = glassPropsById.get(sash.id);
 
     if (glassProps) {
@@ -21,10 +21,12 @@ export function mergeConfig(sashConfigObject, configRootObject) {
     }
   });
 
-  return newSashConfig;
+  return newSashTree;
 }
 
-export function getPureSashConfig(rootSash) {
+// Remove properties like `store`, making the tree serializable and suitable for export
+// Note that each node is a plain object, not a Sash instance.
+export function trimSashLikeTree(rootSash) {
   return {
     id: rootSash.id,
     position: rootSash.position,
@@ -35,6 +37,6 @@ export function getPureSashConfig(rootSash) {
     minWidth: rootSash.minWidth,
     minHeight: rootSash.minHeight,
     resizeStrategy: rootSash.resizeStrategy,
-    children: rootSash.children.map(getPureSashConfig),
+    children: rootSash.children.map(trimSashLikeTree),
   };
 }

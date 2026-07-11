@@ -1,4 +1,4 @@
-import { Sash, Position, Frame, SashConfig } from '../../src';
+import { Sash, Position, Frame } from '../../src';
 
 const twoPanes = {
   width: 555,
@@ -54,10 +54,10 @@ const nested = {
   id: 'root',
 };
 
-// A pre-built `SashConfig` exercises the other branch of `Frame.setup` (the tree
+// A pre-built `Sash` tree exercises the other branch of `Frame.resolveConfig` (the tree
 // is already compiled and doubles as its own config, so no `ConfigRoot` compile).
-function buildSashConfig() {
-  const sashTree = new SashConfig({ width: 555, height: 333 });
+function buildSashTree() {
+  const sashTree = new Sash({ width: 555, height: 333, position: Position.Root });
 
   // Left column split into two stacked panes.
   const left = new Sash({ left: 0, top: 0, width: 200, height: 333, position: Position.Left });
@@ -110,7 +110,7 @@ document.querySelector('#reframe-three').addEventListener('click', () => frame.r
 document.querySelector('#reframe-nested').addEventListener('click', () => frame.reframe(nested));
 document
   .querySelector('#reframe-sash')
-  .addEventListener('click', () => frame.reframe(buildSashConfig()));
+  .addEventListener('click', () => frame.reframe(buildSashTree()));
 
 const errorEl = document.querySelector('#error');
 document.querySelector('#custom-settings').value = JSON.stringify(threePanes, null, 2);

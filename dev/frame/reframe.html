@@ -9,14 +9,14 @@
     <main>
       <h2>Reframe</h2>
       <p>
-        Rebuilds the whole window from new settings (deglaze &rarr; setup &rarr; glaze) on the same
-        mounted element.
+        Rebuilds the whole window from new settings (deglaze &rarr; resolveConfig &rarr; glaze) on
+        the same mounted element.
       </p>
       <form onsubmit="event.preventDefault()">
         <button id="reframe-two">Two panes</button>
         <button id="reframe-three">Three panes</button>
         <button id="reframe-nested">Nested</button>
-        <button id="reframe-sash">From SashConfig</button>
+        <button id="reframe-sash">From Sash tree</button>
       </form>
       <form onsubmit="event.preventDefault()">
         <textarea id="custom-settings" rows="8" cols="48" spellcheck="false"></textarea>

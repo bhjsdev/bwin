@@ -8,7 +8,7 @@ import fitContainerModule from './fit-container';
 import resizableModule from './resizable';
 import droppableModule from './droppable';
 import eventModule from './event';
-import { getPureSashConfig } from '../config/utils';
+import { trimSashLikeTree } from '../config/utils';
 
 const DEBUG = import.meta.env.VITE_DEBUG == 'true' ? true : false;
 
@@ -25,10 +25,10 @@ export class Frame {
   debug = DEBUG;
 
   constructor(settings) {
-    this.setup(settings);
+    this.resolveConfig(settings);
   }
 
-  setup(settings) {
+  resolveConfig(settings) {
     if (settings instanceof Sash) {
       this.rootSash = settings;
       this.fitContainer = settings.fitContainer;
@@ -41,10 +41,10 @@ export class Frame {
   }
 
   exportConfig() {
-    const pureSashConfig = getPureSashConfig(this.rootSash);
+    const sashLikeTree = trimSashLikeTree(this.rootSash);
 
     return {
-      ...pureSashConfig,
+      ...sashLikeTree,
       fitContainer: this.fitContainer,
     };
   }
@@ -58,7 +58,7 @@ export class Frame {
 
   reframe(settings) {
     this.deglaze();
-    this.setup(settings);
+    this.resolveConfig(settings);
     this.glaze();
   }
 
