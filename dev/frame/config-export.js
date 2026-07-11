@@ -1,4 +1,4 @@
-import { BinaryWindow, ConfigRoot, mergeConfig } from '../../src';
+import { Frame, mergeConfig } from '../../src';
 
 const originalConfig = {
   id: 'root',
@@ -31,13 +31,13 @@ const originalConfig = {
 
 const containerEl = document.querySelector('#container');
 
-let bwin = new BinaryWindow(originalConfig);
-bwin.mount(containerEl);
+let frame = new Frame(originalConfig);
+frame.mount(containerEl);
 
 let exportedConfig = null;
 
 document.querySelector('#export-config').addEventListener('click', () => {
-  exportedConfig = bwin.exportConfig();
+  exportedConfig = frame.exportConfig();
   console.log('exportedConfig', exportedConfig);
 });
 
@@ -45,6 +45,6 @@ document.querySelector('#rebuild-window').addEventListener('click', () => {
   const mergedConfig = mergeConfig(exportedConfig, originalConfig);
   containerEl.innerHTML = '';
 
-  bwin = new BinaryWindow(mergedConfig);
-  bwin.mount(containerEl);
+  frame = new Frame(mergedConfig);
+  frame.mount(containerEl);
 });

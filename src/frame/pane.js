@@ -26,7 +26,7 @@ export default {
     }
 
     if (this?.debug) {
-      paneEl.style.backgroundColor = genBrightColor();
+      // paneEl.style.backgroundColor = genBrightColor();
       paneEl.innerHTML = '';
       paneEl.append(__debug(paneEl));
     }
@@ -161,7 +161,7 @@ export default {
 
 function __debug(parentEl) {
   const debugEl = document.createElement('pre');
-  debugEl.style.fontSize = '10px';
+  debugEl.style.fontSize = '12px';
 
   const debugHtml = `
 ${parentEl.getAttribute('sash-id')}

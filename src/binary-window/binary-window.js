@@ -7,7 +7,6 @@ import detachedGlassModule from './detached-glass';
 import { normActions } from './utils';
 import { updateGlass } from './glass/utils';
 import windowlessGlassStaticModule from './windowless-glass';
-import { getPureSashConfig } from '../config/utils';
 
 export class BinaryWindow extends Frame {
   sillElement = null;
@@ -32,11 +31,10 @@ export class BinaryWindow extends Frame {
   }
 
   exportConfig() {
-    const pureSashConfig = getPureSashConfig(this.rootSash);
+    const config = super.exportConfig();
 
     return {
-      ...pureSashConfig,
-      fitContainer: this.fitContainer,
+      ...config,
       theme: this.theme,
       actions: this.actions,
     };

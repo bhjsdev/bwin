@@ -8,6 +8,7 @@ import fitContainerModule from './fit-container';
 import resizableModule from './resizable';
 import droppableModule from './droppable';
 import eventModule from './event';
+import { getPureSashConfig } from '../config/utils';
 
 const DEBUG = import.meta.env.VITE_DEBUG == 'true' ? true : false;
 
@@ -37,6 +38,15 @@ export class Frame {
     const config = new ConfigRoot(settings);
     this.rootSash = config.buildSashTree({ resizeStrategy: config.resizeStrategy });
     this.fitContainer = config.fitContainer;
+  }
+
+  exportConfig() {
+    const pureSashConfig = getPureSashConfig(this.rootSash);
+
+    return {
+      ...pureSashConfig,
+      fitContainer: this.fitContainer,
+    };
   }
 
   frame(containerEl) {
