@@ -1,9 +1,10 @@
-import { BinaryWindow, ConfigRoot, mergeConfig } from '../../src';
+import { BinaryWindow, mergeConfig } from '../../src';
 
 const originalConfig = {
   id: 'root',
   width: 555,
   height: 444,
+  theme: 'dark',
   children: [
     {
       position: 'left',

@@ -10,10 +10,10 @@ export function mergeConfig(sashLikeObject, configRootLikeObject) {
   });
 
   const sashLikeTree = trimSashLikeTree(sashLikeObject);
-  const newSashTree = new Sash(sashLikeTree);
+  const sashTree = new Sash(sashLikeTree);
 
   // Assign each node the glass props from its matching `configRoot` node.
-  newSashTree.walk((sash) => {
+  sashTree.walk((sash) => {
     const glassProps = glassPropsById.get(sash.id);
 
     if (glassProps) {
@@ -21,7 +21,15 @@ export function mergeConfig(sashLikeObject, configRootLikeObject) {
     }
   });
 
-  return newSashTree;
+  sashTree.fitContainer = configRootLikeObject.fitContainer;
+  sashTree.theme = configRootLikeObject.theme;
+  sashTree.actions = configRootLikeObject.actions;
+
+  // "pots" are internally generated when "glass" is minimized
+  // which should not be available in the configRootLikeObject
+  sashTree.pots = sashLikeObject.pots;
+
+  return sashTree;
 }
 
 // Remove properties like `store`, making the tree serializable and suitable for export

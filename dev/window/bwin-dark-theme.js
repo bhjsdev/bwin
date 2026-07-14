@@ -31,11 +31,11 @@ const settings = {
   width: 444,
   height: 333,
   children: [
-    { position: 'left', size: '40%', content },
+    { position: 'left', size: '40%', content, title: 'Left Pane' },
     {
       children: [
-        { position: 'top', size: '30%', content },
-        { position: 'bottom', size: '70%', content: inputs },
+        { position: 'top', size: '30%', content, title: 'Top Pane' },
+        { position: 'bottom', size: '70%', content: inputs, title: 'Bottom Pane' },
       ],
     },
   ],

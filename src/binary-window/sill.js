@@ -8,6 +8,38 @@ export default {
   enableSillFeatures() {
     this.enableUnpotGlass();
     this.enableUnpotDetachedGlass();
+    this.renderPots(this.pots, this.sillElement);
+  },
+
+  renderPots(pots, sillEl) {
+    if (!pots || pots.length === 0) return;
+
+    for (const pot of pots) {
+      const { originalSashId, originalPosition, originalBoundingRect, glassElement, plant } = pot;
+      const buttonEl = document.createElement('button');
+      buttonEl.classList.add('bw-pot');
+      buttonEl.setAttribute('bw-plant', plant);
+      buttonEl.bwOriginalSashId = originalSashId;
+      buttonEl.bwOriginalPosition = originalPosition;
+      buttonEl.bwOriginalBoundingRect = originalBoundingRect;
+      buttonEl.bwGlassElement = glassElement;
+      sillEl.append(buttonEl);
+    }
+  },
+
+  createPotConfig() {
+    const potEls = this.sillElement.querySelectorAll('.bw-pot');
+    const pots = Array.from(potEls).map((potEl) => {
+      return {
+        originalSashId: potEl.bwOriginalSashId,
+        originalPosition: potEl.bwOriginalPosition,
+        originalBoundingRect: potEl.bwOriginalBoundingRect,
+        glassElement: potEl.bwGlassElement,
+        plant: potEl.getAttribute('bw-plant'),
+      };
+    });
+
+    return pots;
   },
 
   enableUnpotGlass() {

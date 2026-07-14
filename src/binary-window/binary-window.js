@@ -11,10 +11,6 @@ import windowlessGlassStaticModule from './windowless-glass';
 export class BinaryWindow extends Frame {
   sillElement = null;
 
-  constructor(settings) {
-    super(settings);
-  }
-
   frame() {
     super.frame(...arguments);
     this.setTheme(this.theme);
@@ -28,6 +24,7 @@ export class BinaryWindow extends Frame {
 
     this.theme = settings.theme || '';
     this.actions = normActions(settings.actions);
+    this.pots = settings.pots || [];
   }
 
   exportConfig() {
@@ -37,6 +34,7 @@ export class BinaryWindow extends Frame {
       ...config,
       theme: this.theme,
       actions: this.actions,
+      pots: this.createPotConfig(),
     };
   }
 
