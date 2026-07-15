@@ -27,7 +27,14 @@ export function mergeConfig(sashLikeObject, configRootLikeObject) {
 
   // "pots" are internally generated when "glass" is minimized
   // which should not be available in the configRootLikeObject
-  sashTree.pots = sashLikeObject.pots;
+  sashTree.pots = sashLikeObject.pots.map((pot) => {
+    const glassProps = glassPropsById.get(pot.originalSashId);
+
+    return {
+      ...pot,
+      ...glassProps,
+    };
+  });
 
   return sashTree;
 }

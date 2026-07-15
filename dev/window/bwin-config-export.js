@@ -10,19 +10,37 @@ const originalConfig = {
       position: 'left',
       size: '40%',
       children: [
-        { id: 'pane-1', position: 'top', size: '50%', title: 'Pane 1' },
-        { id: 'pane-2', position: 'bottom', size: '50%', title: 'Pane 2' },
+        { id: 'pane-1', position: 'top', size: '50%', title: 'Pane 1', content: '<h2>Pane 1</h2>' },
+        {
+          id: 'pane-2',
+          position: 'bottom',
+          size: '50%',
+          title: 'Pane 2',
+          content: '<h2>Pane 2</h2>',
+        },
       ],
     },
     {
       children: [
-        { id: 'pane-3', position: 'top', size: '30%', title: 'Pane 3' },
+        { id: 'pane-3', position: 'top', size: '30%', title: 'Pane 3', content: '<h2>Pane 3</h2>' },
         {
           position: 'bottom',
           size: '70%',
           children: [
-            { id: 'pane-4', position: 'left', size: '50%', title: 'Pane 4' },
-            { id: 'pane-5', position: 'right', size: '50%', title: 'Pane 5' },
+            {
+              id: 'pane-4',
+              position: 'left',
+              size: '50%',
+              title: 'Pane 4',
+              content: '<h2>Pane 4</h2>',
+            },
+            {
+              id: 'pane-5',
+              position: 'right',
+              size: '50%',
+              title: 'Pane 5',
+              content: '<h2>Pane 5</h2>',
+            },
           ],
         },
       ],

@@ -3,6 +3,7 @@ import { getIntersectRect } from '@/rect';
 import { Position } from '@/position';
 import { detachedGlassManager } from './detached-glass/manager';
 import { animateElementByAttribute } from '@/animate';
+import { Glass } from './glass';
 
 export default {
   enableSillFeatures() {
@@ -15,14 +16,20 @@ export default {
     if (!pots || pots.length === 0) return;
 
     for (const pot of pots) {
-      const { originalSashId, originalPosition, originalBoundingRect, glassElement, plant } = pot;
+      const { originalSashId, originalPosition, originalBoundingRect, plant, ...glassProps } = pot;
       const buttonEl = document.createElement('button');
       buttonEl.classList.add('bw-pot');
       buttonEl.setAttribute('bw-plant', plant);
       buttonEl.bwOriginalSashId = originalSashId;
       buttonEl.bwOriginalPosition = originalPosition;
       buttonEl.bwOriginalBoundingRect = originalBoundingRect;
-      buttonEl.bwGlassElement = glassElement;
+
+      buttonEl.bwGlassElement = new Glass({
+        actions: this.actions[0],
+        ...glassProps,
+        binaryWindow: this,
+      }).domNode;
+
       sillEl.append(buttonEl);
     }
   },
@@ -34,7 +41,6 @@ export default {
         originalSashId: potEl.bwOriginalSashId,
         originalPosition: potEl.bwOriginalPosition,
         originalBoundingRect: potEl.bwOriginalBoundingRect,
-        glassElement: potEl.bwGlassElement,
         plant: potEl.getAttribute('bw-plant'),
       };
     });
