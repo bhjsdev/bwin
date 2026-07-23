@@ -1,10 +1,9 @@
 import { DetachedGlass } from './detached-glass';
 
 class DetachedGlassManager {
-  constructor() {
+  constructor({ zIndex = 1 } = {}) {
     this.detachedGlassElements = [];
-    // Rising counter so the most recently grabbed glass stacks on top, like an OS window.
-    this.topZIndex = 1;
+    this.topZIndex = zIndex;
   }
 
   setBaseZIndex(zIndex) {
@@ -31,21 +30,17 @@ class DetachedGlassManager {
     return this.detachedGlassElements.find((glassEl) => glassEl.id === id) ?? null;
   }
 
-  // The front-most glass owns the [active] marker (set in bringToFront).
   getActiveDetachedGlass() {
     return this.detachedGlassElements.find((glassEl) => glassEl.hasAttribute('active')) ?? null;
   }
 
   bringToFront(glassEl) {
-    // Already front-most (it owns the [active] marker) → nothing to raise.
     if (glassEl.hasAttribute('active')) return;
 
-    // Step by 2 (not 1) so the odd slot just below stays free for a windowless modal backdrop.
+    // Step by 2 (not 1) so the odd slot just below stays free for a modal backdrop.
     this.topZIndex += 2;
     glassEl.style.zIndex = this.topZIndex;
 
-    // Only the front-most glass keeps [active] (drives the stronger shadow); cleared
-    // across all so a detached + a windowless glass can't both look active at once.
     this.detachedGlassElements.forEach((el) => el !== glassEl && el.removeAttribute('active'));
     glassEl.setAttribute('active', '');
 
@@ -67,3 +62,4 @@ class DetachedGlassManager {
 }
 
 export const detachedGlassManager = new DetachedGlassManager();
+export const windowlessGlassManager = new DetachedGlassManager();

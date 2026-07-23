@@ -1,4 +1,4 @@
-import { detachedGlassManager } from './manager';
+import { detachedGlassManager, windowlessGlassManager } from './manager';
 
 export default {
   enableDetachedGlassActivate() {
@@ -8,7 +8,13 @@ export default {
       if (event.button !== 0) return;
 
       const glassEl = event.target.closest?.('bw-glass[detached]');
-      if (glassEl) detachedGlassManager.bringToFront(glassEl);
+      if (!glassEl) return;
+
+      // Each kind has its own stack; raise within the owning manager.
+      const manager = glassEl.hasAttribute('windowless')
+        ? windowlessGlassManager
+        : detachedGlassManager;
+      manager.bringToFront(glassEl);
     });
   },
 };

@@ -1,10 +1,10 @@
 import { animateElementByAttribute } from '@/animate';
 import { DEFAULT_WINDOWLESS_GLASS_ACTIONS } from './detached-glass';
-import { detachedGlassManager } from './detached-glass/manager';
+import { windowlessGlassManager } from './detached-glass/manager';
 import { removeDetachedGlassElement } from './detached-glass/utils';
 
 export function removeWindowlessGlass(id, { animate = true } = {}) {
-  const detachedGlassEl = detachedGlassManager.removeDetachedGlass(id);
+  const detachedGlassEl = windowlessGlassManager.removeDetachedGlass(id);
 
   // Already removed (e.g. closed via its action) — no-op so a stale id is harmless.
   if (!detachedGlassEl) return Promise.resolve(null);
@@ -17,8 +17,9 @@ export function removeWindowlessGlass(id, { animate = true } = {}) {
 export default {
   /**
    * Add a windowless glass: a detached glass that floats on `document.body` instead
-   * of inside a `bw-window`, so it isn't owned by any window instance. Managed by the
-   * shared glass manager (z-index/activation) like an in-window detached glass.
+   * of inside a `bw-window`, so it isn't owned by any window instance. Managed by its
+   * own `windowlessGlassManager` (z-index/activation), a stack independent of in-window
+   * detached glasses.
    *
    * @param {Object} [glassOptions]
    * @param {boolean} [glassOptions.animate=true] - Whether to play the open animation (and fade the backdrop in).
@@ -46,7 +47,7 @@ export default {
     closeOnBackdropClick = false,
     ...glassOptions
   } = {}) {
-    const glassEl = detachedGlassManager.addDetachedGlass({
+    const glassEl = windowlessGlassManager.addDetachedGlass({
       actions: DEFAULT_WINDOWLESS_GLASS_ACTIONS,
       position: 'center',
       ...glassOptions,
