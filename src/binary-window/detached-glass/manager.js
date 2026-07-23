@@ -1,6 +1,6 @@
 import { DetachedGlass } from './detached-glass';
 
-class DetachedGlassManager {
+export class DetachedGlassManager {
   constructor({ zIndex = 1 } = {}) {
     this.detachedGlassElements = [];
     this.topZIndex = zIndex;
@@ -60,6 +60,3 @@ class DetachedGlassManager {
     throw new Error('[bwin] updateDetachedGlass is not implemented yet');
   }
 }
-
-export const detachedGlassManager = new DetachedGlassManager();
-export const windowlessGlassManager = new DetachedGlassManager();

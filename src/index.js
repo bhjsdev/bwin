@@ -6,12 +6,13 @@ import './css/detached-glass.css';
 import './css/sill.css';
 import './css/theme.css';
 
+import { enableWindowlessGlassFeatures } from './binary-window/windowless-glass';
+
+enableWindowlessGlassFeatures();
+
+export { addWindowlessGlass, removeWindowlessGlass } from './binary-window/windowless-glass';
 export { Frame } from './frame/frame';
 export { BinaryWindow } from './binary-window/binary-window';
-export {
-  detachedGlassManager,
-  windowlessGlassManager,
-} from './binary-window/detached-glass/manager';
 export { DEFAULT_GLASS_ACTIONS } from './binary-window/glass';
 export {
   DEFAULT_DETACHED_GLASS_ACTIONS,

@@ -2,6 +2,7 @@ import crudModule from './crud';
 import activateModule from './activate';
 import moveModule from './move';
 import resizeModule from './resize';
+import { DetachedGlassManager } from './manager';
 
 export {
   DetachedGlass,
@@ -10,11 +11,18 @@ export {
 } from './detached-glass';
 
 export default {
+  // So each binary window instance can have its own detached glass stack
+  detachedGlassManager: new DetachedGlassManager(),
+
+  enableDetachedGlassFeatures() {
+    this.enableDetachedGlassActivate();
+  },
+
   enableDetachedGlassStandaloneFeatures() {
-    activateModule.enableDetachedGlassActivate();
     moveModule.enableDetachedGlassMove();
     resizeModule.enableDetachedGlassResize();
   },
 
   ...crudModule,
+  ...activateModule,
 };

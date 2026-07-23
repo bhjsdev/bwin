@@ -1,7 +1,6 @@
 import { getMetricsFromElement } from '@/utils';
 import { getIntersectRect } from '@/rect';
 import { Position } from '@/position';
-import { detachedGlassManager } from './detached-glass/manager';
 import { animateElementByAttribute } from '@/animate';
 import { Glass } from './glass';
 
@@ -72,7 +71,7 @@ export default {
 
       animateElementByAttribute(detachedGlassEl, 'opening', () => {
         potEl.remove();
-        detachedGlassManager.bringToFront(detachedGlassEl);
+        this.detachedGlassManager.bringToFront(detachedGlassEl);
         this.emit('restore', detachedGlassEl);
       });
     });

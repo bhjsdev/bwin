@@ -1,4 +1,4 @@
-import { BinaryWindow } from '../../src';
+import { BinaryWindow, addWindowlessGlass } from '../../src';
 
 const content = `Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
@@ -56,5 +56,5 @@ document.querySelector('#set-theme-form').addEventListener('submit', (event) => 
 });
 
 document.querySelector('#add-windowless').addEventListener('click', () => {
-  BinaryWindow.addWindowlessGlass({ title: 'Windowless glass', content: inputs });
+  addWindowlessGlass({ title: 'Windowless glass', content: inputs });
 });

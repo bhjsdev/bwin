@@ -1,4 +1,3 @@
-import { detachedGlassManager } from './manager';
 import { removeDetachedGlassElement } from './utils';
 import { transferGlass } from '../glass/utils';
 import { animateElementByAttribute } from '@/animate';
@@ -9,24 +8,24 @@ const DEFAULT_GLASS_HEIGHT = 200;
 // Cascade offset down-right, sized so the glass behind keeps its title and buttons visible.
 const CASCADE_OFFSET = 25;
 
-// Cascade down-right of the active glass; wrap back to the inset at the window edges.
-function getCascadedPlacement(windowEl, { width, height }) {
-  const activeGlassEl = detachedGlassManager.getActiveDetachedGlass();
-  if (!activeGlassEl) return { position: 'center' };
-
-  const windowRect = windowEl.getBoundingClientRect();
-  const activeRect = activeGlassEl.getBoundingClientRect();
-
-  let offsetX = activeRect.left - windowRect.left + CASCADE_OFFSET;
-  let offsetY = activeRect.top - windowRect.top + CASCADE_OFFSET;
-
-  if (offsetX + width > windowRect.width) offsetX = CASCADE_OFFSET;
-  if (offsetY + height > windowRect.height) offsetY = CASCADE_OFFSET;
-
-  return { position: 'top-left', offsetX, offsetY };
-}
-
 export default {
+  // Cascade down-right of the active glass; wrap back to the inset at the window edges.
+  getCascadedPlacement(windowEl, { width, height }) {
+    const activeGlassEl = this.detachedGlassManager.getActiveDetachedGlass();
+    if (!activeGlassEl) return { position: 'center' };
+
+    const windowRect = windowEl.getBoundingClientRect();
+    const activeRect = activeGlassEl.getBoundingClientRect();
+
+    let offsetX = activeRect.left - windowRect.left + CASCADE_OFFSET;
+    let offsetY = activeRect.top - windowRect.top + CASCADE_OFFSET;
+
+    if (offsetX + width > windowRect.width) offsetX = CASCADE_OFFSET;
+    if (offsetY + height > windowRect.height) offsetY = CASCADE_OFFSET;
+
+    return { position: 'top-left', offsetX, offsetY };
+  },
+
   addDetachedGlass({ animate = true, originalGlassElement, ...glassOptions } = {}) {
     const width = glassOptions.width ?? DEFAULT_GLASS_WIDTH;
     const height = glassOptions.height ?? DEFAULT_GLASS_HEIGHT;
@@ -36,7 +35,7 @@ export default {
       ? {}
       : getCascadedPlacement(this.windowElement, { width, height });
 
-    const glassEl = detachedGlassManager.addDetachedGlass({
+    const glassEl = this.detachedGlassManager.addDetachedGlass({
       actions: this.actions[1],
       binaryWindow: this,
       // Placement first so caller options can override it; size last so it always wins.
@@ -62,7 +61,7 @@ export default {
   },
 
   removeDetachedGlass(id, { animate = true } = {}) {
-    const removedGlassEl = detachedGlassManager.removeDetachedGlass(id);
+    const removedGlassEl = this.detachedGlassManager.removeDetachedGlass(id);
 
     // Already removed (e.g. closed via its action) — no-op so a stale id is harmless.
     if (!removedGlassEl) return Promise.resolve(null);
@@ -73,6 +72,6 @@ export default {
   },
 
   updateDetachedGlass(...args) {
-    return detachedGlassManager.updateDetachedGlass(...args);
+    return this.detachedGlassManager.updateDetachedGlass(...args);
   },
 };

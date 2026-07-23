@@ -1,5 +1,3 @@
-import { detachedGlassManager, windowlessGlassManager } from './manager';
-
 export default {
   enableDetachedGlassActivate() {
     // Clicking anywhere in a detached glass brings it to front. Move/resize
@@ -10,11 +8,7 @@ export default {
       const glassEl = event.target.closest?.('bw-glass[detached]');
       if (!glassEl) return;
 
-      // Each kind has its own stack; raise within the owning manager.
-      const manager = glassEl.hasAttribute('windowless')
-        ? windowlessGlassManager
-        : detachedGlassManager;
-      manager.bringToFront(glassEl);
+      this.detachedGlassManager.bringToFront(glassEl);
     });
   },
 };

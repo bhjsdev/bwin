@@ -1,81 +1,94 @@
 import { animateElementByAttribute } from '@/animate';
 import { DEFAULT_WINDOWLESS_GLASS_ACTIONS } from './detached-glass';
-import { windowlessGlassManager } from './detached-glass/manager';
+import { DetachedGlassManager } from './detached-glass/manager';
 import { removeDetachedGlassElement } from './detached-glass/utils';
 
+const windowlessGlassManager = new DetachedGlassManager();
+
+function enableWindowlessGlassActivate() {
+  document.addEventListener('pointerdown', (event) => {
+    if (event.button !== 0) return;
+
+    const glassEl = event.target.closest?.('bw-glass[detached][windowless]');
+    if (!glassEl) return;
+
+    windowlessGlassManager.bringToFront(glassEl);
+  });
+}
+
+export function enableWindowlessGlassFeatures() {
+  enableWindowlessGlassActivate();
+}
+
 export function removeWindowlessGlass(id, { animate = true } = {}) {
-  const detachedGlassEl = windowlessGlassManager.removeDetachedGlass(id);
+  const windowlessGlassEl = windowlessGlassManager.removeDetachedGlass(id);
 
   // Already removed (e.g. closed via its action) — no-op so a stale id is harmless.
-  if (!detachedGlassEl) return Promise.resolve(null);
+  if (!windowlessGlassEl) return Promise.resolve(null);
 
   return new Promise((resolve) =>
-    removeDetachedGlassElement(detachedGlassEl, animate, () => resolve(detachedGlassEl))
+    removeDetachedGlassElement(windowlessGlassEl, animate, () => resolve(windowlessGlassEl))
   );
 }
 
-export default {
-  /**
-   * Add a windowless glass: a detached glass that floats on `document.body` instead
-   * of inside a `bw-window`, so it isn't owned by any window instance. Managed by its
-   * own `windowlessGlassManager` (z-index/activation), a stack independent of in-window
-   * detached glasses.
-   *
-   * @param {Object} [glassOptions]
-   * @param {boolean} [glassOptions.animate=true] - Whether to play the open animation (and fade the backdrop in).
-   * @param {boolean} [glassOptions.modal=false] - When true, append a `<bw-glass-backdrop for="<glassId>">`
-   *   behind the glass to block interaction with everything underneath.
-   * @param {boolean} [glassOptions.closeOnBackdropClick=false] - When `modal`, clicking the backdrop closes the glass.
-   * @param {'center'|'top-left'|'top-right'|'bottom-left'|'bottom-right'} [glassOptions.position='center'] - Where to anchor the glass.
-   * @param {number} [glassOptions.width] - Glass width in px.
-   * @param {number} [glassOptions.height] - Glass height in px.
-   * @param {number} [glassOptions.offset=0] - Distance in px from the anchored corner/edge (no effect on `center`).
-   * @param {number} [glassOptions.offsetX] - Per-axis override of `offset` on the x-axis.
-   * @param {number} [glassOptions.offsetY] - Per-axis override of `offset` on the y-axis.
-   * @param {string} [glassOptions.id] - Glass id; auto-generated (suffixed `-F`) when omitted.
-   * @param {Object[]} [glassOptions.actions] - Action buttons; defaults to `DEFAULT_WINDOWLESS_GLASS_ACTIONS` (close only).
-   * @param {string|Node} [glassOptions.title] - Header title.
-   * @param {string|Node} [glassOptions.content] - Glass body content.
-   * @param {Object[]} [glassOptions.tabs] - Header tabs (shown instead of `title`).
-   * @param {boolean} [glassOptions.draggable=true] - Whether the header can be dragged to move the glass.
-   * @param {boolean} [glassOptions.resizable=true] - Whether resize handles appear on hover so the glass can be resized.
-   * @returns {Promise<Element>} - Resolves to the `bw-glass[detached][windowless]` element once the open animation completes.
-   */
-  addWindowlessGlass({
-    animate = true,
-    modal = false,
-    closeOnBackdropClick = false,
-    ...glassOptions
-  } = {}) {
-    const glassEl = windowlessGlassManager.addDetachedGlass({
-      actions: DEFAULT_WINDOWLESS_GLASS_ACTIONS,
-      position: 'center',
-      ...glassOptions,
-    });
+/**
+ * Add a windowless glass: a detached glass that floats on `document.body` instead
+ * of inside a `bw-window`, so it isn't owned by any window instance. Managed by its
+ * own `windowlessGlassManager` (z-index/activation), a stack independent of in-window
+ * detached glasses.
+ *
+ * @param {Object} [glassOptions]
+ * @param {boolean} [glassOptions.animate=true] - Whether to play the open animation (and fade the backdrop in).
+ * @param {boolean} [glassOptions.modal=false] - When true, append a `<bw-glass-backdrop for="<glassId>">`
+ *   behind the glass to block interaction with everything underneath.
+ * @param {boolean} [glassOptions.closeOnBackdropClick=false] - When `modal`, clicking the backdrop closes the glass.
+ * @param {'center'|'top-left'|'top-right'|'bottom-left'|'bottom-right'} [glassOptions.position='center'] - Where to anchor the glass.
+ * @param {number} [glassOptions.width] - Glass width in px.
+ * @param {number} [glassOptions.height] - Glass height in px.
+ * @param {number} [glassOptions.offset=0] - Distance in px from the anchored corner/edge (no effect on `center`).
+ * @param {number} [glassOptions.offsetX] - Per-axis override of `offset` on the x-axis.
+ * @param {number} [glassOptions.offsetY] - Per-axis override of `offset` on the y-axis.
+ * @param {string} [glassOptions.id] - Glass id; auto-generated (suffixed `-F`) when omitted.
+ * @param {Object[]} [glassOptions.actions] - Action buttons; defaults to `DEFAULT_WINDOWLESS_GLASS_ACTIONS` (close only).
+ * @param {string|Node} [glassOptions.title] - Header title.
+ * @param {string|Node} [glassOptions.content] - Glass body content.
+ * @param {Object[]} [glassOptions.tabs] - Header tabs (shown instead of `title`).
+ * @param {boolean} [glassOptions.draggable=true] - Whether the header can be dragged to move the glass.
+ * @param {boolean} [glassOptions.resizable=true] - Whether resize handles appear on hover so the glass can be resized.
+ * @returns {Promise<Element>} - Resolves to the `bw-glass[detached][windowless]` element once the open animation completes.
+ */
+export function addWindowlessGlass({
+  animate = true,
+  modal = false,
+  closeOnBackdropClick = false,
+  ...glassOptions
+} = {}) {
+  const glassEl = windowlessGlassManager.addDetachedGlass({
+    actions: DEFAULT_WINDOWLESS_GLASS_ACTIONS,
+    position: 'center',
+    ...glassOptions,
+  });
 
-    glassEl.setAttribute('windowless', '');
-    document.body.append(glassEl);
+  glassEl.setAttribute('windowless', '');
+  document.body.append(glassEl);
 
-    if (modal) {
-      const backdropEl = document.createElement('bw-glass-backdrop');
-      backdropEl.setAttribute('for', glassEl.id);
-      // addDetachedGlass reserved the slot just below the glass (`topZIndex += 2`).
-      backdropEl.style.zIndex = Number(glassEl.style.zIndex) - 1;
-      document.body.append(backdropEl);
-      if (animate) animateElementByAttribute(backdropEl, 'opening');
-      if (closeOnBackdropClick) {
-        backdropEl.addEventListener('click', () => removeWindowlessGlass(glassEl.id), {
-          once: true,
-        });
-      }
+  if (modal) {
+    const backdropEl = document.createElement('bw-glass-backdrop');
+    backdropEl.setAttribute('for', glassEl.id);
+    // addDetachedGlass reserved the slot just below the glass (`topZIndex += 2`).
+    backdropEl.style.zIndex = Number(glassEl.style.zIndex) - 1;
+    document.body.append(backdropEl);
+    if (animate) animateElementByAttribute(backdropEl, 'opening');
+    if (closeOnBackdropClick) {
+      backdropEl.addEventListener('click', () => removeWindowlessGlass(glassEl.id), {
+        once: true,
+      });
     }
+  }
 
-    if (!animate) return Promise.resolve(glassEl);
+  if (!animate) return Promise.resolve(glassEl);
 
-    return new Promise((resolve) =>
-      animateElementByAttribute(glassEl, 'opening', () => resolve(glassEl))
-    );
-  },
-
-  removeWindowlessGlass,
-};
+  return new Promise((resolve) =>
+    animateElementByAttribute(glassEl, 'opening', () => resolve(glassEl))
+  );
+}
