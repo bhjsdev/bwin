@@ -1,9 +1,10 @@
-import { Sash, Position, Frame, SashConfig } from '../../src';
+import { Sash, Position, Frame } from '../../src';
 
-const rootSash = new SashConfig({
+const rootSash = new Sash({
   width: 400,
   height: 300,
   fitContainer: true,
+  position: Position.Root,
 });
 
 const sash_1 = new Sash({

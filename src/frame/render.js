@@ -29,7 +29,11 @@ export default {
     });
   },
 
-  update() {
+  deglaze() {
+    this.windowElement.innerHTML = '';
+  },
+
+  reglaze() {
     this.windowElement.style.width = `${this.rootSash.width}px`;
     this.windowElement.style.height = `${this.rootSash.height}px`;
 

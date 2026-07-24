@@ -5,7 +5,7 @@ export default {
     this.rootSash.width = this.containerElement.clientWidth;
     this.rootSash.height = this.containerElement.clientHeight;
 
-    this.update();
+    this.reglaze();
   },
 
   enableFitContainer() {

@@ -1,13 +1,14 @@
-import { SashConfig } from '../config/sash-config';
 import { ConfigRoot } from '../config/config-root';
 import { strictAssign } from '../utils';
+import { Sash } from '../sash';
 import paneModule from './pane';
-import mainModule from './main';
+import renderModule from './render';
 import muntinModule from './muntin';
 import fitContainerModule from './fit-container';
 import resizableModule from './resizable';
 import droppableModule from './droppable';
 import eventModule from './event';
+import { trimSashLikeTree } from '../config/utils';
 
 const DEBUG = import.meta.env.VITE_DEBUG == 'true' ? true : false;
 
@@ -24,26 +25,41 @@ export class Frame {
   debug = DEBUG;
 
   constructor(settings) {
-    let config = null;
+    this.resolveConfig(settings);
+  }
 
-    if (settings instanceof SashConfig) {
-      config = settings;
+  resolveConfig(settings) {
+    if (settings instanceof Sash) {
       this.rootSash = settings;
-    }
-    else {
-      config = new ConfigRoot(settings);
-      this.rootSash = config.buildSashTree({ resizeStrategy: config.resizeStrategy });
+      this.fitContainer = settings.fitContainer;
+      return;
     }
 
+    const config = new ConfigRoot(settings);
+    this.rootSash = config.buildSashTree({ resizeStrategy: config.resizeStrategy });
     this.fitContainer = config.fitContainer;
+  }
+
+  exportConfig() {
+    const sashLikeTree = trimSashLikeTree(this.rootSash);
+
+    return {
+      ...sashLikeTree,
+      fitContainer: this.fitContainer,
+    };
   }
 
   frame(containerEl) {
     this.containerElement = containerEl;
-
     this.windowElement = this.createWindow();
     this.glaze();
     this.containerElement.append(this.windowElement);
+  }
+
+  reframe(settings) {
+    this.deglaze();
+    this.resolveConfig(settings);
+    this.glaze();
   }
 
   // Features can work independently to each other
@@ -72,7 +88,7 @@ export class Frame {
 }
 
 Frame.assemble(
-  mainModule,
+  renderModule,
   muntinModule,
   paneModule,
   fitContainerModule,

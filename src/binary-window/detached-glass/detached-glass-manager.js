@@ -1,10 +1,10 @@
 import { DetachedGlass } from './detached-glass';
+import { getContainingBlockOrigin } from './utils';
 
-class DetachedGlassManager {
-  constructor() {
+export class DetachedGlassManager {
+  constructor({ zIndex = 1 } = {}) {
     this.detachedGlassElements = [];
-    // Rising counter so the most recently grabbed glass stacks on top, like an OS window.
-    this.topZIndex = 1;
+    this.topZIndex = zIndex;
   }
 
   setBaseZIndex(zIndex) {
@@ -22,7 +22,11 @@ class DetachedGlassManager {
     }
 
     this.detachedGlassElements.push(glassEl);
-    this.bringToFront(glassEl);
+
+    // Default active so normal creation brings the new glass to front. A config
+    // restore passes `active: false` for background glasses to keep their zIndex.
+    const { active = true } = options;
+    if (active) this.bringToFront(glassEl);
 
     return glassEl;
   }
@@ -31,21 +35,16 @@ class DetachedGlassManager {
     return this.detachedGlassElements.find((glassEl) => glassEl.id === id) ?? null;
   }
 
-  // The front-most glass owns the [active] marker (set in bringToFront).
   getActiveDetachedGlass() {
     return this.detachedGlassElements.find((glassEl) => glassEl.hasAttribute('active')) ?? null;
   }
 
   bringToFront(glassEl) {
-    // Already front-most (it owns the [active] marker) → nothing to raise.
     if (glassEl.hasAttribute('active')) return;
-
-    // Step by 2 (not 1) so the odd slot just below stays free for a windowless modal backdrop.
+    // Step by 2 (not 1) so the odd slot just below stays free for a modal backdrop.
     this.topZIndex += 2;
     glassEl.style.zIndex = this.topZIndex;
 
-    // Only the front-most glass keeps [active] (drives the stronger shadow); cleared
-    // across all so a detached + a windowless glass can't both look active at once.
     this.detachedGlassElements.forEach((el) => el !== glassEl && el.removeAttribute('active'));
     glassEl.setAttribute('active', '');
 
@@ -64,6 +63,25 @@ class DetachedGlassManager {
   updateDetachedGlass(id, options) {
     throw new Error('[bwin] updateDetachedGlass is not implemented yet');
   }
-}
 
-export const detachedGlassManager = new DetachedGlassManager();
+  createConfig() {
+    return this.detachedGlassElements.map((glassEl) => {
+      const { left: originLeft, top: originTop } = getContainingBlockOrigin(glassEl);
+      const rect = glassEl.getBoundingClientRect();
+      const headerEl = glassEl.querySelector('bw-glass-header');
+
+      return {
+        id: glassEl.id,
+        top: rect.top - originTop,
+        left: rect.left - originLeft,
+        width: rect.width,
+        height: rect.height,
+        zIndex: parseInt(glassEl.style.zIndex, 10) || 0,
+        resizable: glassEl.getAttribute('can-resize') !== 'false',
+        draggable: headerEl?.getAttribute('can-drag') !== 'false',
+        active: glassEl.hasAttribute('active'),
+        minimized: glassEl.hasAttribute('minimized'),
+      };
+    });
+  }
+}

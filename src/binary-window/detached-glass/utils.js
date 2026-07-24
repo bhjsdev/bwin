@@ -65,7 +65,7 @@ export function getContainingBlockOrigin(el) {
 
 // `offset` nudges the glass from the anchored corner/edge. `offsetX`/`offsetY`
 // override it per-axis; when only one is given, `offset` fills the other axis.
-export function genStylesByPosition({ position, offset, offsetX, offsetY, width, height }) {
+export function generateMetricsByPosition({ position, offset, offsetX, offsetY, width, height }) {
   const x = offsetX ?? offset;
   const y = offsetY ?? offset;
 

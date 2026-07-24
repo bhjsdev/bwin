@@ -1,13 +1,50 @@
 import { getMetricsFromElement } from '@/utils';
 import { getIntersectRect } from '@/rect';
 import { Position } from '@/position';
-import { detachedGlassManager } from './detached-glass/manager';
 import { animateElementByAttribute } from '@/animate';
+import { Glass } from './glass';
 
 export default {
   enableSillFeatures() {
     this.enableUnpotGlass();
     this.enableUnpotDetachedGlass();
+    this.renderPots(this.pots, this.sillElement);
+  },
+
+  renderPots(pots, sillEl) {
+    if (!pots || pots.length === 0) return;
+
+    for (const pot of pots) {
+      const { originalSashId, originalPosition, originalBoundingRect, plant, ...glassProps } = pot;
+      const buttonEl = document.createElement('button');
+      buttonEl.classList.add('bw-pot');
+      buttonEl.setAttribute('bw-plant', plant);
+      buttonEl.bwOriginalSashId = originalSashId;
+      buttonEl.bwOriginalPosition = originalPosition;
+      buttonEl.bwOriginalBoundingRect = originalBoundingRect;
+
+      buttonEl.bwGlassElement = new Glass({
+        actions: this.actions[0],
+        ...glassProps,
+        binaryWindow: this,
+      }).domNode;
+
+      sillEl.append(buttonEl);
+    }
+  },
+
+  createPotConfig() {
+    const potEls = this.sillElement.querySelectorAll('.bw-pot');
+    const pots = Array.from(potEls).map((potEl) => {
+      return {
+        originalSashId: potEl.bwOriginalSashId,
+        originalPosition: potEl.bwOriginalPosition,
+        originalBoundingRect: potEl.bwOriginalBoundingRect,
+        plant: potEl.getAttribute('bw-plant'),
+      };
+    });
+
+    return pots;
   },
 
   enableUnpotGlass() {
@@ -30,11 +67,11 @@ export default {
       const detachedGlassEl = potEl.bwDetachedGlassElement;
       if (!detachedGlassEl) return;
 
-      detachedGlassEl.style.display = '';
+      detachedGlassEl.removeAttribute('minimized');
 
       animateElementByAttribute(detachedGlassEl, 'opening', () => {
         potEl.remove();
-        detachedGlassManager.bringToFront(detachedGlassEl);
+        this.detachedGlassManager.bringToFront(detachedGlassEl);
         this.emit('restore', detachedGlassEl);
       });
     });

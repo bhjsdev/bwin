@@ -10,11 +10,19 @@ export {
 } from './detached-glass';
 
 export default {
+  // So each binary window instance can have its own detached glass stack
+  detachedGlassManager: null,
+
+  enableDetachedGlassFeatures() {
+    this.enableDetachedGlassActivate();
+    this.renderDetachedGlasses();
+  },
+
   enableDetachedGlassStandaloneFeatures() {
-    activateModule.enableDetachedGlassActivate();
     moveModule.enableDetachedGlassMove();
     resizeModule.enableDetachedGlassResize();
   },
 
   ...crudModule,
+  ...activateModule,
 };

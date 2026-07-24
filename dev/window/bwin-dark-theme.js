@@ -1,4 +1,4 @@
-import { BinaryWindow } from '../../src';
+import { BinaryWindow, addWindowlessGlass } from '../../src';
 
 const content = `Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
@@ -31,11 +31,11 @@ const settings = {
   width: 444,
   height: 333,
   children: [
-    { position: 'left', size: '40%', content },
+    { position: 'left', size: '40%', content, title: 'Left Pane' },
     {
       children: [
-        { position: 'top', size: '30%', content },
-        { position: 'bottom', size: '70%', content: inputs },
+        { position: 'top', size: '30%', content, title: 'Top Pane' },
+        { position: 'bottom', size: '70%', content: inputs, title: 'Bottom Pane' },
       ],
     },
   ],
@@ -56,5 +56,5 @@ document.querySelector('#set-theme-form').addEventListener('submit', (event) => 
 });
 
 document.querySelector('#add-windowless').addEventListener('click', () => {
-  BinaryWindow.addWindowlessGlass({ title: 'Windowless glass', content: inputs });
+  addWindowlessGlass({ title: 'Windowless glass', content: inputs });
 });

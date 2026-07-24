@@ -78,6 +78,18 @@ export function genId(alphabetLength = 2, digitLength = 3) {
 }
 
 /**
+ * Post-order walk a tree of nodes that each hold a `children` array, invoking
+ * `callback` on the deepest nodes first and a parent after all its children.
+ *
+ * @param {{ children?: Array }} node - The tree node to start from
+ * @param {(node: object) => void} callback - Called once per node
+ */
+export function walk(node, callback) {
+  node.children?.forEach((child) => walk(child, callback));
+  callback(node);
+}
+
+/**
  * Move all child nodes from one DOM element to another
  *
  * @param {Node} toNode - The destination node
