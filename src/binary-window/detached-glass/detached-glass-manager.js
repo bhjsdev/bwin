@@ -1,4 +1,5 @@
 import { DetachedGlass } from './detached-glass';
+import { getContainingBlockOrigin } from './utils';
 
 export class DetachedGlassManager {
   constructor({ zIndex = 1 } = {}) {
@@ -21,7 +22,11 @@ export class DetachedGlassManager {
     }
 
     this.detachedGlassElements.push(glassEl);
-    this.bringToFront(glassEl);
+
+    // Default active so normal creation brings the new glass to front. A config
+    // restore passes `active: false` for background glasses to keep their zIndex.
+    const { active = true } = options;
+    if (active) this.bringToFront(glassEl);
 
     return glassEl;
   }
@@ -36,7 +41,6 @@ export class DetachedGlassManager {
 
   bringToFront(glassEl) {
     if (glassEl.hasAttribute('active')) return;
-
     // Step by 2 (not 1) so the odd slot just below stays free for a modal backdrop.
     this.topZIndex += 2;
     glassEl.style.zIndex = this.topZIndex;
@@ -58,5 +62,26 @@ export class DetachedGlassManager {
   // Tentative: in-place update of an existing detached glass (title/content/etc.).
   updateDetachedGlass(id, options) {
     throw new Error('[bwin] updateDetachedGlass is not implemented yet');
+  }
+
+  createConfig() {
+    return this.detachedGlassElements.map((glassEl) => {
+      const { left: originLeft, top: originTop } = getContainingBlockOrigin(glassEl);
+      const rect = glassEl.getBoundingClientRect();
+      const headerEl = glassEl.querySelector('bw-glass-header');
+
+      return {
+        id: glassEl.id,
+        top: rect.top - originTop,
+        left: rect.left - originLeft,
+        width: rect.width,
+        height: rect.height,
+        zIndex: parseInt(glassEl.style.zIndex, 10) || 0,
+        resizable: glassEl.getAttribute('can-resize') !== 'false',
+        draggable: headerEl?.getAttribute('can-drag') !== 'false',
+        active: glassEl.hasAttribute('active'),
+        minimized: glassEl.hasAttribute('minimized'),
+      };
+    });
   }
 }

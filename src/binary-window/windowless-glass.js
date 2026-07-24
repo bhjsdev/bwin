@@ -1,6 +1,6 @@
 import { animateElementByAttribute } from '@/animate';
 import { DEFAULT_WINDOWLESS_GLASS_ACTIONS } from './detached-glass';
-import { DetachedGlassManager } from './detached-glass/manager';
+import { DetachedGlassManager } from './detached-glass/detached-glass-manager';
 import { removeDetachedGlassElement } from './detached-glass/utils';
 
 const windowlessGlassManager = new DetachedGlassManager();

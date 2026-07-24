@@ -9,6 +9,12 @@ const DEFAULT_GLASS_HEIGHT = 200;
 const CASCADE_OFFSET = 25;
 
 export default {
+  renderDetachedGlasses() {
+    for (const glassEl of this.detachedGlassManager.detachedGlassElements) {
+      this.windowElement.append(glassEl);
+    }
+  },
+
   // Cascade down-right of the active glass; wrap back to the inset at the window edges.
   getCascadedPlacement(windowEl, { width, height }) {
     const activeGlassEl = this.detachedGlassManager.getActiveDetachedGlass();
@@ -33,7 +39,7 @@ export default {
     // An explicit position wins; otherwise cascade from the active glass.
     const { position, offsetX, offsetY } = glassOptions.position
       ? {}
-      : getCascadedPlacement(this.windowElement, { width, height });
+      : this.getCascadedPlacement(this.windowElement, { width, height });
 
     const glassEl = this.detachedGlassManager.addDetachedGlass({
       actions: this.actions[1],

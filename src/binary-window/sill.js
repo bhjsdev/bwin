@@ -67,7 +67,7 @@ export default {
       const detachedGlassEl = potEl.bwDetachedGlassElement;
       if (!detachedGlassEl) return;
 
-      detachedGlassEl.style.display = '';
+      detachedGlassEl.removeAttribute('minimized');
 
       animateElementByAttribute(detachedGlassEl, 'opening', () => {
         potEl.remove();

@@ -1,8 +1,9 @@
 export default {
   enableDetachedGlassActivate() {
-    // Clicking anywhere in a detached glass brings it to front. Move/resize
-    // grabs bubble here too, so focus handling lives in one place.
-    document.addEventListener('pointerdown', (event) => {
+    // Delegated on `windowElement` (not `document`) so it's scoped to this window's
+    // own glasses and dies with the element — a `document` listener would outlive a
+    // rebuilt window and race the live one on the `active` guard in `bringToFront`.
+    this.windowElement.addEventListener('pointerdown', (event) => {
       if (event.button !== 0) return;
 
       const glassEl = event.target.closest?.('bw-glass[detached]');
