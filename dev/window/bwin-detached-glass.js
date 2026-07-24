@@ -106,7 +106,7 @@ const offsetInput = document.querySelector('#offset');
 const offsetXInput = document.querySelector('#offsetX');
 const offsetYInput = document.querySelector('#offsetY');
 
-// Empty input → undefined, so genStylesByPosition can fall back to `offset`.
+// Empty input → undefined, so generateMetricsByPosition can fall back to `offset`.
 const toOffset = (input) => (input.value === '' ? undefined : Number(input.value));
 
 document.querySelectorAll('button[data-position]').forEach((button) => {
