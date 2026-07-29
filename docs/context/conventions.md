@@ -87,4 +87,9 @@ Preferred patterns for **new** pointer-driven interaction features:
 `dev/` is **test scaffolding** for manually exercising features and bugs — not shippable library source.
 
 - **Interactive testing items (buttons, inputs, forms, selects, etc.) go in the `.html` file**, not the `.js`. The paired `.js` queries them with `document.querySelector(...)` and wires behavior with `addEventListener`. Canonical example: `dev/frame/add-remove-pane.html` / `add-remove-pane.js`.
-- **Commits that only touch `dev/` are plain `chore:`** — never `feat:`/`fix:`, no `(dev)` scope. It's scaffolding, not library source.
+- **Pages are auto-discovered — there is no list to maintain.** `dev/index.js` globs `./{frame,window,misc}/*.html` via `import.meta.glob`, which Vite resolves at request time, so a new `.html` in one of those three folders appears in the menu after a browser refresh. The folder becomes the group label and the hash route (`#frame/basic`).
+- **`_`-prefixed pages are utility pages, not examples.** They sort first but are skipped when choosing the default page, so the landing page is always a real example. `genLinkText` strips the underscore for display.
+
+**Why:** adding a dev page should cost one file, not a file plus a registration edit that's easy to forget. The `_` convention keeps debug/release-check scratchpads reachable without ever making one the first thing you see.
+
+Commit typing for `dev/`-only changes is a Git rule — see [`CLAUDE.md`](../../CLAUDE.md#git).

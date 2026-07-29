@@ -23,7 +23,7 @@ const groups = GROUPS.map(({ dir, label }) => {
 }).filter((group) => group.files.length);
 
 // Default shown when there is no hash — first real example, skipping the
-// underscore-prefixed utility pages (_debug, _release-check) that sort first.
+// underscore-prefixed utility pages that sort first.
 const allNames = groups.flatMap((g) => g.files.map((file) => `${g.dir}/${file}`));
 const DEFAULT_NAME = allNames.find((name) => !name.split('/')[1].startsWith('_')) ?? allNames[0];
 

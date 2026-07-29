@@ -16,6 +16,12 @@ Operational rules for working in this repo. Detailed background lives in `docs/`
 - **No Claude attribution trailers** — never add `Co-Authored-By: Claude` or `Generated with Claude Code` (or similar) to commit messages or PR descriptions.
 - Type commits that only touch `dev/` as plain `chore:` — never `feat:`/`fix:`, no `(dev)` scope. It's test scaffolding, not library source.
 
+## Tooling
+
+- **pnpm** is the package manager. Dev/test/`react-bwin`-linking commands live in [`CONTRIBUTING.md`](CONTRIBUTING.md); release steps in [`RELEASING.md`](RELEASING.md) (the workflow pushes the `vX.Y.Z` tag — never tag by hand). Don't re-derive either.
+- `.env.local` is **gitignored but required for `pnpm dev`**: `src/sash.js` reads `VITE_DEFAULT_SASH_MIN_WIDTH`/`_HEIGHT` via `Number(import.meta.env…)`, so a fresh checkout silently yields `minWidth`/`minHeight` of `NaN`. Only `production` mode is covered by the committed `.env.production` — `development` and `test` load nothing, and the suite passes regardless (no test asserts sash minimums), so tests won't warn you. Copy `.env.production`'s values.
+- `@` resolves to `src/` (aliased in both `vite.config.js` and `vitest.config.js`); prettier runs on commit via lint-staged, so don't hand-format.
+
 ## Testing
 
 - Don't run tests or builds after finishing a feature or fix unless asked.
@@ -32,5 +38,8 @@ Full detail + rationale in [`docs/context/conventions.md`](docs/context/conventi
 
 ## Dev pages (`dev/`)
 
+Full detail + rationale in [`docs/context/conventions.md` §Dev pages](docs/context/conventions.md#dev-pages-dev).
+
 - Treat `dev/` as test scaffolding for manually exercising features/bugs, not shippable library source.
-- Put interactive testing items (buttons, inputs, forms, selects, etc.) in the `.html` file, not the `.js`. The paired `.js` queries them with `document.querySelector(...)` and wires up behavior with `addEventListener`. See `dev/frame/add-remove-pane.html` / `add-remove-pane.js` for the pattern.
+- Put interactive testing items (buttons, inputs, forms, selects, etc.) in the `.html` file, not the `.js`. The paired `.js` queries them with `document.querySelector(...)` and wires up behavior with `addEventListener`.
+- Pages are auto-discovered — adding a `.html` under `dev/{frame,window,misc}/` is enough, there's no list to update. `_`-prefixed pages are utility pages, skipped when picking the default.
