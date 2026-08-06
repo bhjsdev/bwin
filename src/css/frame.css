@@ -1,4 +1,5 @@
 bw-window {
+  isolation: isolate;
   position: absolute;
   display: block;
   box-sizing: border-box;

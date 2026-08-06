@@ -1,4 +1,4 @@
-import { BinaryWindow, BUILTIN_ACTIONS, detachedGlassManager } from '../../src';
+import { BinaryWindow, BUILTIN_ACTIONS } from '../../src';
 
 const settings = {
   width: 777,
@@ -17,7 +17,7 @@ const baseZIndexInput = document.querySelector('#base-zindex');
 
 // Push the base z-index; the next glass raised via bringToFront starts stacking from here.
 document.querySelector('#set-base-zindex').addEventListener('click', () => {
-  detachedGlassManager.setBaseZIndex(Number(baseZIndexInput.value));
+  bwin.detachedGlassManager.setBaseZIndex(Number(baseZIndexInput.value));
 });
 
 let count = 0;

@@ -4,19 +4,12 @@ import { createDomNode } from '../utils';
 import trimModule from './trim';
 import sillModule from './sill';
 import detachedGlassModule from './detached-glass';
+import { DetachedGlassManager } from './detached-glass/detached-glass-manager';
 import { normActions } from './utils';
 import { updateGlass } from './glass/utils';
-import windowlessGlassStaticModule from './windowless-glass';
 
 export class BinaryWindow extends Frame {
   sillElement = null;
-
-  constructor(settings) {
-    super(settings);
-
-    this.theme = settings.theme || '';
-    this.actions = normActions(settings.actions);
-  }
 
   frame() {
     super.frame(...arguments);
@@ -26,9 +19,48 @@ export class BinaryWindow extends Frame {
     this.sillElement = sillEl;
   }
 
+  resolveConfig(settings) {
+    super.resolveConfig(settings);
+
+    this.theme = settings.theme || '';
+    this.actions = normActions(settings.actions);
+    this.pots = settings.pots || [];
+
+    this.detachedGlassManager = new DetachedGlassManager();
+
+    // Restore from config: each glass carries its own `zIndex`/`active`, so don't
+    // bring any to front by default (that would re-derive stacking by insert order).
+    // Absent `active` → false, so only the glass that was active is re-activated.
+    const detachedGlasses = settings.detachedGlasses || [];
+    for (const each of detachedGlasses) {
+      this.detachedGlassManager.addDetachedGlass({
+        ...each,
+        active: each.active ?? false,
+        binaryWindow: this,
+      });
+    }
+
+    // Seed the counter above the restored stack so glasses created next go on top.
+    const maxZIndex = Math.max(0, ...detachedGlasses.map((each) => each.zIndex ?? 0));
+    this.detachedGlassManager.setBaseZIndex(maxZIndex);
+  }
+
+  exportConfig() {
+    const config = super.exportConfig();
+
+    return {
+      ...config,
+      theme: this.theme,
+      actions: this.actions,
+      pots: this.createPotConfig(),
+      detachedGlasses: this.detachedGlassManager.createConfig(),
+    };
+  }
+
   enableFeatures() {
     super.enableFeatures();
     this.enableGlassFeatures();
+    this.enableDetachedGlassFeatures();
     this.enableSillFeatures();
   }
 
@@ -116,10 +148,9 @@ export class BinaryWindow extends Frame {
 }
 
 BinaryWindow.assemble(glassModule, detachedGlassModule, trimModule, sillModule);
-BinaryWindow.assembleStatic(windowlessGlassStaticModule);
 
 // Enable features that do not need a BinaryWindow instance
 // e.g. handle pointer events
 glassModule.enableGlassStandaloneFeatures();
-// e.g. detached glass move/resize/activate
+// e.g. detached glass move/resize
 detachedGlassModule.enableDetachedGlassStandaloneFeatures();

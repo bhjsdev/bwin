@@ -1,10 +1,10 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { detachedGlassManager } from '@/binary-window/detached-glass/manager';
+import { DetachedGlassManager } from '@/binary-window/detached-glass/detached-glass-manager';
 
-// The manager is a shared singleton; reset its state so tests don't leak into each other.
+let detachedGlassManager;
+
 beforeEach(() => {
-  detachedGlassManager.detachedGlassElements = [];
-  detachedGlassManager.topZIndex = 1;
+  detachedGlassManager = new DetachedGlassManager();
 });
 
 // `DetachedGlass` requires a valid `position`; supply one so tests focus on the manager.

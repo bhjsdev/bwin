@@ -29,6 +29,7 @@ export default {
     await binaryWindow.removeDetachedGlass(detachedGlassEl.id);
 
     const paneSash = binaryWindow.addPane(targetSashId, {
+      id: detachedGlassEl.id,
       position,
       size,
     });

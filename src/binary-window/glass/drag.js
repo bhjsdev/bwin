@@ -37,7 +37,10 @@ export default {
     // Prevent drag from being triggered by child elements, e.g. action buttons
     // It is possible to use `preventDefault` on `mousedown` if `event.target` is a child element
     // But it also prevents text from selection
-    document.addEventListener('mousedown', (event) => {
+    // Delegated on `windowElement` (not `document`) so the listeners die with the
+    // element — `document` listeners outlive a rebuilt window and leak the dead
+    // instance. Header/title targets bubble up to `windowElement`.
+    this.windowElement.addEventListener('mousedown', (event) => {
       if (event.button !== 0) return;
 
       // Drag starts on the header bar itself or the title, but not on action
@@ -60,7 +63,9 @@ export default {
       activeDragGlassEl = glassEl;
     });
 
-    document.addEventListener('mouseup', () => {
+    // Cleans up the no-drag case (click-release on the header without a drag);
+    // a real drag is cleaned up by `dragend` below. Both bubble to `windowElement`.
+    this.windowElement.addEventListener('mouseup', () => {
       if (activeDragGlassEl) {
         activeDragGlassEl.removeAttribute('draggable');
         activeDragGlassEl = null;

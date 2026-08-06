@@ -6,7 +6,10 @@ export default {
   lastY: 0,
 
   enableResize() {
-    document.addEventListener('pointerdown', (event) => {
+    // Delegated on `windowElement` (not `document`) so the listeners die with the
+    // element — `document` listeners outlive a rebuilt window, leak the dead Frame
+    // via their closures, and race the live instance on a shared muntin pointerdown.
+    this.windowElement.addEventListener('pointerdown', (event) => {
       if (event.target.tagName !== 'BW-MUNTIN') return;
       if (event.target.getAttribute('resizable') === 'false') return;
 
@@ -23,7 +26,7 @@ export default {
       this.lastY = event.pageY;
     });
 
-    document.addEventListener('pointermove', (event) => {
+    this.windowElement.addEventListener('pointermove', (event) => {
       if (!this.isResizeStarted || !this.activeMuntinSash) return;
 
       const [topChild, rightChild, bottomChild, leftChild] = this.activeMuntinSash.getChildren();
@@ -44,7 +47,7 @@ export default {
         rightChild.width = newRightChildWidth;
         rightChild.left = rightChild.left + distX;
 
-        this.update();
+        this.reglaze();
         this.lastX = event.pageX;
       }
       else if (isHorizontalMuntin && topChild && bottomChild) {
@@ -60,12 +63,12 @@ export default {
         bottomChild.height = newBottomChildHeight;
         bottomChild.top = bottomChild.top + distY;
 
-        this.update();
+        this.reglaze();
         this.lastY = event.pageY;
       }
     });
 
-    document.addEventListener('pointerup', (event) => {
+    this.windowElement.addEventListener('pointerup', (event) => {
       this.isResizeStarted = false;
       this.activeMuntinSash = null;
 

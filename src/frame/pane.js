@@ -26,7 +26,7 @@ export default {
     }
 
     if (this?.debug) {
-      paneEl.style.backgroundColor = genBrightColor();
+      // paneEl.style.backgroundColor = genBrightColor();
       paneEl.innerHTML = '';
       paneEl.append(__debug(paneEl));
     }
@@ -53,8 +53,8 @@ export default {
     if (position) updatePanePosition(sash, position);
     if (size != null) updatePaneSize(sash, size);
 
-    // `update` reconciles the DOM and calls `onPaneUpdate` for each existing pane.
-    this.update();
+    // `reglaze` reconciles the DOM and calls `onPaneUpdate` for each existing pane.
+    this.reglaze();
 
     return sash;
   },
@@ -84,7 +84,7 @@ export default {
     if (mustAdd === false) return null;
 
     const newPaneSash = addPaneSash(targetPaneSash, { position, size, id, minWidth, minHeight });
-    this.update();
+    this.reglaze();
 
     this.emit('pane-add', newPaneSash);
     return newPaneSash;
@@ -114,7 +114,7 @@ export default {
       parentSash.children = [];
     }
     else {
-      // The muntin with the old ID will be removed during `this.update`
+      // The muntin with the old ID will be removed during `this.reglaze`
       parentSash.id = genId();
       parentSash.children = siblingSash.children;
       parentSash.children.forEach((child) => (child.parent = parentSash));
@@ -135,9 +135,9 @@ export default {
       }
     }
 
-    this.update();
+    this.reglaze();
     // `sash.domNode` still exists at this point,
-    // but was removed from the DOM during `this.update()`
+    // but was removed from the DOM during `this.reglaze()`
     this.emit('pane-remove', sash);
   },
 
@@ -161,7 +161,7 @@ export default {
 
 function __debug(parentEl) {
   const debugEl = document.createElement('pre');
-  debugEl.style.fontSize = '10px';
+  debugEl.style.fontSize = '12px';
 
   const debugHtml = `
 ${parentEl.getAttribute('sash-id')}

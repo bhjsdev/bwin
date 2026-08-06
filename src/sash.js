@@ -1,4 +1,5 @@
 import { genId } from './utils';
+import { isSashLike } from './sash-utils';
 import { Position } from './position';
 
 const MIN_WIDTH = Number(import.meta.env.VITE_DEFAULT_SASH_MIN_WIDTH);
@@ -14,6 +15,7 @@ export const DEFAULTS = {
   minHeight: MIN_HEIGHT,
   // `classic` | `natural`, `natural` means only one child is updating its size
   resizeStrategy: 'classic',
+  children: [],
 };
 
 /**
@@ -30,6 +32,7 @@ export class Sash {
     minWidth = DEFAULTS.minWidth,
     minHeight = DEFAULTS.minHeight,
     resizeStrategy = DEFAULTS.resizeStrategy,
+    children = DEFAULTS.children,
     parent = null,
     domNode = null,
     store = {},
@@ -51,6 +54,11 @@ export class Sash {
     this._height = height;
 
     this.children = [];
+    // Make all descendants Sash instances
+    if (Array.isArray(children) && children.length === 2 && children.every(isSashLike)) {
+      children.forEach((child) => this.addChild(new Sash(child)));
+    }
+
     this.minWidth = minWidth;
     this.minHeight = minHeight;
     this.resizeStrategy = resizeStrategy;

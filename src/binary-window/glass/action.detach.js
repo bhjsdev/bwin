@@ -8,18 +8,19 @@ export default {
   onClick: async (event, binaryWindow) => {
     const paneEl = event.target.closest('bw-pane');
     const glassEl = paneEl.querySelector('bw-glass');
+    const paneSashId = paneEl.getAttribute('sash-id');
 
     const windowRect = binaryWindow.windowElement.getBoundingClientRect();
     const width = windowRect.width - DETACHED_GLASS_INSET * 2;
     const height = windowRect.height - DETACHED_GLASS_INSET * 2;
     const detachedGlassEl = await binaryWindow.addDetachedGlass({
+      id: paneSashId,
       position: 'center',
       width,
       height,
       originalGlassElement: glassEl,
     });
 
-    const paneSashId = paneEl.getAttribute('sash-id');
     const paneSash = binaryWindow.rootSash.getById(paneSashId);
     const siblingSashId = paneSash.parent.getChildSiblingById(paneSashId).id;
 

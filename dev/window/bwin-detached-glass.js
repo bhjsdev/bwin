@@ -1,10 +1,4 @@
-import {
-  BinaryWindow,
-  DEFAULT_GLASS_ACTIONS,
-  BUILTIN_ACTIONS,
-  DEFAULT_DETACHED_GLASS_ACTIONS,
-  detachedGlassManager,
-} from '../../src';
+import { BinaryWindow, BUILTIN_ACTIONS, addWindowlessGlass } from '../../src';
 
 const elem = document.createElement('div');
 const zIndex = 100;
@@ -112,7 +106,7 @@ const offsetInput = document.querySelector('#offset');
 const offsetXInput = document.querySelector('#offsetX');
 const offsetYInput = document.querySelector('#offsetY');
 
-// Empty input → undefined, so genStylesByPosition can fall back to `offset`.
+// Empty input → undefined, so generateMetricsByPosition can fall back to `offset`.
 const toOffset = (input) => (input.value === '' ? undefined : Number(input.value));
 
 document.querySelectorAll('button[data-position]').forEach((button) => {
@@ -135,7 +129,7 @@ document.querySelector('#add-default').addEventListener('click', () => {
 
 // Static method: floats on document.body, not inside any bw-window.
 document.querySelector('#add-windowless').addEventListener('click', () => {
-  BinaryWindow.addWindowlessGlass({
+  addWindowlessGlass({
     title: 'Windowless glass',
     content: createGlassContent('windowless'),
   });
@@ -143,7 +137,7 @@ document.querySelector('#add-windowless').addEventListener('click', () => {
 
 // Modal: a backdrop is appended behind the glass to block everything underneath.
 document.querySelector('#add-modal').addEventListener('click', () => {
-  BinaryWindow.addWindowlessGlass({
+  addWindowlessGlass({
     modal: true,
     title: 'Modal windowless glass',
     content: createGlassContent('modal'),
@@ -153,7 +147,7 @@ document.querySelector('#add-modal').addEventListener('click', () => {
 // Windowless glass filling the viewport with a 50px inset on every edge.
 document.querySelector('#add-fullscreen').addEventListener('click', () => {
   const EDGE = 20;
-  BinaryWindow.addWindowlessGlass({
+  addWindowlessGlass({
     title: 'Fullscreen popup',
     draggable: false,
     position: 'top-left',
@@ -165,4 +159,5 @@ document.querySelector('#add-fullscreen').addEventListener('click', () => {
   });
 });
 
-// document.querySelector('#add-default').click();
+window.BW = BinaryWindow;
+window.bw = bwin;

@@ -1,13 +1,87 @@
 import { getMetricsFromElement } from '@/utils';
 import { getIntersectRect } from '@/rect';
 import { Position } from '@/position';
-import { detachedGlassManager } from './detached-glass/manager';
 import { animateElementByAttribute } from '@/animate';
+import { Glass } from './glass';
 
 export default {
   enableSillFeatures() {
     this.enableUnpotGlass();
     this.enableUnpotDetachedGlass();
+    this.renderPots(this.pots, this.sillElement);
+  },
+
+  renderPots(pots, sillEl) {
+    if (!pots || pots.length === 0) return;
+
+    for (const pot of pots) {
+      const {
+        plant,
+        originalSashId,
+        originalPosition,
+        originalBoundingRect,
+        originalDetachedGlassId,
+        originalDetachedGlassBoundingRect,
+        ...glassProps
+      } = pot;
+
+      const buttonEl = document.createElement('button');
+      buttonEl.classList.add('bw-pot');
+      buttonEl.setAttribute('bw-plant', plant);
+
+      if (plant === 'glass') {
+        // Glass pot
+        buttonEl.bwOriginalSashId = originalSashId;
+        buttonEl.bwOriginalPosition = originalPosition;
+        buttonEl.bwOriginalBoundingRect = originalBoundingRect;
+        buttonEl.bwGlassElement = new Glass({
+          actions: this.actions[0],
+          ...glassProps,
+          binaryWindow: this,
+        }).domNode;
+      }
+      else if (plant === 'detached-glass') {
+        // Detached glass pot
+        const detachedGlassEl = this.detachedGlassManager.addDetachedGlass({
+          actions: this.actions[1],
+          id: originalDetachedGlassId,
+          ...originalDetachedGlassBoundingRect,
+          ...glassProps,
+          minimized: true,
+          binaryWindow: this,
+        });
+
+        buttonEl.bwDetachedGlassElement = detachedGlassEl;
+        // Add to window but minimized so it doesn't show until un-potted
+        this.windowElement.append(detachedGlassEl);
+      }
+
+      sillEl.append(buttonEl);
+    }
+  },
+
+  createPotConfig() {
+    const potEls = this.sillElement.querySelectorAll('.bw-pot');
+    const pots = Array.from(potEls).map((potEl) => {
+      return {
+        plant: potEl.getAttribute('bw-plant'),
+        // Glass content
+        originalSashId: potEl.bwOriginalSashId,
+        originalPosition: potEl.bwOriginalPosition,
+        originalBoundingRect: potEl.bwOriginalBoundingRect,
+        // Detached glass content
+        originalDetachedGlassId: potEl.bwDetachedGlassElement?.getAttribute('id'),
+        // Get raw string values
+        originalDetachedGlassBoundingRect: {
+          top: potEl.bwDetachedGlassElement?.style.top,
+          left: potEl.bwDetachedGlassElement?.style.left,
+          width: potEl.bwDetachedGlassElement?.style.width,
+          height: potEl.bwDetachedGlassElement?.style.height,
+        },
+      };
+    });
+
+    return pots;
   },
 
   enableUnpotGlass() {
@@ -30,11 +104,13 @@ export default {
       const detachedGlassEl = potEl.bwDetachedGlassElement;
       if (!detachedGlassEl) return;
 
-      detachedGlassEl.style.display = '';
+      detachedGlassEl.removeAttribute('minimized');
 
+      // TODO: animate with a scale transform from the pot's position to the detached glass's position.
+      // Just the opposite of the animation in Glass.js when minimizing a detached glass.
       animateElementByAttribute(detachedGlassEl, 'opening', () => {
         potEl.remove();
-        detachedGlassManager.bringToFront(detachedGlassEl);
+        this.detachedGlassManager.bringToFront(detachedGlassEl);
         this.emit('restore', detachedGlassEl);
       });
     });

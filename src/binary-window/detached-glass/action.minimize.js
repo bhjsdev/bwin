@@ -19,7 +19,7 @@ export default {
 
     potEl.bwDetachedGlassElement = detachedGlassEl;
     animateElementToElement(detachedGlassEl, potEl).then(() => {
-      detachedGlassEl.style.display = 'none';
+      detachedGlassEl.setAttribute('minimized', '');
       binaryWindow.emit('minimize', detachedGlassEl);
     });
   },

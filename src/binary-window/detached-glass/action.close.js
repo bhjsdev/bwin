@@ -1,5 +1,3 @@
-import { removeWindowlessGlass } from '@/binary-window/windowless-glass.js';
-
 export default {
   type: 'detached-glass-builtin',
   placement: 'bar',
@@ -10,6 +8,9 @@ export default {
     if (!glassEl) return;
 
     if (glassEl.hasAttribute('windowless')) {
+      // Avoid circular dependency: import the remove function here instead of at the top of the file.
+      const { removeWindowlessGlass } = await import('@/binary-window/windowless-glass.js');
+
       await removeWindowlessGlass(glassEl.id);
     }
     else {

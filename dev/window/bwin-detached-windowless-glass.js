@@ -1,10 +1,10 @@
-import { BinaryWindow } from '../../src';
+import { addWindowlessGlass } from '../../src';
 
 const createContent = (label) => `<div style="padding:8px;font-family:sans-serif">${label}</div>`;
 
 // Static method: floats on document.body, not inside any bw-window.
 document.querySelector('#add-windowless').addEventListener('click', () => {
-  BinaryWindow.addWindowlessGlass({
+  addWindowlessGlass({
     title: 'Windowless glass',
     content: createContent('windowless'),
   });
@@ -12,7 +12,7 @@ document.querySelector('#add-windowless').addEventListener('click', () => {
 
 // Modal: a backdrop is appended behind the glass to block everything underneath.
 document.querySelector('#add-modal').addEventListener('click', () => {
-  BinaryWindow.addWindowlessGlass({
+  addWindowlessGlass({
     modal: true,
     title: 'Modal windowless glass',
     content: createContent('modal'),
@@ -21,7 +21,7 @@ document.querySelector('#add-modal').addEventListener('click', () => {
 
 // Modal that dismisses itself when the backdrop (not the glass) is clicked.
 document.querySelector('#add-modal-close-on-backdrop').addEventListener('click', () => {
-  BinaryWindow.addWindowlessGlass({
+  addWindowlessGlass({
     modal: true,
     closeOnBackdropClick: true,
     title: 'Modal (click backdrop to close)',
@@ -31,7 +31,7 @@ document.querySelector('#add-modal-close-on-backdrop').addEventListener('click',
 
 // Placed relative to the body's top-left via offsetX/offsetY.
 document.querySelector('#add-positioned').addEventListener('click', () => {
-  BinaryWindow.addWindowlessGlass({
+  addWindowlessGlass({
     title: 'Positioned windowless glass',
     position: 'top-left',
     offsetX: 120,
@@ -44,7 +44,7 @@ document.querySelector('#add-positioned').addEventListener('click', () => {
 // A fullscreen popup shouldn't be resized, so `resizable: false` suppresses the handles.
 document.querySelector('#add-fullscreen').addEventListener('click', () => {
   const EDGE = 20;
-  BinaryWindow.addWindowlessGlass({
+  addWindowlessGlass({
     title: 'Fullscreen popup',
     draggable: false,
     resizable: false,
@@ -59,7 +59,7 @@ document.querySelector('#add-fullscreen').addEventListener('click', () => {
 
 // `resizable: false` keeps resize handles from ever appearing on hover.
 document.querySelector('#add-non-resizable').addEventListener('click', () => {
-  BinaryWindow.addWindowlessGlass({
+  addWindowlessGlass({
     title: 'Non-resizable glass',
     resizable: false,
     content: createContent('non-resizable'),

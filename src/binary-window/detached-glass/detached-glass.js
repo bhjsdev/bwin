@@ -1,6 +1,6 @@
 import { Glass } from '../glass';
 import { genId } from '@/utils.js';
-import { genStylesByPosition } from './utils';
+import { generateMetricsByPosition } from './utils';
 import closeAction from './action.close';
 import attachAction from './action.attach';
 import minimizeAction from './action.minimize';
@@ -21,6 +21,11 @@ export class DetachedGlass extends Glass {
       offset = 0,
       offsetX,
       offsetY,
+      top,
+      left,
+      zIndex,
+      active,
+      minimized,
       id,
       resizable = true,
       actions = DEFAULT_DETACHED_GLASS_ACTIONS,
@@ -37,21 +42,34 @@ export class DetachedGlass extends Glass {
     this.domNode.setAttribute('can-resize', resizable);
 
     this.domNode.style.position = 'absolute';
-    this.domNode.style.width = `${width}px`;
-    this.domNode.style.height = `${height}px`;
+    this.domNode.style.width = typeof width === 'string' ? width : `${width}px`;
+    this.domNode.style.height = typeof height === 'string' ? height : `${height}px`;
 
-    const { top, left, right, bottom } = genStylesByPosition({
-      position,
-      offset,
-      offsetX,
-      offsetY,
-      width,
-      height,
-    });
+    if (zIndex !== undefined) this.domNode.style.zIndex = zIndex;
+    if (active) this.domNode.setAttribute('active', '');
+    if (minimized) this.domNode.setAttribute('minimized', '');
 
-    this.domNode.style.top = top;
-    this.domNode.style.left = left;
-    this.domNode.style.right = right;
-    this.domNode.style.bottom = bottom;
+    // Explicit `top`/`left` anchor the glass directly; otherwise derive from `position`.
+    if (top !== undefined || left !== undefined) {
+      this.domNode.style.top = typeof top === 'string' ? top : `${top ?? 0}px`;
+      this.domNode.style.left = typeof left === 'string' ? left : `${left ?? 0}px`;
+      this.domNode.style.right = 'auto';
+      this.domNode.style.bottom = 'auto';
+    }
+    else {
+      const { top, left, right, bottom } = generateMetricsByPosition({
+        position,
+        offset,
+        offsetX,
+        offsetY,
+        width,
+        height,
+      });
+
+      this.domNode.style.top = top;
+      this.domNode.style.left = left;
+      this.domNode.style.right = right;
+      this.domNode.style.bottom = bottom;
+    }
   }
 }
