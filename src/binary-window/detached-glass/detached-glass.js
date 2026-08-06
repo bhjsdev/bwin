@@ -42,16 +42,17 @@ export class DetachedGlass extends Glass {
     this.domNode.setAttribute('can-resize', resizable);
 
     this.domNode.style.position = 'absolute';
-    this.domNode.style.width = `${width}px`;
-    this.domNode.style.height = `${height}px`;
+    this.domNode.style.width = typeof width === 'string' ? width : `${width}px`;
+    this.domNode.style.height = typeof height === 'string' ? height : `${height}px`;
+
     if (zIndex !== undefined) this.domNode.style.zIndex = zIndex;
     if (active) this.domNode.setAttribute('active', '');
     if (minimized) this.domNode.setAttribute('minimized', '');
 
     // Explicit `top`/`left` anchor the glass directly; otherwise derive from `position`.
     if (top !== undefined || left !== undefined) {
-      this.domNode.style.top = `${top ?? 0}px`;
-      this.domNode.style.left = `${left ?? 0}px`;
+      this.domNode.style.top = typeof top === 'string' ? top : `${top ?? 0}px`;
+      this.domNode.style.left = typeof left === 'string' ? left : `${left ?? 0}px`;
       this.domNode.style.right = 'auto';
       this.domNode.style.bottom = 'auto';
     }

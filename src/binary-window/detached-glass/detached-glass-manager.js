@@ -65,23 +65,27 @@ export class DetachedGlassManager {
   }
 
   createConfig() {
-    return this.detachedGlassElements.map((glassEl) => {
-      const { left: originLeft, top: originTop } = getContainingBlockOrigin(glassEl);
-      const rect = glassEl.getBoundingClientRect();
-      const headerEl = glassEl.querySelector('bw-glass-header');
+    return this.detachedGlassElements
+      .filter(
+        (glassEl) =>
+          !glassEl.hasAttribute('minimized') || glassEl.getAttribute('minimized') === 'false'
+      )
+      .map((glassEl) => {
+        const { left: originLeft, top: originTop } = getContainingBlockOrigin(glassEl);
+        const rect = glassEl.getBoundingClientRect();
+        const headerEl = glassEl.querySelector('bw-glass-header');
 
-      return {
-        id: glassEl.id,
-        top: rect.top - originTop,
-        left: rect.left - originLeft,
-        width: rect.width,
-        height: rect.height,
-        zIndex: parseInt(glassEl.style.zIndex, 10) || 0,
-        resizable: glassEl.getAttribute('can-resize') !== 'false',
-        draggable: headerEl?.getAttribute('can-drag') !== 'false',
-        active: glassEl.hasAttribute('active'),
-        minimized: glassEl.hasAttribute('minimized'),
-      };
-    });
+        return {
+          id: glassEl.id,
+          top: rect.top - originTop,
+          left: rect.left - originLeft,
+          width: rect.width,
+          height: rect.height,
+          zIndex: parseInt(glassEl.style.zIndex, 10) || 0,
+          resizable: glassEl.getAttribute('can-resize') !== 'false',
+          draggable: headerEl?.getAttribute('can-drag') !== 'false',
+          active: glassEl.hasAttribute('active'),
+        };
+      });
   }
 }

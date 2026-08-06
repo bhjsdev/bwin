@@ -28,7 +28,10 @@ export function mergeConfig(sashLikeObject, configRootLikeObject) {
   // "pots" are internally generated when "glass" is minimized
   // which should not be available in the configRootLikeObject
   sashConfig.pots = (sashLikeObject.pots ?? []).map((pot) => {
-    const glassProps = glassPropsById.get(pot.originalSashId);
+    const glassProps =
+      pot.plant === 'glass'
+        ? glassPropsById.get(pot.originalSashId)
+        : glassPropsById.get(pot.originalDetachedGlassId);
 
     return {
       ...pot,

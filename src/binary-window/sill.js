@@ -15,19 +15,46 @@ export default {
     if (!pots || pots.length === 0) return;
 
     for (const pot of pots) {
-      const { originalSashId, originalPosition, originalBoundingRect, plant, ...glassProps } = pot;
+      const {
+        plant,
+        originalSashId,
+        originalPosition,
+        originalBoundingRect,
+        originalDetachedGlassId,
+        originalDetachedGlassBoundingRect,
+        ...glassProps
+      } = pot;
+
       const buttonEl = document.createElement('button');
       buttonEl.classList.add('bw-pot');
       buttonEl.setAttribute('bw-plant', plant);
-      buttonEl.bwOriginalSashId = originalSashId;
-      buttonEl.bwOriginalPosition = originalPosition;
-      buttonEl.bwOriginalBoundingRect = originalBoundingRect;
 
-      buttonEl.bwGlassElement = new Glass({
-        actions: this.actions[0],
-        ...glassProps,
-        binaryWindow: this,
-      }).domNode;
+      if (plant === 'glass') {
+        // Glass pot
+        buttonEl.bwOriginalSashId = originalSashId;
+        buttonEl.bwOriginalPosition = originalPosition;
+        buttonEl.bwOriginalBoundingRect = originalBoundingRect;
+        buttonEl.bwGlassElement = new Glass({
+          actions: this.actions[0],
+          ...glassProps,
+          binaryWindow: this,
+        }).domNode;
+      }
+      else if (plant === 'detached-glass') {
+        // Detached glass pot
+        const detachedGlassEl = this.detachedGlassManager.addDetachedGlass({
+          actions: this.actions[1],
+          id: originalDetachedGlassId,
+          ...originalDetachedGlassBoundingRect,
+          ...glassProps,
+          minimized: true,
+          binaryWindow: this,
+        });
+
+        buttonEl.bwDetachedGlassElement = detachedGlassEl;
+        // Add to window but minimized so it doesn't show until un-potted
+        this.windowElement.append(detachedGlassEl);
+      }
 
       sillEl.append(buttonEl);
     }
@@ -37,10 +64,20 @@ export default {
     const potEls = this.sillElement.querySelectorAll('.bw-pot');
     const pots = Array.from(potEls).map((potEl) => {
       return {
+        plant: potEl.getAttribute('bw-plant'),
+        // Glass content
         originalSashId: potEl.bwOriginalSashId,
         originalPosition: potEl.bwOriginalPosition,
         originalBoundingRect: potEl.bwOriginalBoundingRect,
-        plant: potEl.getAttribute('bw-plant'),
+        // Detached glass content
+        originalDetachedGlassId: potEl.bwDetachedGlassElement?.getAttribute('id'),
+        // Get raw string values
+        originalDetachedGlassBoundingRect: {
+          top: potEl.bwDetachedGlassElement?.style.top,
+          left: potEl.bwDetachedGlassElement?.style.left,
+          width: potEl.bwDetachedGlassElement?.style.width,
+          height: potEl.bwDetachedGlassElement?.style.height,
+        },
       };
     });
 
@@ -69,6 +106,8 @@ export default {
 
       detachedGlassEl.removeAttribute('minimized');
 
+      // TODO: animate with a scale transform from the pot's position to the detached glass's position.
+      // Just the opposite of the animation in Glass.js when minimizing a detached glass.
       animateElementByAttribute(detachedGlassEl, 'opening', () => {
         potEl.remove();
         this.detachedGlassManager.bringToFront(detachedGlassEl);
